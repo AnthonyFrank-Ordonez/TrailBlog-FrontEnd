@@ -1,0 +1,56 @@
+{
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.colorTheme": "Tokyo Night",
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.validate": ["javascript", "javascriptreact", "html", "typescriptreact", "typescript"],
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "editor.suggestSelection": "first",
+  "editor.suggest.showIcons": true,
+  "editor.suggest.showStatusBar": true,
+  "editor.suggest.showWords": true,
+  "editor.suggest.showSnippets": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "prettier.requireConfig": true,
+  "prettier.useEditorConfig": true,
+  "prettier.ignorePath": ".prettierignore",
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false,
+    "typescriptreact": false,
+    "jsonc": false,
+    "typescript": false,
+    "github-actions-workflow": true
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "angular.trace.server": "verbose",
+  "tailwindCSS.experimental.configFile": "src/styles.css"
+}
