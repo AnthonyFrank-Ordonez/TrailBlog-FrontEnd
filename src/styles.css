@@ -3,14 +3,17 @@
 @import 'tailwindcss';
 
 body {
-  background-color: #343131;
+  background-color: #131313;
 }
 
 @theme {
-  --color-primary: #343131;
+  --color-primary: #131313;
   --color-secondary: #d8a25e;
   --color-tertiary: #eedf7a;
   --font-bevietpro: Be Vietnam Pro, 'sans-serif';
   --font-funnel: Funnel Sans, 'sans-serif';
   --font-Anaheim: Anaheim, 'sans-serif';
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

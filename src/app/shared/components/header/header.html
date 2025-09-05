@@ -1,1 +1,121 @@
-<p>header works!</p>
+<!-- Top Header -->
+<header
+  class="fixed top-0 left-0 right-0 text-secondary z-50 transition-transform duration-300 ease-in-out border-b-gray-800 border-b"
+  [class.transform]="true"
+  [class.-translate-y-full]=""
+>
+  <div class="flex items-center justify-between px-4 py-3">
+    <div class="flex items-center space-x-2">
+      <!-- Hamburger Menu -->
+      <button class="p-1">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
+        </svg>
+      </button>
+
+      <!-- Logo and Filter -->
+      <div class="flex items-center space-x-2">
+        <span class="text-lg font-bold">TrailBlog</span>
+        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          ></path>
+        </svg>
+      </div>
+    </div>
+
+    <div class="flex items-center">
+      <!-- Search Icon -->
+      <button class="flex items-center">
+        <mat-icon aria-hidden="false" aria-label="search icon" fontIcon="search"></mat-icon>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav
+  class="fixed bottom-0 right-0 left-0 border-t border-t-gray-800 z-50 transition-transform duration-300 ease-in-out"
+  [class.transform]="true"
+  [class.translate-y-full]=""
+>
+  <div class="flex justify-around items-center py-1">
+    <button
+      class="flex flex-col items-center justify-center space-y-1 p-2"
+      [class.text-secondary]="activeTab() === 'home'"
+      [class.text-gray-500]="activeTab() !== 'home'"
+    >
+      <mat-icon
+        class="w-5 h-5"
+        aria-hidden="false"
+        aria-label="home icon"
+        fontIcon="home"
+      ></mat-icon>
+      <span class="text-xs">Home</span>
+    </button>
+
+    <button
+      class="flex flex-col items-center justify-center space-y-1 p-2 text-gray-500"
+      [class.text-secondary]="activeTab() === 'explore'"
+      [class.text-gray-500]="activeTab() !== 'explore'"
+    >
+      <mat-icon
+        class="w-5 h-5"
+        aria-hidden="false"
+        aria-label="explore icon"
+        fontIcon="explore"
+      ></mat-icon>
+      <span class="text-xs">Explore</span>
+    </button>
+
+    <button
+      class="flex flex-col items-center justify-center space-y-1 p-2 text-gray-500"
+      [class.text-secondary]="activeTab() === 'create'"
+      [class.text-gray-500]="activeTab() !== 'create'"
+    >
+      <mat-icon
+        class="w-5 h-5"
+        aria-hidden="false"
+        aria-label="create icon"
+        fontIcon="add"
+      ></mat-icon>
+      <span class="text-xs">Create</span>
+    </button>
+
+    <button
+      class="flex flex-col items-center justify-center space-y-1 p-2 text-gray-500"
+      [class.text-secondary]="activeTab() === 'inbox'"
+      [class.text-gray-500]="activeTab() !== 'inbox'"
+    >
+      <mat-icon
+        class="w-5 h-5"
+        aria-hidden="false"
+        aria-label="notification icon"
+        fontIcon="chat_bubble"
+      ></mat-icon>
+
+      <span class="text-xs">Inbox</span>
+    </button>
+
+    <button
+      class="flex flex-col items-center justify-center space-y-1 p-2 text-gray-500"
+      [class.text-secondary]="activeTab() === 'account'"
+      [class.text-gray-500]="activeTab() !== 'account'"
+    >
+      <mat-icon
+        class="w-5 h-5"
+        aria-hidden="false"
+        aria-label="notification icon"
+        fontIcon="person_outline"
+      ></mat-icon>
+      <span class="text-xs">Profile</span>
+    </button>
+  </div>
+</nav>
