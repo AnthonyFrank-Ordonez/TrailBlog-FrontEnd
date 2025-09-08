@@ -1,8 +1,8 @@
 <!-- Top Header -->
 <header
-  class="fixed top-0 left-0 right-0 text-secondary z-50 transition-transform duration-300 ease-in-out border-b-gray-800 border-b"
+  class="fixed top-0 left-0 right-0 text-secondary z-50 transition-transform duration-300 ease-in-out border-b-gray-800 border-b md:hidden bg-black"
   [class.transform]="true"
-  [class.-translate-y-full]=""
+  [class.-translate-y-full]="hideHeader"
 >
   <div class="flex items-center justify-between px-4 py-3">
     <div class="flex items-center space-x-2">
@@ -35,16 +35,103 @@
     <div class="flex items-center">
       <!-- Search Icon -->
       <button class="flex items-center">
-        <mat-icon aria-hidden="false" aria-label="search icon" fontIcon="search"></mat-icon>
+        <svg class="h-5 w-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          ></path>
+        </svg>
       </button>
     </div>
   </div>
 </header>
 
+<header
+  class="hidden md:block sticky top-0 left-0 right-0 bg-primary border-b border-gray-800/70 z-50"
+>
+  <div class="flex items-center justify-between px-5 py-2 mx-auto">
+    <!-- Logo -->
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+        <span class="text-white font-bold text-sm">TB</span>
+      </div>
+      <span class="text-xl font-bold text-secondary">TrailBlog</span>
+    </div>
+
+    <!-- Center: Search Bar -->
+    <div class="flex-1 max-w-lg mx-8">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
+          </svg>
+        </div>
+
+        <input
+          type="text"
+          placeholder="Search TrailBlog"
+          class="block w-full pl-10 pr-3 py-2 rounded-full bg-gray-500/30 text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm transition-colors"
+        />
+      </div>
+    </div>
+
+    <!-- Right Section: Actions + Profile -->
+    <div class="flex items-center space-x-2">
+      <!-- Create Btn -->
+      <button
+        class="flex items-center space-x-1.5 px-2 py-2 text-white rounded-full text-sm font-medium transition-colors hover:bg-gray-800 cursor-pointer"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          ></path>
+        </svg>
+        <span>Create</span>
+      </button>
+
+      <!-- Notification -->
+      <button
+        class="p-2 text-white hover:bg-gray-800/90 rounded-full transition-colors cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"
+          />
+        </svg>
+      </button>
+
+      <!-- Profile -->
+      <div class="relative">
+        <button
+          class="flex items-center space-x-2 p-1 hover:bg-gray-800 rounded-full transition-colors cursor-pointer"
+        >
+          <div class="w-8 h-8 bg-secondary rounded-full"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
 <nav
-  class="fixed bottom-0 right-0 left-0 border-t border-t-gray-800 z-50 transition-transform duration-300 ease-in-out"
+  class="fixed bottom-0 right-0 left-0 bg-black border-t border-t-gray-800 z-50 transition-transform duration-300 ease-in-out md:hidden"
   [class.transform]="true"
-  [class.translate-y-full]=""
+  [class.translate-y-full]="hideBottomNav"
 >
   <div class="flex justify-around items-center py-1">
     <button
@@ -52,12 +139,24 @@
       [class.text-secondary]="activeTab() === 'home'"
       [class.text-gray-500]="activeTab() !== 'home'"
     >
-      <mat-icon
-        class="w-5 h-5"
-        aria-hidden="false"
-        aria-label="home icon"
-        fontIcon="home"
-      ></mat-icon>
+      <svg
+        class="w-6 h-6"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"
+        />
+      </svg>
+
       <span class="text-xs">Home</span>
     </button>
 
@@ -66,12 +165,23 @@
       [class.text-secondary]="activeTab() === 'explore'"
       [class.text-gray-500]="activeTab() !== 'explore'"
     >
-      <mat-icon
-        class="w-5 h-5"
-        aria-hidden="false"
-        aria-label="explore icon"
-        fontIcon="explore"
-      ></mat-icon>
+      <svg
+        class="w-6 h-6"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 -960 960 960"
+        fill="currentColor"
+      >
+        <path
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="m260-260 300-140 140-300-300 140zm220-180q-17 0-28.5-11.5T440-480t11.5-28.5T480-520t28.5 11.5T520-480t-11.5 28.5T480-440m0 360q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320"
+        />
+      </svg>
       <span class="text-xs">Explore</span>
     </button>
 
@@ -80,12 +190,22 @@
       [class.text-secondary]="activeTab() === 'create'"
       [class.text-gray-500]="activeTab() !== 'create'"
     >
-      <mat-icon
-        class="w-5 h-5"
-        aria-hidden="false"
-        aria-label="create icon"
-        fontIcon="add"
-      ></mat-icon>
+      <svg
+        class="w-6 h-6"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+      >
+        <path
+          stroke="currentColor"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
+        />
+      </svg>
       <span class="text-xs">Create</span>
     </button>
 
@@ -94,14 +214,20 @@
       [class.text-secondary]="activeTab() === 'inbox'"
       [class.text-gray-500]="activeTab() !== 'inbox'"
     >
-      <mat-icon
-        class="w-5 h-5"
-        aria-hidden="false"
-        aria-label="notification icon"
-        fontIcon="chat_bubble"
-      ></mat-icon>
+      <svg
+        class="w-6 h-6"
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"
+        />
+      </svg>
 
-      <span class="text-xs">Inbox</span>
+      <span class="text-xs">Notification</span>
     </button>
 
     <button
@@ -109,12 +235,18 @@
       [class.text-secondary]="activeTab() === 'account'"
       [class.text-gray-500]="activeTab() !== 'account'"
     >
-      <mat-icon
-        class="w-5 h-5"
-        aria-hidden="false"
-        aria-label="notification icon"
-        fontIcon="person_outline"
-      ></mat-icon>
+      <svg
+        class="w-6 h-6"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 -960 960 960"
+      >
+        <path
+          d="M234-276q51-39 114-61.5T480-360t132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800t-226.5 93.5T160-480q0 59 19.5 111t54.5 93m246-164q-59 0-99.5-40.5T340-580t40.5-99.5T480-720t99.5 40.5T620-580t-40.5 99.5T480-440m0 360q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280t-100 15.5-86 44.5q39 29 86 44.5T480-160m0-360q26 0 43-17t17-43-17-43-43-17-43 17-17 43 17 43 43 17m0 300"
+        />
+      </svg>
       <span class="text-xs">Profile</span>
     </button>
   </div>
