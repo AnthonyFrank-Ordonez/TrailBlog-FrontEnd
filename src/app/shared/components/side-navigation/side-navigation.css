@@ -1,11 +1,10 @@
-/* Hide scrollbar by default - always reserve space to prevent layout shift */
 .hide-scrollbar {
   scrollbar-width: 8px;
   -ms-overflow-style: none;
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  width: 8px; /* Reserve space but make invisible */
+  width: 10px;
   background: transparent;
 }
 
@@ -18,7 +17,6 @@
   border-radius: 4px;
 }
 
-/* Show scrollbar on hover or when scrolling - no layout shift */
 .scrollbar-container:hover .hide-scrollbar,
 .scrollbar-container.scrolling .hide-scrollbar {
   scrollbar-width: thin;
@@ -49,7 +47,6 @@
   background-color: rgba(156, 163, 175, 0.9);
 }
 
-/* Smooth transitions */
 .scrollbar-container {
   transition: all 0.2s ease;
 }

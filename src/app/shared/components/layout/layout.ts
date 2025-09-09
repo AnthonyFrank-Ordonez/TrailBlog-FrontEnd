@@ -5,7 +5,7 @@ import { SideNavigation } from '../side-navigation/side-navigation';
 
 @Component({
   selector: 'app-layout',
-  imports: [Header, SideNavigation],
+  imports: [Header, SideNavigation, RouterOutlet],
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
