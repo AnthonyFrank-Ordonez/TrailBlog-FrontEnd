@@ -1,8 +1,9 @@
 import { Component, HostListener, signal } from '@angular/core';
+import { ZardTooltipModule } from '../tooltip/tooltip';
 
 @Component({
   selector: 'app-header',
-  imports: [],
+  imports: [ZardTooltipModule],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
