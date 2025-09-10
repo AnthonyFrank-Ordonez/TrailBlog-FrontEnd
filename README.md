@@ -1,59 +1,101 @@
-# MyAngular20CSSPNPMTemplate
+# TrailBlog
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.0.
+A modern, Reddit-inspired blogging platform built with Angular 20+ where users can share their thoughts, experiences, and engage with a community of like-minded individuals.
 
-## Development server
+## Description
 
-To start a local development server, run:
+TrailBlog is a feature-rich blogging platform that combines the best aspects of Reddit's community-driven content with a modern, clean interface. Users can create, share, and discover blog posts while engaging with others through comments, likes, and discussions.
 
-```bash
-ng serve
+## Features
+
+- Modern and responsive user interface
+- Component-based architecture using Angular 20+
+- Custom UI components including:
+  - Dynamic header and footer
+  - Side navigation
+  - Dropdown menus
+  - Tooltips
+  - Recent view functionality
+- Shared utilities for styling and number formatting
+- Environment configuration for development and production
+
+## Technologies
+
+- **Frontend Framework:** Angular 20+
+- **Styling:**
+  - Tailwind CSS for utility-first styling
+  - Custom CSS modules
+- **Package Management:** pnpm
+- **Testing:** Karma for unit testing
+- **Other Tools:**
+  - TypeScript for type-safe code
+  - Angular CLI for project scaffolding and management
+
+## Getting Started
+
+1. **Prerequisites:**
+
+   - Node.js (Latest LTS version)
+   - pnpm package manager
+   - Angular CLI
+
+2. **Installation:**
+
+   ```bash
+   # Clone the repository
+   git clone https://github.com/AnthonyFrank-Ordonez/TrailBlog-FrontEnd.git
+
+   # Navigate to project directory
+   cd TrailBlog-FrontEnd
+
+   # Install dependencies
+   pnpm install
+   ```
+
+3. **Development Server:**
+
+   ```bash
+   ng serve
+   ```
+
+   Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+
+4. **Build for Production:**
+
+   ```bash
+   ng build
+   ```
+
+5. **Running Tests:**
+   ```bash
+   ng test
+   ```
+
+## Project Structure
+
 ```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+src/
+├── app/                    # Main application code
+│   ├── core/              # Core functionality
+│   │   ├── constants/     # Application constants
+│   │   ├── models/        # Data models and interfaces
+│   │   └── services/      # Core services
+│   ├── pages/             # Page components
+│   │   └── home/
+│   └── shared/            # Shared features
+│       ├── components/    # Reusable UI components
+│       ├── directives/    # Custom directives
+│       ├── pipes/         # Custom pipes
+│       └── utils/         # Utility functions
+├── environments/          # Environment configurations
+├── assets/               # Static assets
+└── styles/              # Global styles
 ```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
 ## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+For more information on using Angular, check out these resources:
+
+- [Angular Documentation](https://angular.dev)
+- [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
