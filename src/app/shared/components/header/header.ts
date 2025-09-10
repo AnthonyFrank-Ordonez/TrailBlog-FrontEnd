@@ -1,9 +1,8 @@
 import { Component, HostListener, signal } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-header',
-  imports: [MatIconModule],
+  imports: [],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
