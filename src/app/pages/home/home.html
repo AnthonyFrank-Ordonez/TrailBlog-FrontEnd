@@ -1,8 +1,8 @@
 <div class="px-16 py-5">
-  <div class="border-b border-b-white/20">
+  <div class="border-b border-b-white/20 hidden lg:block">
     <!-- Filtering of Post -->
     <button
-      class="mb-2 text-white font-light text-sm flex items-center space-x-1 rounded-full hover:bg-gray-800/50 px-3 py-1.5 cursor-pointer"
+      class="mb-2 text-white font-light text-sm items-center space-x-1 rounded-full hover:bg-gray-800/50 px-3 py-1.5 cursor-pointer flex"
       z-dropdown
       [zDropdownMenu]="sort"
     >
@@ -27,7 +27,7 @@
 
     <z-dropdown-menu-content
       #sort="zDropdownMenuContent"
-      class="bg-primary text-white border-white/30"
+      class="bg-primary text-white border-white/30 hidden lg:block"
     >
       <z-dropdown-menu-label>Sort By</z-dropdown-menu-label>
       <z-dropdown-menu-item class="hover:bg-gray-800/50" (click)="onSort()">

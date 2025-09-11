@@ -1,9 +1,21 @@
 import { Component, HostListener, signal } from '@angular/core';
 import { ZardTooltipModule } from '../tooltip/tooltip';
+import { ZardDropdownDirective } from '../dropdown/dropdown-trigger.directive';
+import { ZardDropdownMenuContentComponent } from '../dropdown/dropdown-menu-content.component';
+import { ZardDropdownMenuLabelComponent } from '../dropdown/dropdown-label.component';
+import { ZardDropdownMenuItemComponent } from '../dropdown/dropdown-item.component';
+import { ZardDividerComponent } from '../divider/divider.component';
 
 @Component({
   selector: 'app-header',
-  imports: [ZardTooltipModule],
+  imports: [
+    ZardTooltipModule,
+    ZardDropdownDirective,
+    ZardDropdownMenuContentComponent,
+    ZardDropdownMenuLabelComponent,
+    ZardDropdownMenuItemComponent,
+    ZardDividerComponent,
+  ],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
