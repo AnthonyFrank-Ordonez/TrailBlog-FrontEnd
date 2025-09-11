@@ -1,1 +1,96 @@
-<p>blog-card works!</p>
+<div class="rounded-lg px-4 py-3 hover:bg-gray-800/30 cursor-pointer">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center space-x-2 font-light text-sm">
+      <p class="text-gray-500 font-bold">{{ blog().communityName }}</p>
+      <p class="text-gray-500">{{ blog().date | date : 'mediumDate' }}</p>
+    </div>
+
+    <div class="flex items-center space-x-1">
+      <button
+        class="text-white text-xs px-3 py-1 bg-secondary rounded-full cursor-pointer hover:bg-orange-500 transition-colors duration-200"
+      >
+        Join
+      </button>
+
+      <button class="text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-three-dots"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-col text-white space-y-2">
+    <p class="font-medium tracking-wide text-lg">{{ blog().title }}</p>
+    <p class="font-light text-gray-500 text-sm line-clamp-2 break-words">{{ blog().content }}</p>
+  </div>
+
+  <div class="flex items-center mt-3 space-x-3">
+    <button
+      class="text-white flex items-center space-x-1 px-2 py-1 bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+    >
+      <svg
+        class="h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 -960 960 960"
+        fill="currentColor"
+      >
+        <path
+          d="M480-80q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880q43 0 83 8.5t77 24.5v90q-35-20-75.5-31.5T480-800q-133 0-226.5 93.5T160-480t93.5 226.5T480-160t226.5-93.5T800-480q0-32-6.5-62T776-600h86q9 29 13.5 58.5T880-480q0 83-31.5 156T763-197t-127 85.5T480-80m320-600v-80h-80v-80h80v-80h80v80h80v80h-80v80zM620-520q25 0 42.5-17.5T680-580t-17.5-42.5T620-640t-42.5 17.5T560-580t17.5 42.5T620-520m-280 0q25 0 42.5-17.5T400-580t-17.5-42.5T340-640t-42.5 17.5T280-580t17.5 42.5T340-520m140 260q68 0 123.5-38.5T684-400H276q25 63 80.5 101.5T480-260"
+        />
+      </svg>
+      <span>1</span>
+    </button>
+
+    <button
+      class="flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+    >
+      <svg
+        class="h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 -960 960 960"
+        fill="currentColor"
+      >
+        <path
+          d="M80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240zm126-240h594v-480H160v525zm-46 0v-480z"
+        />
+      </svg>
+
+      <span>1</span>
+    </button>
+
+    <button
+      class="flex items-center space-x-1.5 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+    >
+      <svg
+        class="h-5 w-5"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M13.735 1.694L15.178 1l8.029 6.328v1.388l-8.029 6.072-1.443-.694v-2.776h-.59c-4.06-.02-6.71.104-10.61 5.163l-1.534-.493a8.23 8.23 0 0 1 .271-2.255 11.026 11.026 0 0 1 3.92-6.793 11.339 11.339 0 0 1 7.502-2.547h1.04v-2.7zm1.804 7.917v2.776l5.676-4.281-5.648-4.545v2.664h-2.86A9.299 9.299 0 0 0 5.77 8.848a10.444 10.444 0 0 0-2.401 4.122c3.351-3.213 6.19-3.359 9.798-3.359h2.373zm-7.647 5.896a4.31 4.31 0 1 1 4.788 7.166 4.31 4.31 0 0 1-4.788-7.166zm.955 5.728a2.588 2.588 0 1 0 2.878-4.302 2.588 2.588 0 0 0-2.878 4.302z"
+        />
+      </svg>
+
+      <span>Share</span>
+    </button>
+  </div>
+</div>

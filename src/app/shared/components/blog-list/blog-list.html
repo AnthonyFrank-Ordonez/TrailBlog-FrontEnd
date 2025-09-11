@@ -1,1 +1,6 @@
-<p>blog-list works!</p>
+<div class="flex flex-col space-y-2 mt-3">
+  @for (blog of sampleBlogList(); track blog.id) {
+  <app-blog-card [blog]="blog" />
+  <z-divider zSpacing="sm" class="bg-white/30 mb-2.5"></z-divider>
+  }
+</div>
