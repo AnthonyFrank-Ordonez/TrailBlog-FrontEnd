@@ -7,6 +7,8 @@
         <a
           href="#"
           class="flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800/40"
+          [class.text-secondary]="activeTab() === 'home'"
+          [class.text-white]="activeTab() !== 'home'"
         >
           <svg
             class="w-6 h-6"
@@ -32,6 +34,8 @@
         <a
           href="#"
           class="flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800/40"
+          [class.text-secondary]="activeTab() === 'popular'"
+          [class.text-white]="activeTab() !== 'popular'"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -48,6 +52,8 @@
         <a
           href="#"
           class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-800/40 transition-colors"
+          [class.text-secondary]="activeTab() === 'explore'"
+          [class.text-white]="activeTab() !== 'explore'"
         >
           <svg
             class="w-5 h-5"
@@ -73,6 +79,8 @@
         <a
           href="#"
           class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-800/40 transition-colors"
+          [class.text-secondary]="activeTab() === 'about'"
+          [class.text-white]="activeTab() !== 'about'"
         >
           <svg
             class="w-5 h-5"
