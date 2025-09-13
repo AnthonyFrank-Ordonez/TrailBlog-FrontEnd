@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "My-Angular20-CSS-PNPM-Template": {
+    "Trailblog-Client": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -61,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "My-Angular20-CSS-PNPM-Template:build:production"
+              "buildTarget": "Trailblog-Client:build:production"
             },
             "development": {
-              "buildTarget": "My-Angular20-CSS-PNPM-Template:build:development"
+              "buildTarget": "Trailblog-Client:build:development"
             }
           },
           "defaultConfiguration": "development"
