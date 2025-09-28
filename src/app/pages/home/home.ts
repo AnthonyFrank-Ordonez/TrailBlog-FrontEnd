@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
 import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
 import { ZardDropdownMenuLabelComponent } from '@shared/components/dropdown/dropdown-label.component';
 import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropdown-item.component';
-import { BlogList } from '@shared/components/blog-list/blog-list';
+import { PostList } from '@shared/components/post-list/post-list';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +12,7 @@ import { BlogList } from '@shared/components/blog-list/blog-list';
     ZardDropdownMenuContentComponent,
     ZardDropdownMenuLabelComponent,
     ZardDropdownMenuItemComponent,
-    BlogList,
+    PostList,
   ],
   templateUrl: './home.html',
   styleUrl: './home.css',

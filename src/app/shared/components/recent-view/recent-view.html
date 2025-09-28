@@ -7,26 +7,26 @@
       </div>
 
       <div class="space-y-1 py-2">
-        @for (blog of sampleBlogList(); track blog.id) {
+        @for (post of posts(); track post.id) {
         <div class="px-3 py-2 w-full cursor-pointer hover:bg-gray-800/50 rounded-lg">
-          <div class="flex justify-between items-center">
-            <span class="text-gray-400 text-sm">{{ blog.communityName }}</span>
-            <span class="text-gray-500 text-xs">{{ blog.date | date : 'mediumDate' }}</span>
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-gray-400 text-xs">{{ post.communityName }}</span>
+            <span class="text-gray-500 text-xs">{{ post.createdAt | date : 'mediumDate' }}</span>
           </div>
 
-          <p class="font-light">{{ blog.title }}</p>
+          <p class="font-light">{{ post.title }}</p>
           <p class="text-xs font-extralight text-gray-500 line-clamp-2 break-words">
-            {{ blog.content }}
+            {{ post.content }}
           </p>
 
           <div class="flex items-center text-xs space-x-2 py-1 mt-3 text-gray-400">
             <div class="flex items-center space-x-1">
-              <span>{{ blog.totalLikes }}</span>
+              <span>{{ post.totalLike }}</span>
               <p>Likes</p>
             </div>
 
             <div class="flex items-center space-x-1">
-              <span>{{ blog.totalComments }}</span>
+              <span>{{ post.totalComment }}</span>
               <p>comments</p>
             </div>
           </div>

@@ -1,21 +1,21 @@
 import { DatePipe } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { Blog } from 'src/app/core/models/interface/blogs';
-import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
 import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropdown-item.component';
+import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
 import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
+import { Post } from 'src/app/core/models/interface/posts';
 
 @Component({
-  selector: 'app-blog-card',
+  selector: 'app-post-card',
   imports: [
     DatePipe,
     ZardDropdownMenuContentComponent,
     ZardDropdownMenuItemComponent,
     ZardDropdownDirective,
   ],
-  templateUrl: './blog-card.html',
-  styleUrl: './blog-card.css',
+  templateUrl: './post-card.html',
+  styleUrl: './post-card.css',
 })
-export class BlogCard {
-  blog = input.required<Blog>();
+export class PostCard {
+  post = input.required<Post>();
 }

@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Blog } from 'src/app/core/models/interface/blogs';
 import { ZardDividerComponent } from '../divider/divider.component';
 import { DatePipe } from '@angular/common';
+import { PostService } from 'src/app/core/services/post.service';
 
 @Component({
   selector: 'app-recent-view',
@@ -9,7 +10,15 @@ import { DatePipe } from '@angular/common';
   templateUrl: './recent-view.html',
   styleUrl: './recent-view.css',
 })
-export class RecentView {
+export class RecentView implements OnInit {
+  private readonly postService = inject(PostService);
+
+  posts = this.postService.posts;
+
+  ngOnInit(): void {
+    this.postService.loadAllPosts();
+  }
+
   sampleBlogList = signal<Blog[]>([
     {
       id: 'b1e7c8a2-1f3d-4e7a-9c2b-1a2e3f4b5c6d',
