@@ -1,10 +1,12 @@
-import { Component, HostListener, signal } from '@angular/core';
+import { Component, HostListener, inject, OnDestroy, signal } from '@angular/core';
 import { ZardTooltipModule } from '../tooltip/tooltip';
 import { ZardDropdownDirective } from '../dropdown/dropdown-trigger.directive';
 import { ZardDropdownMenuContentComponent } from '../dropdown/dropdown-menu-content.component';
 import { ZardDropdownMenuLabelComponent } from '../dropdown/dropdown-label.component';
 import { ZardDropdownMenuItemComponent } from '../dropdown/dropdown-item.component';
 import { ZardDividerComponent } from '../divider/divider.component';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -15,15 +17,20 @@ import { ZardDividerComponent } from '../divider/divider.component';
     ZardDropdownMenuLabelComponent,
     ZardDropdownMenuItemComponent,
     ZardDividerComponent,
+    RouterLink,
   ],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
-export class Header {
+export class Header implements OnDestroy {
+  private authService = inject(AuthService);
+
+  isAuthenticated = this.authService.isAuthenticated;
+
   activeTab = signal<string>('home');
   hideHeader = false;
   hideBottomNav = false;
-  scrollTimeout: any;
+  scrollTimeout: ReturnType<typeof setTimeout> | null = null;
   lastScrollTop = 0;
 
   @HostListener('window:scroll')
@@ -53,5 +60,15 @@ export class Header {
       this.hideHeader = false;
       this.hideBottomNav = false;
     }, 1000); // Show after 1 second of no scrolling
+  }
+
+  ngOnDestroy(): void {
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
+  }
+
+  onSignOut(): void {
+    this.authService.signOut();
   }
 }

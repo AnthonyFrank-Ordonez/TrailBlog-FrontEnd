@@ -211,6 +211,7 @@
 
     <!-- Right Section: Actions + Profile -->
     <div class="flex items-center space-x-2">
+      @if (isAuthenticated()) {
       <!-- Create Btn -->
       <button
         class="flex items-center space-x-1.5 px-2 py-2 text-white rounded-full text-sm font-medium transition-colors hover:bg-gray-800/40 cursor-pointer"
@@ -335,7 +336,10 @@
 
           <z-divider zSpacing="sm" class="bg-white/20"></z-divider>
 
-          <z-dropdown-menu-item class="hover:bg-gray-800/50 flex items-center">
+          <z-dropdown-menu-item
+            (click)="onSignOut()"
+            class="hover:bg-gray-800/50 flex items-center"
+          >
             <svg
               width="15"
               height="15"
@@ -355,6 +359,15 @@
           </z-dropdown-menu-item>
         </z-dropdown-menu-content>
       </div>
+      } @else {
+      <!-- Login Button -->
+      <button
+        routerLink="/login"
+        class="bg-secondary px-5 py-2 rounded-full text-xs font-medium text-white tracking-wide cursor-pointer transition-colors duration-300 hover:bg-secondary/80"
+      >
+        Login
+      </button>
+      }
     </div>
   </div>
 </header>
