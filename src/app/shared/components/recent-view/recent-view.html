@@ -7,7 +7,35 @@
       </div>
 
       <div class="space-y-1 py-2">
-        @for (post of posts(); track post.id) {
+        @if (isLoading()) { @for (skeleton of skeletonArray; track $index) {
+        <div class="px-3 py-2 w-full cursor-pointer hover:bg-gray-800/50 rounded-lg">
+          <div class="animate-pulse">
+            <div class="flex justify-between items-center mb-2">
+              <div class="h-3 bg-gray-600 rounded w-20"></div>
+              <div class="h-3 bg-gray-600 rounded w-16"></div>
+            </div>
+
+            <div class="h-4 bg-gray-600 rounded w-3/4 mb-2"></div>
+            <div class="space-y-1 mb-3">
+              <div class="h-3 bg-gray-600 rounded w-full"></div>
+              <div class="h-3 bg-gray-600 rounded w-2/3"></div>
+            </div>
+
+            <div class="flex items-center space-x-2 py-1 mt-3">
+              <div class="flex items-center space-x-1">
+                <div class="h-3 bg-gray-600 rounded w-6"></div>
+                <div class="h-3 bg-gray-600 rounded w-8"></div>
+              </div>
+
+              <div class="flex items-center space-x-1">
+                <div class="h-3 bg-gray-600 rounded w-6"></div>
+                <div class="h-3 bg-gray-600 rounded w-12"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <z-divider class="bg-white/20"></z-divider>
+        } } @else if (!isLoading) { @for (post of posts(); track post.id) {
         <div class="px-3 py-2 w-full cursor-pointer hover:bg-gray-800/50 rounded-lg">
           <div class="flex justify-between items-center mb-2">
             <span class="text-gray-400 text-xs">{{ post.communityName }}</span>
@@ -32,7 +60,7 @@
           </div>
         </div>
         <z-divider class="bg-white/20"></z-divider>
-        }
+        } }
       </div>
     </div>
   </div>
