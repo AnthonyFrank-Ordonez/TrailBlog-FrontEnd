@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { PostCard } from './post-card/post-card';
 import { ZardDividerComponent } from '../divider/divider.component';
 import { PostService } from 'src/app/core/services/post.service';
@@ -12,4 +12,7 @@ import { PostService } from 'src/app/core/services/post.service';
 export class PostList {
   private readonly postService = inject(PostService);
   posts = this.postService.posts;
+
+  isLoading = this.postService.isPostLoading;
+  skeletonArray = Array(5).fill(0);
 }
