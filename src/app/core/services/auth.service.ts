@@ -2,16 +2,15 @@ import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { User } from '../models/interface/user';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
-import { Credentials, LoginResponse } from '../models/interface/login';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { AuthResponse, Credentials, LoginResponse, RegisterData } from '../models/interface/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private router = inject(Router);
 
   env = environment;
 
@@ -61,14 +60,34 @@ export class AuthService {
     );
   }
 
-  async signOut(): Promise<void> {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    this.#tokenSignal.set(null);
-    this.#userSignal.set(null);
-    this.#refreshTokenSignal.set(null);
+  register(userData: RegisterData): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.env.apiRoot}/auth/register`, userData).pipe(
+      tap(() => console.log('Signing up user, please wait...')),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+      tap((response) => {
+        this.#tokenSignal.set(response.accessToken);
+        this.#refreshTokenSignal.set(response.refreshToken);
+        this.#userSignal.set(response.user);
+      })
+    );
+  }
 
-    await this.router.navigateByUrl('/login');
+  logout(): Observable<void | object> {
+    return this.http.post(`${this.env.apiRoot}/auth/logout`, null).pipe(
+      tap(() => console.log('Signing out user...')),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+      tap(() => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        this.#tokenSignal.set(null);
+        this.#userSignal.set(null);
+        this.#refreshTokenSignal.set(null);
+      })
+    );
   }
 
   private initializedTokens(): void {

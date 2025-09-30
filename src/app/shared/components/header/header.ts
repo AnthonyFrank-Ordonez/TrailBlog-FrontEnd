@@ -6,7 +6,10 @@ import { ZardDropdownMenuLabelComponent } from '../dropdown/dropdown-label.compo
 import { ZardDropdownMenuItemComponent } from '../dropdown/dropdown-item.component';
 import { ZardDividerComponent } from '../divider/divider.component';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MessageService } from 'src/app/core/services/message.service';
+import { ApiError } from 'src/app/core/models/interface/api-error';
 
 @Component({
   selector: 'app-header',
@@ -24,6 +27,8 @@ import { RouterLink } from '@angular/router';
 })
 export class Header implements OnDestroy {
   private authService = inject(AuthService);
+  private router = inject(Router);
+  private messageService = inject(MessageService);
 
   isAuthenticated = this.authService.isAuthenticated;
 
@@ -68,7 +73,23 @@ export class Header implements OnDestroy {
     }
   }
 
-  onSignOut(): void {
-    this.authService.signOut();
+  async onSignOut(): Promise<void> {
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: (error: HttpErrorResponse) => {
+        if (error.error instanceof ErrorEvent) {
+          this.messageService.showMessage('error', error.error.message);
+          console.error(error.error.message);
+        } else if (error.error && typeof error.error === 'object') {
+          const apiError = error.error as ApiError;
+          const errorMessage = apiError.detail ?? error.message;
+
+          this.messageService.showMessage('error', errorMessage);
+          console.error('An error occured: ', apiError);
+        }
+      },
+    });
   }
 }

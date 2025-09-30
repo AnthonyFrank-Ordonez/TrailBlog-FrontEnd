@@ -35,10 +35,14 @@ export class PostService {
             console.error(error.error.message);
           } else if (error.error && typeof error.error === 'object') {
             const apiError = error.error as ApiError;
-            this.messageService.showMessage('error', apiError.detail);
+            const errorMessage = apiError.detail ?? error.message;
+
+            this.messageService.showMessage('error', errorMessage);
             console.error('An error occured: ', apiError);
+          } else {
+            console.error('Http error occured: ', error);
           }
-          console.error('Http error occured: ', error);
+
           return throwError(() => error);
         }),
         finalize(() => {

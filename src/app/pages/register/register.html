@@ -1,1 +1,146 @@
-<p>register works!</p>
+<div class="p-5 flex items-center justify-center mx-auto max-w-md h-screen">
+  <div class="border border-gray-600 w-full rounded-xl p-7 flex flex-col justify-center">
+    <div class="flex flex-col items-center space-y-2 mb-8">
+      <p class="text-secondary font-semibold text-[1.7rem] lg:text-3xl tracking-wide">
+        Welcome to Trail
+      </p>
+      <span
+        class="text-white/30 font-light tracking-wider text-center max-w-[18rem] lg:max-w-xs text-xs lg:text-sm"
+        >Sign up to post, comment, and explore the latest on Trail.</span
+      >
+    </div>
+
+    <form [formGroup]="signupForm" class="flex flex-col w-full max-w-90 mx-auto mb-3">
+      <!-- Username -->
+      <div
+        class="flex flex-col w-full bg-gray-700/10 border border-gray-600/30 px-3.5 py-1 rounded-md gap-1 mb-3"
+      >
+        <div class="flex items-center space-x-2">
+          <label for="username" class="text-gray-500 font-light text-sm form-label">Username</label>
+          @if (usernameErrors) {
+          <span class="text-sm text-red-700 font-light">Username is Invalid</span>
+          }
+        </div>
+        <input
+          id="username"
+          formControlName="username"
+          type="text"
+          class="form-control text-white focus:outline-none focus:border-transparent text-sm font-light"
+        />
+      </div>
+
+      <!-- Email -->
+      <div
+        class="flex flex-col w-full bg-gray-700/10 border border-gray-600/30 px-3.5 py-1 rounded-md gap-1 mb-3"
+      >
+        <div class="flex items-center space-x-2">
+          <label for="email" class="text-gray-500 font-light text-sm form-label">Email</label>
+          @if (emailErrors) {
+          <span class="text-sm text-red-700 font-light">Email is Invalid</span>
+          }
+        </div>
+        <input
+          id="email"
+          formControlName="email"
+          type="text"
+          class="form-control text-white focus:outline-none focus:border-transparent text-sm font-light"
+        />
+      </div>
+
+      <!-- Password -->
+      <div
+        class="flex flex-col w-full bg-gray-700/10 border border-gray-600/30 px-3.5 py-1 rounded-md gap-1 mb-3"
+      >
+        <div class="flex items-center space-x-2">
+          <label for="password" class="text-gray-500 font-light text-sm form-label">Password</label>
+          @if (passwordErrors) {
+          <span class="text-sm text-red-700 font-light">Password is Invalid</span>
+          }
+        </div>
+        <input
+          id="password"
+          formControlName="password"
+          type="password"
+          class="form-control text-white focus:outline-none focus:border-transparent text-sm font-light"
+        />
+      </div>
+
+      <!-- Confirm Password -->
+      <div
+        class="flex flex-col w-full bg-gray-700/10 border border-gray-600/30 px-3.5 py-1 rounded-md gap-1 mb-8"
+      >
+        <div class="flex items-center space-x-2">
+          <label for="confirmPass" class="text-gray-500 font-light text-sm form-label"
+            >Cofirm Password</label
+          >
+          @if (passwordMismatchError) {
+          <span class="text-sm text-red-700 font-light">Password is not match</span>
+          }
+        </div>
+        <input
+          id="confirmPass"
+          formControlName="confirmPassword"
+          type="password"
+          class="form-control text-white focus:outline-none focus:border-transparent text-sm font-light"
+        />
+      </div>
+
+      <button
+        type="button"
+        [disabled]="signupForm.invalid"
+        (click)="onSignUp()"
+        class="w-full rounded-lg bg-secondary text-white py-3.5 tracking-wider text-sm cursor-pointer transition-colors duration-300 hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent disabled:cursor-not-allowed"
+      >
+        @if (this.isLoading()) {
+        <div class="flex items-center justify-center py-2.5">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="w-8 h-8 absolute">
+            <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="40" cy="100">
+              <animate
+                attributeName="opacity"
+                calcMode="spline"
+                dur="2"
+                values="1;0;1;"
+                keySplines=".5 0 .5 1;.5 0 .5 1"
+                repeatCount="indefinite"
+                begin="-.4"
+              ></animate>
+            </circle>
+            <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="100" cy="100">
+              <animate
+                attributeName="opacity"
+                calcMode="spline"
+                dur="2"
+                values="1;0;1;"
+                keySplines=".5 0 .5 1;.5 0 .5 1"
+                repeatCount="indefinite"
+                begin="-.2"
+              ></animate>
+            </circle>
+            <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="160" cy="100">
+              <animate
+                attributeName="opacity"
+                calcMode="spline"
+                dur="2"
+                values="1;0;1;"
+                keySplines=".5 0 .5 1;.5 0 .5 1"
+                repeatCount="indefinite"
+                begin="0"
+              ></animate>
+            </circle>
+          </svg>
+        </div>
+        } @else { Sign Up }
+      </button>
+    </form>
+
+    <div class="text-white flex space-x-1.5 items-center justify-center">
+      <p class="font-light text-sm text-gray-400">Already have an Account?</p>
+      <p
+        class="text-sm text-secondary cursor-pointer hover:underline transition duration-300"
+        routerLink="/login"
+      >
+        Sign In
+      </p>
+    </div>
+  </div>
+</div>

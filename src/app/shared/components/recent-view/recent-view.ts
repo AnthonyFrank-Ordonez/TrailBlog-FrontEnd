@@ -10,15 +10,11 @@ import { PostService } from 'src/app/core/services/post.service';
   templateUrl: './recent-view.html',
   styleUrl: './recent-view.css',
 })
-export class RecentView implements OnInit {
+export class RecentView {
   private readonly postService = inject(PostService);
 
   posts = this.postService.posts;
   isLoading = this.postService.isPostLoading;
 
   skeletonArray = Array(10).fill(0);
-
-  ngOnInit(): void {
-    this.postService.loadAllPosts();
-  }
 }

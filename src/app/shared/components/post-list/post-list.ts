@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { PostCard } from './post-card/post-card';
 import { ZardDividerComponent } from '../divider/divider.component';
 import { PostService } from 'src/app/core/services/post.service';
@@ -9,10 +9,14 @@ import { PostService } from 'src/app/core/services/post.service';
   templateUrl: './post-list.html',
   styleUrl: './post-list.css',
 })
-export class PostList {
+export class PostList implements OnInit {
   private readonly postService = inject(PostService);
   posts = this.postService.posts;
 
   isLoading = this.postService.isPostLoading;
   skeletonArray = Array(5).fill(0);
+
+  ngOnInit(): void {
+    this.postService.loadAllPosts();
+  }
 }

@@ -2,10 +2,10 @@ import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { Credentials } from 'src/app/core/models/interface/login';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiError } from 'src/app/core/models/interface/api-error';
 import { MessageService } from 'src/app/core/services/message.service';
+import { Credentials } from 'src/app/core/models/interface/auth';
 
 @Component({
   selector: 'app-login',
@@ -52,7 +52,9 @@ export class Login {
           console.error(error.error.message);
         } else if (error.error && typeof error.error === 'object') {
           const apiError = error.error as ApiError;
-          this.messageService.showMessage('error', apiError.detail);
+          const errorMessage = apiError.detail ?? error.message;
+
+          this.messageService.showMessage('error', errorMessage);
           console.error('An error occured: ', apiError);
         }
 
