@@ -30,6 +30,8 @@
     "@angular/forms": "^20.2.0",
     "@angular/platform-browser": "^20.2.0",
     "@angular/router": "^20.2.0",
+    "@ngneat/overview": "6.1.1",
+    "@ngxpert/hot-toast": "5.1.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-static": "^0.543.0",

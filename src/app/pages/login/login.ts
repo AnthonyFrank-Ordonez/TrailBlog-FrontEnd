@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { Credentials } from 'src/app/core/models/interface/login';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiError } from 'src/app/core/models/interface/api-error';
+import { MessageService } from 'src/app/core/services/message.service';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ export class Login {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private messageService = inject(MessageService);
 
   isLoading = signal<boolean>(false);
   errorMessage = signal<string>('');
@@ -49,16 +51,22 @@ export class Login {
       error: (error: HttpErrorResponse) => {
         if (error.error instanceof ErrorEvent) {
           this.errorMessage.set(error.error.message);
+          this.showMessage();
           console.error(error.error.message);
         } else if (error.error && typeof error.error === 'object') {
           const apiError = error.error as ApiError;
           this.errorMessage.set(apiError.detail);
+          this.showMessage();
           console.error('An error occured: ', apiError);
         }
 
         this.isLoading.set(false);
       },
     });
+  }
+
+  showMessage(): void {
+    this.messageService.showMessage('error', this.errorMessage());
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {
