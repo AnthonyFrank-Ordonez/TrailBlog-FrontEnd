@@ -13,6 +13,6 @@ export class PostList {
   private readonly postService = inject(PostService);
   posts = this.postService.posts;
 
-  isLoading = signal(true);
+  isLoading = this.postService.isPostLoading;
   skeletonArray = Array(5).fill(0);
 }
