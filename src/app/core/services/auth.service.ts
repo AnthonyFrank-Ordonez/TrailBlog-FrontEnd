@@ -27,6 +27,8 @@ export class AuthService {
   isAdmin = computed(() => this.#userSignal()?.roles.includes('Admin'));
 
   constructor() {
+    this.initializedTokens();
+
     effect(() => {
       const token = this.#tokenSignal();
       const refreshToken = this.#refreshTokenSignal();
@@ -67,5 +69,18 @@ export class AuthService {
     this.#refreshTokenSignal.set(null);
 
     await this.router.navigateByUrl('/login');
+  }
+
+  private initializedTokens(): void {
+    const storedToken = localStorage.getItem('accessToken');
+    const storedRefreshToken = localStorage.getItem('refreshToken');
+
+    if (storedToken) {
+      this.#tokenSignal.set(storedToken);
+    }
+
+    if (storedRefreshToken) {
+      this.#refreshTokenSignal.set(storedRefreshToken);
+    }
   }
 }

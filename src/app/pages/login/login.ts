@@ -20,7 +20,6 @@ export class Login {
   private messageService = inject(MessageService);
 
   isLoading = signal<boolean>(false);
-  errorMessage = signal<string>('');
 
   loginForm: FormGroup = this.createForm();
 
@@ -38,7 +37,6 @@ export class Login {
     }
 
     this.isLoading.set(true);
-    this.errorMessage.set('');
 
     const credentials: Credentials = this.loginForm.value;
 
@@ -50,23 +48,17 @@ export class Login {
       },
       error: (error: HttpErrorResponse) => {
         if (error.error instanceof ErrorEvent) {
-          this.errorMessage.set(error.error.message);
-          this.showMessage();
+          this.messageService.showMessage('error', error.error.message);
           console.error(error.error.message);
         } else if (error.error && typeof error.error === 'object') {
           const apiError = error.error as ApiError;
-          this.errorMessage.set(apiError.detail);
-          this.showMessage();
+          this.messageService.showMessage('error', apiError.detail);
           console.error('An error occured: ', apiError);
         }
 
         this.isLoading.set(false);
       },
     });
-  }
-
-  showMessage(): void {
-    this.messageService.showMessage('error', this.errorMessage());
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {
