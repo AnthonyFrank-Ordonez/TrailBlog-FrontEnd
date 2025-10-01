@@ -117,7 +117,7 @@
           </svg>
         </button>
 
-        @if (isCustomFeedExpanded) {
+        @if (isCustomFeedExpanded && isAuthenticated()) {
         <a
           href="#"
           class="flex items-center space-x-3 px-5 py-2.5 rounded-lg hover:bg-gray-800/40 transition-colors"
@@ -142,6 +142,23 @@
           </svg>
           <span class="text-sm tracking-wide font-light">Create Custom Feed</span>
         </a>
+        } @else if (isCustomFeedExpanded && !isAuthenticated()) {
+        <div
+          class="mt-2 space-y-1 px-5 py-2.5"
+          animate.enter="slide-enter"
+          animate.leave="slide-leave"
+        >
+          <p class="text-gray-500 text-sm">
+            Please
+            <button
+              routerLink="/login"
+              class="text-secondary hover:underline font-medium inline px-0 py-0 bg-transparent border-none cursor-pointer"
+            >
+              log in
+            </button>
+            first to create custom feed for yourself
+          </p>
+        </div>
         }
       </div>
 
@@ -164,7 +181,7 @@
           </svg>
         </button>
 
-        @if (isCommunitiesExpanded) {
+        @if (isCommunitiesExpanded && isAuthenticated()) {
         <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
           <!-- Create -->
           <button
@@ -241,7 +258,23 @@
             <span class="text-gray-300 group-hover:text-white">r/Programming</span>
           </a>
         </div>
-
+        } @else if (isCommunitiesExpanded && !isAuthenticated()) {
+        <div
+          class="mt-2 space-y-1 px-5 py-2.5"
+          animate.enter="slide-enter"
+          animate.leave="slide-leave"
+        >
+          <p class="text-gray-500 text-sm">
+            Please
+            <button
+              routerLink="/login"
+              class="text-secondary hover:underline font-medium inline px-0 py-0 bg-transparent border-none cursor-pointer"
+            >
+              log in
+            </button>
+            first to create, view, and manage communities.
+          </p>
+        </div>
         }
       </div>
 
