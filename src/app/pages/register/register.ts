@@ -11,11 +11,15 @@ import { ApiError } from 'src/app/core/models/interface/api-error';
 import { RegisterData } from 'src/app/core/models/interface/auth';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { MessageService } from 'src/app/core/services/message.service';
+import {
+  ZardPopoverDirective,
+  ZardPopoverComponent,
+} from '@shared/components/popover/popover.component';
 // import { Register } from 'src/app/core/models/interface/auth';
 
 @Component({
   selector: 'app-register',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, ZardPopoverDirective, ZardPopoverComponent],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
