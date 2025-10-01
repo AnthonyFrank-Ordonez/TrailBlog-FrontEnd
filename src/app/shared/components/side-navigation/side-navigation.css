@@ -54,7 +54,7 @@
 }
 
 .slide-enter {
-  animation: slideIn 0.2s ease-in, forwards;
+  animation: slideIn 0.3s ease-in, forwards;
   overflow: hidden;
 }
 

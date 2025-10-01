@@ -10,3 +10,9 @@ export interface User {
   updatedAt: Date;
   revokedAt: Date | null;
 }
+
+export interface UserSettings {
+  communityExpanded: boolean;
+  resourcesExpanded: boolean;
+  customFeedExpanded: boolean;
+}

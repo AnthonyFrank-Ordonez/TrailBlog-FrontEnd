@@ -101,11 +101,14 @@
       <!-- Custom Feed -->
       <div class="mt-6 border-t border-t-white/10 border-b border-b-white/10 py-3">
         <button
+          (click)="toggleCustomFeed()"
           class="flex items-center justify-between w-full px-3 py-2 text-gray-500 transition-colors cursor-pointer hover:bg-gray-800/40 rounded-lg"
         >
           <span class="tracking-widest uppercase text-sm">Custom Feed</span>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
+              class="w-4 h-4 transition-transform duration-300 ease-in-out"
+              [attr.transform]="isCustomFeedExpanded ? 'rotate(180 12 12)' : ''"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
@@ -114,9 +117,12 @@
           </svg>
         </button>
 
+        @if (isCustomFeedExpanded) {
         <a
           href="#"
           class="flex items-center space-x-3 px-5 py-2.5 rounded-lg hover:bg-gray-800/40 transition-colors"
+          animate.enter="slide-enter"
+          animate.leave="slide-leave"
         >
           <svg
             class="w-5 h-5"
@@ -136,6 +142,7 @@
           </svg>
           <span class="text-sm tracking-wide font-light">Create Custom Feed</span>
         </a>
+        }
       </div>
 
       <!-- Communities Section -->
@@ -148,7 +155,7 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               class="w-4 h-4 transition-transform duration-300 ease-in-out"
-              [attr.transform]="isCommunitiesExpanded() ? 'rotate(180 12 12)' : ''"
+              [attr.transform]="isCommunitiesExpanded ? 'rotate(180 12 12)' : ''"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
@@ -157,7 +164,7 @@
           </svg>
         </button>
 
-        @if (isCommunitiesExpanded()) {
+        @if (isCommunitiesExpanded) {
         <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
           <!-- Create -->
           <button
@@ -241,11 +248,14 @@
       <!-- Resources -->
       <div class="py-3">
         <button
+          (click)="toggleResources()"
           class="flex items-center justify-between w-full px-3 py-2 text-gray-500 transition-colors cursor-pointer hover:bg-gray-800/40 rounded-lg"
         >
           <span class="tracking-widest uppercase text-sm">Resources</span>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
+              class="w-4 h-4 transition-transform duration-300 ease-in-out"
+              [attr.transform]="isResourcesExpanded ? 'rotate(180 12 12)' : ''"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
@@ -254,7 +264,8 @@
           </svg>
         </button>
 
-        <div class="mt-2 space-y-1">
+        @if (isResourcesExpanded) {
+        <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
           <!-- News and Updates -->
           <button
             href="#"
@@ -337,6 +348,8 @@
             <span class="text-gray-300 group-hover:text-white">FAQS</span>
           </a>
         </div>
+
+        }
       </div>
     </div>
   </div>

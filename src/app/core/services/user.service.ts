@@ -1,10 +1,7 @@
-import { Injectable, OnInit } from '@angular/core';
+import { effect, Injectable, OnInit, signal } from '@angular/core';
+import { UserSettings } from '../models/interface/user';
 
 @Injectable({
   providedIn: 'root',
 })
-export class UserService implements OnInit {
-  ngOnInit(): void {
-    //
-  }
-}
+export class UserService {}

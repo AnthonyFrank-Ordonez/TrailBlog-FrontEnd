@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { UserSettingsService } from 'src/app/core/services/user-settings.service';
 
 @Component({
   selector: 'app-side-navigation',
@@ -8,10 +9,37 @@ import { Component, signal } from '@angular/core';
   animations: [],
 })
 export class SideNavigation {
+  private userSettingsService = inject(UserSettingsService);
   activeTab = signal<string>('home');
-  isCommunitiesExpanded = signal<boolean>(true);
+  currentSettings = this.userSettingsService.userSettings;
 
-  toggleCommunities() {
-    this.isCommunitiesExpanded.update((value) => !value);
+  toggleCommunities(): void {
+    this.userSettingsService.updateUserSettings({
+      communityExpanded: !this.currentSettings()?.communityExpanded,
+    });
+  }
+
+  toggleResources(): void {
+    this.userSettingsService.updateUserSettings({
+      resourcesExpanded: !this.currentSettings()?.resourcesExpanded,
+    });
+  }
+
+  toggleCustomFeed(): void {
+    this.userSettingsService.updateUserSettings({
+      customFeedExpanded: !this.currentSettings()?.customFeedExpanded,
+    });
+  }
+
+  get isCommunitiesExpanded(): boolean | undefined {
+    return this.currentSettings()?.communityExpanded;
+  }
+
+  get isResourcesExpanded(): boolean | undefined {
+    return this.currentSettings()?.resourcesExpanded;
+  }
+
+  get isCustomFeedExpanded(): boolean | undefined {
+    return this.currentSettings()?.customFeedExpanded;
   }
 }
