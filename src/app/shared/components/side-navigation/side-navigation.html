@@ -229,6 +229,7 @@
             <span class="text-sm tracking-wide font-light">Manage Community</span>
           </button>
 
+          @for (community of userCommunities(); track community.id) {
           <a
             href="#"
             class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
@@ -236,27 +237,12 @@
             <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
               <span class="text-white text-xs font-bold">C</span>
             </div>
-            <span class="text-gray-300 group-hover:text-white">r/ChatGPT</span>
+            <span class="text-gray-300 group-hover:text-white 2xl:text-[15.5px]">{{
+              community.communityName
+            }}</span>
           </a>
 
-          <a
-            href="#"
-            class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
-          >
-            <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-              <span class="text-white text-xs font-bold">D</span>
-            </div>
-            <span class="text-gray-300 group-hover:text-white">r/discordapp</span>
-          </a>
-          <a
-            href="#"
-            class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
-          >
-            <div class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-              <span class="text-white text-xs font-bold">P</span>
-            </div>
-            <span class="text-gray-300 group-hover:text-white">r/Programming</span>
-          </a>
+          }
         </div>
         } @else if (isCommunitiesExpanded && !isAuthenticated()) {
         <div

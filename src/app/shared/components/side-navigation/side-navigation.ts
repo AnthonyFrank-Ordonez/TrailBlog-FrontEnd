@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { CommunityService } from 'src/app/core/services/community.service';
 import { UserSettingsService } from 'src/app/core/services/user-settings.service';
 
 @Component({
@@ -13,10 +14,12 @@ import { UserSettingsService } from 'src/app/core/services/user-settings.service
 export class SideNavigation {
   private userSettingsService = inject(UserSettingsService);
   private authService = inject(AuthService);
+  private communityService = inject(CommunityService);
 
   activeTab = signal<string>('home');
   currentSettings = this.userSettingsService.userSettings;
   isAuthenticated = this.authService.isAuthenticated;
+  userCommunities = this.communityService.userCommunities;
 
   toggleCommunities(): void {
     this.userSettingsService.updateUserSettings({

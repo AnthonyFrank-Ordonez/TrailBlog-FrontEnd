@@ -8,9 +8,14 @@
     <div class="flex items-center space-x-1">
       <!-- Join btn -->
       <button
-        class="text-white text-xs px-3 py-1 bg-secondary rounded-full cursor-pointer hover:bg-orange-500 transition-colors duration-200"
+        class="text-xs px-3 py-1 rounded-full cursor-pointer transition-colors duration-200"
+        [ngClass]="
+          isJoined
+            ? 'text-gray-500 bg-transparent border border-gray-500 hover:bg-white/5'
+            : 'bg-secondary text-white hover:bg-orange-500'
+        "
       >
-        Join
+        {{ isJoined ? 'Joined' : 'Join' }}
       </button>
 
       <!-- Three Dots -->

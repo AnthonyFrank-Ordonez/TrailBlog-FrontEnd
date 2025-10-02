@@ -1,36 +1,38 @@
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal, untracked } from '@angular/core';
 import { User } from '../models/interface/user';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { AuthResponse, Credentials, LoginResponse, RegisterData } from '../models/interface/auth';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private userService = inject(UserService);
 
   env = environment;
 
-  #userSignal = signal<User | null>(null);
   #tokenSignal = signal<string | null>(null);
   #refreshTokenSignal = signal<string | null>(null);
 
-  currentUser = this.#userSignal.asReadonly();
   token = this.#tokenSignal.asReadonly();
   refreshToken = this.#refreshTokenSignal.asReadonly();
 
   isAuthenticated = computed(() => !!this.#tokenSignal());
-  isAdmin = computed(() => this.#userSignal()?.roles.includes('Admin'));
 
   constructor() {
-    this.initializedTokens();
+    untracked(() => {
+      this.initializeTokens();
+    });
 
     effect(() => {
       const token = this.#tokenSignal();
       const refreshToken = this.#refreshTokenSignal();
+      const user = this.userService.user();
 
       if (token) {
         localStorage.setItem('accessToken', token);
@@ -43,6 +45,12 @@ export class AuthService {
       } else {
         localStorage.removeItem('refreshToken');
       }
+
+      if (user) {
+        localStorage.setItem('userInfo', JSON.stringify(user));
+      } else {
+        localStorage.removeItem('userInfo');
+      }
     });
   }
 
@@ -54,7 +62,7 @@ export class AuthService {
       }),
       tap((response) => {
         this.#tokenSignal.set(response.accessToken);
-        this.#userSignal.set(response.user);
+        this.userService.setUser(response.user);
         this.#refreshTokenSignal.set(response.refreshToken);
       })
     );
@@ -69,7 +77,7 @@ export class AuthService {
       tap((response) => {
         this.#tokenSignal.set(response.accessToken);
         this.#refreshTokenSignal.set(response.refreshToken);
-        this.#userSignal.set(response.user);
+        this.userService.setUser(response.user);
       })
     );
   }
@@ -81,18 +89,17 @@ export class AuthService {
         return throwError(() => error);
       }),
       tap(() => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
         this.#tokenSignal.set(null);
-        this.#userSignal.set(null);
         this.#refreshTokenSignal.set(null);
+        this.userService.clearUser();
       })
     );
   }
 
-  private initializedTokens(): void {
+  private initializeTokens(): void {
     const storedToken = localStorage.getItem('accessToken');
     const storedRefreshToken = localStorage.getItem('refreshToken');
+    const storeUser = localStorage.getItem('userInfo');
 
     if (storedToken) {
       this.#tokenSignal.set(storedToken);
@@ -100,6 +107,10 @@ export class AuthService {
 
     if (storedRefreshToken) {
       this.#refreshTokenSignal.set(storedRefreshToken);
+    }
+
+    if (storeUser) {
+      this.userService.setUser(JSON.parse(storeUser));
     }
   }
 }
