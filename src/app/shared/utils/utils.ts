@@ -1,0 +1,18 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { ApiError } from 'src/app/core/models/interface/api-error';
+import { MessageService } from 'src/app/core/services/message.service';
+
+export function handleHttpError(error: HttpErrorResponse, messageService: MessageService) {
+  if (error.error instanceof ErrorEvent) {
+    messageService.showMessage('error', error.error.message);
+    console.error(error.error.message);
+  } else if (error.error && typeof error.error === 'object') {
+    const apiError = error.error as ApiError;
+    const errorMessage = apiError.detail ?? error.message;
+
+    messageService.showMessage('error', errorMessage);
+    console.error('An error occurred: ', apiError);
+  } else {
+    console.error('Http error occured: ', error);
+  }
+}

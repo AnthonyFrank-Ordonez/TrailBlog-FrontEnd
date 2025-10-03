@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnDestroy, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, OnDestroy, signal } from '@angular/core';
 import { ZardTooltipModule } from '../tooltip/tooltip';
 import { ZardDropdownDirective } from '../dropdown/dropdown-trigger.directive';
 import { ZardDropdownMenuContentComponent } from '../dropdown/dropdown-menu-content.component';
@@ -10,6 +10,8 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MessageService } from 'src/app/core/services/message.service';
 import { ApiError } from 'src/app/core/models/interface/api-error';
+import { handleHttpError } from '@shared/utils/utils';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-header',
@@ -29,6 +31,7 @@ export class Header implements OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   private messageService = inject(MessageService);
+  private destroyRef = inject(DestroyRef);
 
   isAuthenticated = this.authService.isAuthenticated;
 
@@ -74,22 +77,16 @@ export class Header implements OnDestroy {
   }
 
   async onSignOut(): Promise<void> {
-    this.authService.logout().subscribe({
-      next: () => {
-        this.router.navigate(['/']);
-      },
-      error: (error: HttpErrorResponse) => {
-        if (error.error instanceof ErrorEvent) {
-          this.messageService.showMessage('error', error.error.message);
-          console.error(error.error.message);
-        } else if (error.error && typeof error.error === 'object') {
-          const apiError = error.error as ApiError;
-          const errorMessage = apiError.detail ?? error.message;
-
-          this.messageService.showMessage('error', errorMessage);
-          console.error('An error occured: ', apiError);
-        }
-      },
-    });
+    this.authService
+      .logout()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/']);
+        },
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
   }
 }

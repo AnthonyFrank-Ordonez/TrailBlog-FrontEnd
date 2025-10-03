@@ -1,8 +1,11 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, effect, inject, OnInit, Signal, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { handleHttpError } from '@shared/utils/utils';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CommunityService } from 'src/app/core/services/community.service';
+import { MessageService } from 'src/app/core/services/message.service';
 import { UserSettingsService } from 'src/app/core/services/user-settings.service';
 
 @Component({
@@ -16,6 +19,7 @@ export class SideNavigation {
   private userSettingsService = inject(UserSettingsService);
   private authService = inject(AuthService);
   private communityService = inject(CommunityService);
+  private messageService = inject(MessageService);
   private destroyRef = inject(DestroyRef);
 
   activeTab = signal<string>('home');
@@ -65,6 +69,10 @@ export class SideNavigation {
     this.communityService
       .loadUserCommunities()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe();
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
   }
 }

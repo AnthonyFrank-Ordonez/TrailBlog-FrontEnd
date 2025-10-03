@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/core/services/auth.service';
@@ -6,6 +6,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ApiError } from 'src/app/core/models/interface/api-error';
 import { MessageService } from 'src/app/core/services/message.service';
 import { Credentials } from 'src/app/core/models/interface/auth';
+import { handleHttpError } from '@shared/utils/utils';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +20,7 @@ export class Login {
   private router = inject(Router);
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
+  private destroyRef = inject(DestroyRef);
 
   isLoading = signal<boolean>(false);
 
@@ -40,27 +43,19 @@ export class Login {
 
     const credentials: Credentials = this.loginForm.value;
 
-    this.authService.login(credentials).subscribe({
-      next: () => {
-        this.isLoading.set(false);
-
-        this.router.navigate(['/']);
-      },
-      error: (error: HttpErrorResponse) => {
-        if (error.error instanceof ErrorEvent) {
-          this.messageService.showMessage('error', error.error.message);
-          console.error(error.error.message);
-        } else if (error.error && typeof error.error === 'object') {
-          const apiError = error.error as ApiError;
-          const errorMessage = apiError.detail ?? error.message;
-
-          this.messageService.showMessage('error', errorMessage);
-          console.error('An error occured: ', apiError);
-        }
-
-        this.isLoading.set(false);
-      },
-    });
+    this.authService
+      .login(credentials)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.router.navigate(['/']);
+        },
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+          this.isLoading.set(false);
+        },
+      });
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {

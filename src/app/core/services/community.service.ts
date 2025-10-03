@@ -7,6 +7,7 @@ import { UserCommunities } from '../models/interface/community';
 import { catchError, finalize, Observable, of, tap, throwError } from 'rxjs';
 import { MessageService } from './message.service';
 import { ApiError } from '../models/interface/api-error';
+import { handleHttpError } from '@shared/utils/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,6 @@ import { ApiError } from '../models/interface/api-error';
 export class CommunityService {
   private http = inject(HttpClient);
   private userService = inject(UserService);
-  private messageService = inject(MessageService);
 
   #userCommunities = signal<UserCommunities[]>([]);
   #userCommunitiesLoading = signal<boolean>(false);
@@ -33,19 +33,6 @@ export class CommunityService {
         this.#userCommunities.set(response);
       }),
       catchError((error: HttpErrorResponse) => {
-        if (error.error instanceof ErrorEvent) {
-          this.messageService.showMessage('error', error.error.message);
-          console.error(error.error.message);
-        } else if (error.error && typeof error.error === 'object') {
-          const apiError = error.error as ApiError;
-          const errorMessage = apiError.detail ?? error.message;
-
-          this.messageService.showMessage('error', errorMessage);
-          console.error('An error occured: ', apiError);
-        } else {
-          console.error('Http error occured: ', error);
-        }
-
         return throwError(() => error);
       }),
       finalize(() => this.#userCommunitiesLoading.set(false))

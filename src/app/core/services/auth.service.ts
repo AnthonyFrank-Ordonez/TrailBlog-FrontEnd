@@ -1,9 +1,7 @@
 import { computed, effect, inject, Injectable, signal, untracked } from '@angular/core';
-import { User } from '../models/interface/user';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Router } from '@angular/router';
 import { AuthResponse, Credentials, LoginResponse, RegisterData } from '../models/interface/auth';
 import { UserService } from './user.service';
 

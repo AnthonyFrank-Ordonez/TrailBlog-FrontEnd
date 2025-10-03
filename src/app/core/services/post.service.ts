@@ -2,9 +2,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Post } from '../models/interface/posts';
 import { environment } from 'src/environments/environment';
-import { catchError, finalize, firstValueFrom, tap, throwError } from 'rxjs';
+import { catchError, finalize, firstValueFrom, of, tap, throwError } from 'rxjs';
 import { MessageService } from './message.service';
 import { ApiError } from '../models/interface/api-error';
+import { handleHttpError } from '@shared/utils/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -30,20 +31,8 @@ export class PostService {
         tap(() => console.log('fetching posts....')),
         tap((posts) => console.log(`Post received: ${posts.length}`)),
         catchError((error: HttpErrorResponse) => {
-          if (error.error instanceof ErrorEvent) {
-            this.messageService.showMessage('error', error.error.message);
-            console.error(error.error.message);
-          } else if (error.error && typeof error.error === 'object') {
-            const apiError = error.error as ApiError;
-            const errorMessage = apiError.detail ?? error.message;
-
-            this.messageService.showMessage('error', errorMessage);
-            console.error('An error occured: ', apiError);
-          } else {
-            console.error('Http error occured: ', error);
-          }
-
-          return throwError(() => error);
+          handleHttpError(error, this.messageService);
+          return of([]);
         }),
         finalize(() => {
           this.#isPostLoading.set(false);

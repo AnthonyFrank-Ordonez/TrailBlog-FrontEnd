@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import {
@@ -15,6 +15,8 @@ import {
   ZardPopoverDirective,
   ZardPopoverComponent,
 } from '@shared/components/popover/popover.component';
+import { handleHttpError } from '@shared/utils/utils';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 // import { Register } from 'src/app/core/models/interface/auth';
 
 @Component({
@@ -28,6 +30,7 @@ export class Register {
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   isLoading = signal<boolean>(false);
 
@@ -82,26 +85,19 @@ export class Register {
       password,
     };
 
-    this.authService.register(userData).subscribe({
-      next: () => {
-        this.isLoading.set(false);
+    this.authService
+      .register(userData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.router.navigate(['/']);
+        },
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
 
-        this.router.navigate(['/']);
-      },
-      error: (error: HttpErrorResponse) => {
-        if (error.error instanceof ErrorEvent) {
-          this.messageService.showMessage('error', error.error.message);
-          console.error(error.error.message);
-        } else if (error.error && typeof error.error === 'object') {
-          const apiError = error.error as ApiError;
-          const errorMessage = apiError.detail ?? error.message;
-
-          this.messageService.showMessage('error', errorMessage);
-          console.error('An error occured: ', apiError);
-        }
-
-        this.isLoading.set(false);
-      },
-    });
+          this.isLoading.set(false);
+        },
+      });
   }
 }
