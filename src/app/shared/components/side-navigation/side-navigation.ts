@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, effect, inject, OnInit, Signal, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CommunityService } from 'src/app/core/services/community.service';
@@ -15,11 +16,20 @@ export class SideNavigation {
   private userSettingsService = inject(UserSettingsService);
   private authService = inject(AuthService);
   private communityService = inject(CommunityService);
+  private destroyRef = inject(DestroyRef);
 
   activeTab = signal<string>('home');
   currentSettings = this.userSettingsService.userSettings;
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
+
+  constructor() {
+    effect(() => {
+      if (this.isAuthenticated()) {
+        this.loadCommunities();
+      }
+    });
+  }
 
   toggleCommunities(): void {
     this.userSettingsService.updateUserSettings({
@@ -49,5 +59,12 @@ export class SideNavigation {
 
   get isCustomFeedExpanded(): boolean | undefined {
     return this.currentSettings()?.customFeedExpanded;
+  }
+
+  private loadCommunities(): void {
+    this.communityService
+      .loadUserCommunities()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 }

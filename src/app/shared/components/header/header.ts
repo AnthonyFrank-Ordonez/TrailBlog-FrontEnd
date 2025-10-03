@@ -76,7 +76,7 @@ export class Header implements OnDestroy {
   async onSignOut(): Promise<void> {
     this.authService.logout().subscribe({
       next: () => {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       },
       error: (error: HttpErrorResponse) => {
         if (error.error instanceof ErrorEvent) {
