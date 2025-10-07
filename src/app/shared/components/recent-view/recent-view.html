@@ -1,13 +1,12 @@
-<aside class="sticky top-17 bg-black text-white scrollbar-container rounded-xl">
-  <div class="h-[calc(100vh-4.5rem)] overflow-y-auto hide-scrollbar">
-    <div class="p-4">
-      <div class="px-3 py-2 flex items-center justify-between">
-        <span class="text-sm dont-light text-gray-500">Recent Viewed Post</span>
-        <button class="text-gray-600 font-light text-sm cursor-pointer">Clear</button>
-      </div>
+<div class="p-4">
+  <div class="px-3 py-2 flex items-center justify-between">
+    <span class="text-sm dont-light text-gray-500">Recent Viewed Post</span>
+    <button class="text-gray-600 font-light text-sm cursor-pointer">Clear</button>
+  </div>
 
-      <div class="space-y-1 py-2">
-        @if (isLoading()) { @for (skeleton of skeletonArray; track $index) {
+  <div class="space-y-1 py-2">
+    @if (isLoading()) {
+      @for (skeleton of skeletonArray; track $index) {
         <div class="px-3 py-2 w-full cursor-pointer hover:bg-gray-800/50 rounded-lg">
           <div class="animate-pulse">
             <div class="flex justify-between items-center mb-2">
@@ -35,11 +34,13 @@
           </div>
         </div>
         <z-divider class="bg-white/20"></z-divider>
-        } } @else if (!isLoading()) { @for (post of posts(); track post.id) {
+      }
+    } @else if (!isLoading()) {
+      @for (post of posts(); track post.id) {
         <div class="px-3 py-2 w-full cursor-pointer hover:bg-gray-800/50 rounded-lg">
           <div class="flex justify-between items-center mb-2">
             <span class="text-gray-400 text-xs">{{ post.communityName }}</span>
-            <span class="text-gray-500 text-xs">{{ post.createdAt | date : 'mediumDate' }}</span>
+            <span class="text-gray-500 text-xs">{{ post.createdAt | date: 'mediumDate' }}</span>
           </div>
 
           <p class="font-light">{{ post.title }}</p>
@@ -60,8 +61,7 @@
           </div>
         </div>
         <z-divider class="bg-white/20"></z-divider>
-        } }
-      </div>
-    </div>
+      }
+    }
   </div>
-</aside>
+</div>

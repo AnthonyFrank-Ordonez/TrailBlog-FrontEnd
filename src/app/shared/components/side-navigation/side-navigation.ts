@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, effect, inject, OnInit, Signal, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { handleHttpError } from '@shared/utils/utils';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CommunityService } from 'src/app/core/services/community.service';
@@ -10,7 +11,7 @@ import { UserSettingsService } from 'src/app/core/services/user-settings.service
 
 @Component({
   selector: 'app-side-navigation',
-  imports: [RouterLink],
+  imports: [RouterLink, InitialsPipe],
   templateUrl: './side-navigation.html',
   styleUrl: './side-navigation.css',
   animations: [],

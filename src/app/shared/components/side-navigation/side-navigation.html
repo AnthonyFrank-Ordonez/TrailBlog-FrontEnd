@@ -235,7 +235,9 @@
                 class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
               >
                 <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                  <span class="text-white text-xs font-bold">C</span>
+                  <span class="text-white text-xs font-bold">{{
+                    community.communityName | initials
+                  }}</span>
                 </div>
                 <span class="text-gray-300 group-hover:text-white 2xl:text-[15.5px]">{{
                   community.communityName
