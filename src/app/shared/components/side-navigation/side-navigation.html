@@ -118,47 +118,47 @@
         </button>
 
         @if (isCustomFeedExpanded && isAuthenticated()) {
-        <a
-          href="#"
-          class="flex items-center space-x-3 px-5 py-2.5 rounded-lg hover:bg-gray-800/40 transition-colors"
-          animate.enter="slide-enter"
-          animate.leave="slide-leave"
-        >
-          <svg
-            class="w-5 h-5"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="currentColor"
-            viewBox="0 0 16 16"
+          <a
+            href="#"
+            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg hover:bg-gray-800/40 transition-colors"
+            animate.enter="slide-enter"
+            animate.leave="slide-leave"
           >
-            <path
-              stroke="currentColor"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
-            />
-          </svg>
-          <span class="text-sm tracking-wide font-light">Create Custom Feed</span>
-        </a>
-        } @else if (isCustomFeedExpanded && !isAuthenticated()) {
-        <div
-          class="mt-2 space-y-1 px-5 py-2.5"
-          animate.enter="slide-enter"
-          animate.leave="slide-leave"
-        >
-          <p class="text-gray-500 text-sm">
-            Please
-            <button
-              routerLink="/login"
-              class="text-secondary hover:underline font-medium inline px-0 py-0 bg-transparent border-none cursor-pointer"
+            <svg
+              class="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              viewBox="0 0 16 16"
             >
-              log in
-            </button>
-            first to create custom feed for yourself
-          </p>
-        </div>
+              <path
+                stroke="currentColor"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
+              />
+            </svg>
+            <span class="text-sm tracking-wide font-light">Create Custom Feed</span>
+          </a>
+        } @else if (isCustomFeedExpanded && !isAuthenticated()) {
+          <div
+            class="mt-2 space-y-1 px-5 py-2.5"
+            animate.enter="slide-enter"
+            animate.leave="slide-leave"
+          >
+            <p class="text-gray-500 text-sm">
+              Please
+              <button
+                routerLink="/login"
+                class="text-secondary hover:underline font-medium inline px-0 py-0 bg-transparent border-none cursor-pointer"
+              >
+                log in
+              </button>
+              first to create custom feed for yourself
+            </p>
+          </div>
         }
       </div>
 
@@ -182,85 +182,84 @@
         </button>
 
         @if (isCommunitiesExpanded && isAuthenticated()) {
-        <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
-          <!-- Create -->
-          <button
-            href="#"
-            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
-          >
-            <svg
-              class="w-5 h-5"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-            >
-              <path
-                stroke="currentColor"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
-              />
-            </svg>
-            <span class="text-sm tracking-wide font-light">Create Community</span>
-          </button>
-
-          <!-- Manage -->
-          <button
-            href="#"
-            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
-          >
-            <svg
-              class="w-5 h-5"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M19.85 8.75l4.15.83v4.84l-4.15.83 2.35 3.52-3.43 3.43-3.52-2.35-.83 4.15H9.58l-.83-4.15-3.52 2.35-3.43-3.43 2.35-3.52L0 14.42V9.58l4.15-.83L1.8 5.23 5.23 1.8l3.52 2.35L9.58 0h4.84l.83 4.15 3.52-2.35 3.43 3.43-2.35 3.52zm-1.57 5.07l4-.81v-2l-4-.81-.54-1.3 2.29-3.43-1.43-1.43-3.43 2.29-1.3-.54-.81-4h-2l-.81 4-1.3.54-3.43-2.29-1.43 1.43L6.38 8.9l-.54 1.3-4 .81v2l4 .81.54 1.3-2.29 3.43 1.43 1.43 3.43-2.29 1.3.54.81 4h2l.81-4 1.3-.54 3.43 2.29 1.43-1.43-2.29-3.43.54-1.3zm-8.186-4.672A3.43 3.43 0 0 1 12 8.57 3.44 3.44 0 0 1 15.43 12a3.43 3.43 0 1 1-5.336-2.852zm.956 4.274c.281.188.612.288.95.288A1.7 1.7 0 0 0 13.71 12a1.71 1.71 0 1 0-2.66 1.422z"
-              />
-            </svg>
-            <span class="text-sm tracking-wide font-light">Manage Community</span>
-          </button>
-
-          @for (community of userCommunities(); track community.id) {
-          <a
-            href="#"
-            class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
-          >
-            <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-              <span class="text-white text-xs font-bold">C</span>
-            </div>
-            <span class="text-gray-300 group-hover:text-white 2xl:text-[15.5px]">{{
-              community.communityName
-            }}</span>
-          </a>
-
-          }
-        </div>
-        } @else if (isCommunitiesExpanded && !isAuthenticated()) {
-        <div
-          class="mt-2 space-y-1 px-5 py-2.5"
-          animate.enter="slide-enter"
-          animate.leave="slide-leave"
-        >
-          <p class="text-gray-500 text-sm">
-            Please
+          <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
+            <!-- Create -->
             <button
-              routerLink="/login"
-              class="text-secondary hover:underline font-medium inline px-0 py-0 bg-transparent border-none cursor-pointer"
+              href="#"
+              class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
             >
-              log in
+              <svg
+                class="w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
+                />
+              </svg>
+              <span class="text-sm tracking-wide font-light">Create Community</span>
             </button>
-            first to create, view, and manage communities.
-          </p>
-        </div>
+
+            <!-- Manage -->
+            <button
+              routerLink="/communities"
+              class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
+            >
+              <svg
+                class="w-5 h-5"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M19.85 8.75l4.15.83v4.84l-4.15.83 2.35 3.52-3.43 3.43-3.52-2.35-.83 4.15H9.58l-.83-4.15-3.52 2.35-3.43-3.43 2.35-3.52L0 14.42V9.58l4.15-.83L1.8 5.23 5.23 1.8l3.52 2.35L9.58 0h4.84l.83 4.15 3.52-2.35 3.43 3.43-2.35 3.52zm-1.57 5.07l4-.81v-2l-4-.81-.54-1.3 2.29-3.43-1.43-1.43-3.43 2.29-1.3-.54-.81-4h-2l-.81 4-1.3.54-3.43-2.29-1.43 1.43L6.38 8.9l-.54 1.3-4 .81v2l4 .81.54 1.3-2.29 3.43 1.43 1.43 3.43-2.29 1.3.54.81 4h2l.81-4 1.3-.54 3.43 2.29 1.43-1.43-2.29-3.43.54-1.3zm-8.186-4.672A3.43 3.43 0 0 1 12 8.57 3.44 3.44 0 0 1 15.43 12a3.43 3.43 0 1 1-5.336-2.852zm.956 4.274c.281.188.612.288.95.288A1.7 1.7 0 0 0 13.71 12a1.71 1.71 0 1 0-2.66 1.422z"
+                />
+              </svg>
+              <span class="text-sm tracking-wide font-light">Manage Community</span>
+            </button>
+
+            @for (community of userCommunities(); track community.id) {
+              <a
+                href="#"
+                class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
+              >
+                <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-xs font-bold">C</span>
+                </div>
+                <span class="text-gray-300 group-hover:text-white 2xl:text-[15.5px]">{{
+                  community.communityName
+                }}</span>
+              </a>
+            }
+          </div>
+        } @else if (isCommunitiesExpanded && !isAuthenticated()) {
+          <div
+            class="mt-2 space-y-1 px-5 py-2.5"
+            animate.enter="slide-enter"
+            animate.leave="slide-leave"
+          >
+            <p class="text-gray-500 text-sm">
+              Please
+              <button
+                routerLink="/login"
+                class="text-secondary hover:underline font-medium inline px-0 py-0 bg-transparent border-none cursor-pointer"
+              >
+                log in
+              </button>
+              first to create, view, and manage communities.
+            </p>
+          </div>
         }
       </div>
 
@@ -284,90 +283,89 @@
         </button>
 
         @if (isResourcesExpanded) {
-        <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
-          <!-- News and Updates -->
-          <button
-            href="#"
-            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
-          >
-            <svg
-              class="w-5 h-5"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 -960 960 960"
-              fill="currentColor"
+          <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
+            <!-- News and Updates -->
+            <button
+              href="#"
+              class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
             >
-              <path
-                d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120zm0-80h640v-560H160zm80-80h480v-80H240zm0-160h160v-240H240zm240 0h240v-80H480zm0-160h240v-80H480zM160-200v-560z"
-              />
-            </svg>
-            <span class="text-sm tracking-wide font-light">News and Updates</span>
-          </button>
+              <svg
+                class="w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 -960 960 960"
+                fill="currentColor"
+              >
+                <path
+                  d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120zm0-80h640v-560H160zm80-80h480v-80H240zm0-160h160v-240H240zm240 0h240v-80H480zm0-160h240v-80H480zM160-200v-560z"
+                />
+              </svg>
+              <span class="text-sm tracking-wide font-light">News and Updates</span>
+            </button>
 
-          <!-- Rules -->
-          <a
-            href="#"
-            class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 -960 960 960"
-              class="w-5 h-5"
-              fill="currentColor"
+            <!-- Rules -->
+            <a
+              href="#"
+              class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
             >
-              <path
-                d="M240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640q0 33-23.5 56.5T720-80zm0-80h480v-640h-80v280l-100-60-100 60v-280H240zm0 0v-640zm200-360 100-60 100 60-100-60z"
-              />
-            </svg>
-            <span class="text-gray-300 group-hover:text-white">Trail Rules</span>
-          </a>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 -960 960 960"
+                class="w-5 h-5"
+                fill="currentColor"
+              >
+                <path
+                  d="M240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640q0 33-23.5 56.5T720-80zm0-80h480v-640h-80v280l-100-60-100 60v-280H240zm0 0v-640zm200-360 100-60 100 60-100-60z"
+                />
+              </svg>
+              <span class="text-gray-300 group-hover:text-white">Trail Rules</span>
+            </a>
 
-          <!-- Help -->
-          <button
-            href="#"
-            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
-          >
-            <svg
-              class="w-5 h-5"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 -960 960 960"
-              fill="currentColor"
+            <!-- Help -->
+            <button
+              href="#"
+              class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
             >
-              <path
-                d="M440-280h80v-240h-80zm40-320q17 0 28.5-11.5T520-640t-11.5-28.5T480-680t-28.5 11.5T440-640t11.5 28.5T480-600m0 520q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320"
-              />
-            </svg>
-            <span class="font-light">Help</span>
-          </button>
+              <svg
+                class="w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 -960 960 960"
+                fill="currentColor"
+              >
+                <path
+                  d="M440-280h80v-240h-80zm40-320q17 0 28.5-11.5T520-640t-11.5-28.5T480-680t-28.5 11.5T440-640t11.5 28.5T480-600m0 520q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320"
+                />
+              </svg>
+              <span class="font-light">Help</span>
+            </button>
 
-          <!-- Faqs -->
-          <a
-            href="#"
-            class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
-          >
-            <svg
-              class="w-5 h-5"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
+            <!-- Faqs -->
+            <a
+              href="#"
+              class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
             >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M7.5 1a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zm0 12a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm1.55-8.42a1.84 1.84 0 0 0-.61-.42A2.25 2.25 0 0 0 7.53 4a2.16 2.16 0 0 0-.88.17c-.239.1-.45.254-.62.45a1.89 1.89 0 0 0-.38.62 3 3 0 0 0-.15.72h1.23a.84.84 0 0 1 .506-.741.72.72 0 0 1 .304-.049.86.86 0 0 1 .27 0 .64.64 0 0 1 .22.14.6.6 0 0 1 .16.22.73.73 0 0 1 .06.3c0 .173-.037.343-.11.5a2.4 2.4 0 0 1-.27.46l-.35.42c-.12.13-.24.27-.35.41a2.33 2.33 0 0 0-.27.45 1.18 1.18 0 0 0-.1.5v.66H8v-.49a.94.94 0 0 1 .11-.42 3.09 3.09 0 0 1 .28-.41l.36-.44a4.29 4.29 0 0 0 .36-.48 2.59 2.59 0 0 0 .28-.55 1.91 1.91 0 0 0 .11-.64 2.18 2.18 0 0 0-.1-.67 1.52 1.52 0 0 0-.35-.55zM6.8 9.83h1.17V11H6.8V9.83z"
-              />
-            </svg>
-            <span class="text-gray-300 group-hover:text-white">FAQS</span>
-          </a>
-        </div>
-
+              <svg
+                class="w-5 h-5"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M7.5 1a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zm0 12a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm1.55-8.42a1.84 1.84 0 0 0-.61-.42A2.25 2.25 0 0 0 7.53 4a2.16 2.16 0 0 0-.88.17c-.239.1-.45.254-.62.45a1.89 1.89 0 0 0-.38.62 3 3 0 0 0-.15.72h1.23a.84.84 0 0 1 .506-.741.72.72 0 0 1 .304-.049.86.86 0 0 1 .27 0 .64.64 0 0 1 .22.14.6.6 0 0 1 .16.22.73.73 0 0 1 .06.3c0 .173-.037.343-.11.5a2.4 2.4 0 0 1-.27.46l-.35.42c-.12.13-.24.27-.35.41a2.33 2.33 0 0 0-.27.45 1.18 1.18 0 0 0-.1.5v.66H8v-.49a.94.94 0 0 1 .11-.42 3.09 3.09 0 0 1 .28-.41l.36-.44a4.29 4.29 0 0 0 .36-.48 2.59 2.59 0 0 0 .28-.55 1.91 1.91 0 0 0 .11-.64 2.18 2.18 0 0 0-.1-.67 1.52 1.52 0 0 0-.35-.55zM6.8 9.83h1.17V11H6.8V9.83z"
+                />
+              </svg>
+              <span class="text-gray-300 group-hover:text-white">FAQS</span>
+            </a>
+          </div>
         }
       </div>
     </div>

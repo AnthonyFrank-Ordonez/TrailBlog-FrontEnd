@@ -3,6 +3,7 @@ import { Layout } from './shared/components/layout/layout';
 import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
+import { Communities } from './pages/communities/communities';
 
 export const routes: Routes = [
   {
@@ -13,6 +14,10 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         component: Home,
+      },
+      {
+        path: 'communities',
+        component: Communities,
       },
     ],
   },

@@ -1,0 +1,101 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Angular build outputs
+dist/
+tmp/
+out-tsc/
+bazel-out/
+.angular/
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Compiled output
+*.js.map
+*.d.ts
+
+# Documentation
+documentation/
+docs/
+
+# Coverage reports
+coverage/
+*.lcov
+.nyc_output/
+
+*.spec.ts.snap
+*.spec.js.snap
+
+# Environment files
+.env
+.env.*
+
+# Generated files
+*.generated.ts
+*.generated.js
+src/generated/
+
+# Third-party libraries
+src/assets/libs/
+vendor/
+
+# Markdown files (optional - remove if you want to format them)
+*.md
+README.md
+CHANGELOG.md
+
+# Migration files
+migrations/
+
+# Build/config files that shouldn't be touched
+browserlist
+.browserslistrc
+karma.conf.js
+protractor.conf.js
+
+# PWA files
+ngsw-config.json
+src/manifest.json
+
+# Large asset files
+*.min.js
+*.min.css
+src/assets/fonts/
+src/assets/images/
+*.ico
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+
+# Specific Angular files you might not want to format
+src/polyfills.ts
+src/test.ts
+
+# Any auto-generated API clients or schemas
+src/app/api/
+**/api-client/
+*.swagger.json
+*.openapi.json
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
