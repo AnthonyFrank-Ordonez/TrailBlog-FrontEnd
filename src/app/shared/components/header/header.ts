@@ -12,6 +12,8 @@ import { MessageService } from 'src/app/core/services/message.service';
 import { ApiError } from 'src/app/core/models/interface/api-error';
 import { handleHttpError } from '@shared/utils/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UserService } from 'src/app/core/services/user.service';
+import { InitialsPipe } from '@shared/pipes/initials-pipe';
 
 @Component({
   selector: 'app-header',
@@ -23,6 +25,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ZardDropdownMenuItemComponent,
     ZardDividerComponent,
     RouterLink,
+    InitialsPipe,
   ],
   templateUrl: './header.html',
   styleUrl: './header.css',
@@ -31,9 +34,11 @@ export class Header implements OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   private messageService = inject(MessageService);
+  private userService = inject(UserService);
   private destroyRef = inject(DestroyRef);
 
   isAuthenticated = this.authService.isAuthenticated;
+  user = this.userService.user;
 
   activeTab = signal<string>('home');
   hideHeader = false;
