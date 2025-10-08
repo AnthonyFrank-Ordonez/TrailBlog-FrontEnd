@@ -229,20 +229,34 @@
               <span class="text-sm tracking-wide font-light">Manage Community</span>
             </button>
 
-            @for (community of userCommunities(); track community.id) {
-              <a
-                href="#"
-                class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
-              >
-                <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                  <span class="text-white text-xs font-bold">{{
-                    community.communityName | initials
-                  }}</span>
+            @if (userCommunitiesLoading()) {
+              @for (skeleton of skeletonArray; track $index) {
+                <div class="flex flex-col gap-1 px-5 py-1">
+                  <div class="flex items-center space-x-3 animate-pulse">
+                    <div class="w-7 h-7 bg-gray-700 rounded-full"></div>
+                    <div class="h-5 w-40 bg-gray-700 rounded"></div>
+                  </div>
                 </div>
-                <span class="text-gray-300 group-hover:text-white 2xl:text-[15.5px]">{{
-                  community.communityName
-                }}</span>
-              </a>
+              }
+            } @else {
+              @for (community of userCommunities(); track community.id) {
+                @if (userCommunitiesLoading()) {
+                } @else {
+                  <a
+                    href="#"
+                    class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
+                  >
+                    <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                      <span class="text-white text-xs font-bold">{{
+                        community.communityName | initials
+                      }}</span>
+                    </div>
+                    <span class="text-gray-300 group-hover:text-white 2xl:text-[15.5px]">{{
+                      community.communityName
+                    }}</span>
+                  </a>
+                }
+              }
             }
           </div>
         } @else if (isCommunitiesExpanded && !isAuthenticated()) {

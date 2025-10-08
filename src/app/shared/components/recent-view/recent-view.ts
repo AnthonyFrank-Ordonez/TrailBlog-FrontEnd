@@ -14,7 +14,7 @@ export class RecentView {
   private readonly postService = inject(PostService);
 
   posts = this.postService.posts;
-  isLoading = this.postService.isPostLoading;
+  isRecentLoading = this.postService.isPostLoading;
 
   skeletonArray = Array(10).fill(0);
 }

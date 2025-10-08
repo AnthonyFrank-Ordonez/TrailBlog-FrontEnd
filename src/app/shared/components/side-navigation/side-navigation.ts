@@ -27,6 +27,9 @@ export class SideNavigation {
   currentSettings = this.userSettingsService.userSettings;
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
+  userCommunitiesLoading = this.communityService.userCommunitiesLoading;
+
+  skeletonArray = Array(3).fill(0);
 
   constructor() {
     effect(() => {

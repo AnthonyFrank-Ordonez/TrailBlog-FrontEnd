@@ -13,7 +13,7 @@ export class PostList implements OnInit {
   private readonly postService = inject(PostService);
   posts = this.postService.posts;
 
-  isLoading = this.postService.isPostLoading;
+  isPostLoading = this.postService.isPostLoading;
   skeletonArray = Array(5).fill(0);
 
   ngOnInit(): void {

@@ -4,6 +4,8 @@ import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { Communities } from './pages/communities/communities';
+import { authGuard } from './core/guards/auth-guard';
+import { noAuthGuard } from './core/guards/no-auth-guard';
 
 export const routes: Routes = [
   {
@@ -18,15 +20,18 @@ export const routes: Routes = [
       {
         path: 'communities',
         component: Communities,
+        canActivate: [authGuard],
       },
     ],
   },
   {
     path: 'login',
     component: Login,
+    canActivate: [noAuthGuard],
   },
   {
     path: 'register',
     component: Register,
+    canActivate: [noAuthGuard],
   },
 ];
