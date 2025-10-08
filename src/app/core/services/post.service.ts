@@ -1,11 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Post } from '../models/interface/posts';
-import { environment } from 'src/environments/environment';
-import { catchError, finalize, firstValueFrom, of, tap, throwError } from 'rxjs';
+import { Post } from '@core/models/interface/posts';
+import { catchError, finalize, firstValueFrom, of, tap } from 'rxjs';
 import { MessageService } from './message.service';
-import { ApiError } from '../models/interface/api-error';
 import { handleHttpError } from '@shared/utils/utils';
+import { environment } from '@env/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +35,7 @@ export class PostService {
         }),
         finalize(() => {
           this.#isPostLoading.set(false);
-        })
+        }),
       );
       const posts = await firstValueFrom(posts$);
       this.#posts.set(posts);

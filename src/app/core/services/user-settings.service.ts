@@ -1,5 +1,5 @@
 import { effect, Injectable, signal } from '@angular/core';
-import { UserSettings } from '../models/interface/user';
+import { UserSettings } from '@core/models/interface/user';
 
 @Injectable({
   providedIn: 'root',

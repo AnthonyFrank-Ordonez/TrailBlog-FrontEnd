@@ -1,5 +1,5 @@
-import { computed, effect, Injectable, OnInit, signal } from '@angular/core';
-import { User, UserSettings } from '../models/interface/user';
+import { computed, Injectable, signal } from '@angular/core';
+import { User } from '@core/models/interface/user';
 
 @Injectable({
   providedIn: 'root',

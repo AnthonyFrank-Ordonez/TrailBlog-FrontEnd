@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommunityService } from 'src/app/core/services/community.service';
 import { CommunityCard } from './community-card/community-card';
+import { CommunityService } from '@core/services/community.service';
 
 @Component({
   selector: 'app-community-list',

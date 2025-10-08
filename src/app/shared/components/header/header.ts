@@ -5,15 +5,14 @@ import { ZardDropdownMenuContentComponent } from '../dropdown/dropdown-menu-cont
 import { ZardDropdownMenuLabelComponent } from '../dropdown/dropdown-label.component';
 import { ZardDropdownMenuItemComponent } from '../dropdown/dropdown-item.component';
 import { ZardDividerComponent } from '../divider/divider.component';
-import { AuthService } from 'src/app/core/services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MessageService } from 'src/app/core/services/message.service';
-import { ApiError } from 'src/app/core/models/interface/api-error';
 import { handleHttpError } from '@shared/utils/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { UserService } from 'src/app/core/services/user.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
+import { AuthService } from '@core/services/auth.service';
+import { MessageService } from '@core/services/message.service';
+import { UserService } from '@core/services/user.service';
 
 @Component({
   selector: 'app-header',

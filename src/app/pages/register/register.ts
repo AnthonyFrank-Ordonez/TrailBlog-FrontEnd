@@ -7,17 +7,15 @@ import {
   strongPasswordValidator,
   usernameValidator,
 } from '@shared/utils/validators';
-import { ApiError } from 'src/app/core/models/interface/api-error';
-import { RegisterData } from 'src/app/core/models/interface/auth';
-import { AuthService } from 'src/app/core/services/auth.service';
-import { MessageService } from 'src/app/core/services/message.service';
+import { RegisterData } from '@core/models/interface/auth';
+import { AuthService } from '@core/services/auth.service';
+import { MessageService } from '@core/services/message.service';
 import {
   ZardPopoverDirective,
   ZardPopoverComponent,
 } from '@shared/components/popover/popover.component';
 import { handleHttpError } from '@shared/utils/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-// import { Register } from 'src/app/core/models/interface/auth';
 
 @Component({
   selector: 'app-register',
@@ -44,7 +42,7 @@ export class Register {
         password: ['', [Validators.required, Validators.minLength(8), strongPasswordValidator]],
         confirmPassword: ['', Validators.required],
       },
-      { validators: passwordMatchValidator }
+      { validators: passwordMatchValidator },
     );
   }
 

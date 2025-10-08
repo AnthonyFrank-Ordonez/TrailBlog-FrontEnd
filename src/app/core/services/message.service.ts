@@ -1,6 +1,6 @@
-import { inject, Injectable, signal, Signal } from '@angular/core';
-import { HotToastService, ToastPosition } from '@ngxpert/hot-toast';
-import { MessagesOptions } from '../models/interface/messages';
+import { inject, Injectable } from '@angular/core';
+import { HotToastService } from '@ngxpert/hot-toast';
+import { MessagesOptions } from '@core/models/interface/messages';
 
 @Injectable({
   providedIn: 'root',

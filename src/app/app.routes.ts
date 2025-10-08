@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { Layout } from './shared/components/layout/layout';
+import { Layout } from '@shared/components/layout/layout';
 import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';

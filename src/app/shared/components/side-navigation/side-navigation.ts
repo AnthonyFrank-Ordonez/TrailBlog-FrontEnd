@@ -2,12 +2,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, effect, inject, OnInit, Signal, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
+import { CommunityService } from '@core/services/community.service';
+import { MessageService } from '@core/services/message.service';
+import { UserSettingsService } from '@core/services/user-settings.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { handleHttpError } from '@shared/utils/utils';
-import { AuthService } from 'src/app/core/services/auth.service';
-import { CommunityService } from 'src/app/core/services/community.service';
-import { MessageService } from 'src/app/core/services/message.service';
-import { UserSettingsService } from 'src/app/core/services/user-settings.service';
 
 @Component({
   selector: 'app-side-navigation',

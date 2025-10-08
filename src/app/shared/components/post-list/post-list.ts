@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { PostCard } from './post-card/post-card';
-import { ZardDividerComponent } from '../divider/divider.component';
-import { PostService } from 'src/app/core/services/post.service';
+import { PostService } from '@core/services/post.service';
+import { ZardDividerComponent } from '@shared/components/divider/divider.component';
 
 @Component({
   selector: 'app-post-list',

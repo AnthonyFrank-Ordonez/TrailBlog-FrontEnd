@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ApiError } from 'src/app/core/models/interface/api-error';
-import { MessageService } from 'src/app/core/services/message.service';
+import { ApiError } from '@core/models/interface/api-error';
+import { MessageService } from '@core/services/message.service';
 
 export function handleHttpError(error: HttpErrorResponse, messageService: MessageService) {
   if (error.error instanceof ErrorEvent) {

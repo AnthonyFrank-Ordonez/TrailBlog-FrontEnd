@@ -1,7 +1,7 @@
 import { computed, effect, inject, Injectable, signal, untracked } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { environment } from '@env/environment';
 import { AuthResponse, Credentials, LoginResponse, RegisterData } from '../models/interface/auth';
 import { UserService } from './user.service';
 
@@ -62,7 +62,7 @@ export class AuthService {
         this.#tokenSignal.set(response.accessToken);
         this.userService.setUser(response.user);
         this.#refreshTokenSignal.set(response.refreshToken);
-      })
+      }),
     );
   }
 
@@ -76,7 +76,7 @@ export class AuthService {
         this.#tokenSignal.set(response.accessToken);
         this.#refreshTokenSignal.set(response.refreshToken);
         this.userService.setUser(response.user);
-      })
+      }),
     );
   }
 
@@ -90,7 +90,7 @@ export class AuthService {
         this.#tokenSignal.set(null);
         this.#refreshTokenSignal.set(null);
         this.userService.clearUser();
-      })
+      }),
     );
   }
 

@@ -1,13 +1,9 @@
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { UserService } from './user.service';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { HttpClient, HttpErrorResponse, httpResource } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { UserCommunities } from '../models/interface/community';
-import { catchError, finalize, Observable, of, tap, throwError } from 'rxjs';
-import { MessageService } from './message.service';
-import { ApiError } from '../models/interface/api-error';
-import { handleHttpError } from '@shared/utils/utils';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '@env/environment';
+import { UserCommunities } from '@core/models/interface/community';
+import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +31,7 @@ export class CommunityService {
       catchError((error: HttpErrorResponse) => {
         return throwError(() => error);
       }),
-      finalize(() => this.#userCommunitiesLoading.set(false))
+      finalize(() => this.#userCommunitiesLoading.set(false)),
     );
   }
 }

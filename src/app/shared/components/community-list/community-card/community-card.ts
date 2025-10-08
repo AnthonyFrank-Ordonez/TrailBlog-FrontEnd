@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
+import { UserCommunities } from '@core/models/interface/community';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
-import { UserCommunities } from 'src/app/core/models/interface/community';
 
 @Component({
   selector: 'app-community-card',
