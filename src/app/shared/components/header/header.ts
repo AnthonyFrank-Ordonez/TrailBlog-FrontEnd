@@ -80,6 +80,10 @@ export class Header implements OnDestroy {
     }
   }
 
+  setActiveTab(value: string): void {
+    this.activeTab.set(value);
+  }
+
   async onSignOut(): Promise<void> {
     this.authService
       .logout()

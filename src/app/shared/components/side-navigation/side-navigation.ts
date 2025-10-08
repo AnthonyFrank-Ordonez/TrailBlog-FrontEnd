@@ -39,6 +39,10 @@ export class SideNavigation {
     });
   }
 
+  setActiveTab(value: string): void {
+    this.activeTab.set(value);
+  }
+
   toggleCommunities(): void {
     this.userSettingsService.updateUserSettings({
       communityExpanded: !this.currentSettings()?.communityExpanded,

@@ -3,10 +3,11 @@ import { RecentViewedPost } from './recent-viewed-post/recent-viewed-post';
 import { NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith, tap } from 'rxjs';
+import { ManageCommunitiesBar } from './manage-communities-bar/manage-communities-bar';
 
 @Component({
   selector: 'app-right-sidebar',
-  imports: [RecentViewedPost],
+  imports: [RecentViewedPost, ManageCommunitiesBar],
   templateUrl: './right-sidebar.html',
   styleUrl: './right-sidebar.css',
 })
