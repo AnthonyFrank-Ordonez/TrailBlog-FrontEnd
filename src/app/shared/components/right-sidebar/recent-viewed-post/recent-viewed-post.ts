@@ -1,16 +1,15 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { Blog } from 'src/app/core/models/interface/blogs';
-import { ZardDividerComponent } from '../divider/divider.component';
 import { DatePipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { ZardDividerComponent } from '@shared/components/divider/divider.component';
 import { PostService } from 'src/app/core/services/post.service';
 
 @Component({
-  selector: 'app-recent-view',
+  selector: 'app-recent-viewed-post',
   imports: [ZardDividerComponent, DatePipe],
-  templateUrl: './recent-view.html',
-  styleUrl: './recent-view.css',
+  templateUrl: './recent-viewed-post.html',
+  styleUrl: './recent-viewed-post.css',
 })
-export class RecentView {
+export class RecentViewedPost {
   private readonly postService = inject(PostService);
 
   posts = this.postService.posts;

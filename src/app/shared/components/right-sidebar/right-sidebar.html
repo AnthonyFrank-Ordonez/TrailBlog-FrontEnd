@@ -1,5 +1,9 @@
 <aside class="sticky top-17 bg-black text-white scrollbar-container rounded-xl">
   <div class="h-[calc(100vh-4.5rem)] overflow-y-auto hide-scrollbar">
-    <app-recent-view />
+    @switch (currentPath()) {
+      @case ('/') {
+        <app-recent-viewed-post />
+      }
+    }
   </div>
 </aside>

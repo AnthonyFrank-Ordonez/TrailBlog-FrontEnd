@@ -1,18 +1,27 @@
-import { Component, inject } from '@angular/core';
-import { ZardDividerComponent } from '../divider/divider.component';
-import { DatePipe } from '@angular/common';
-import { PostService } from 'src/app/core/services/post.service';
-import { RecentView } from '../recent-view/recent-view';
+import { Component, Signal } from '@angular/core';
+import { RecentViewedPost } from './recent-viewed-post/recent-viewed-post';
+import { NavigationEnd, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map, startWith, tap } from 'rxjs';
 
 @Component({
   selector: 'app-right-sidebar',
-  imports: [RecentView],
+  imports: [RecentViewedPost],
   templateUrl: './right-sidebar.html',
   styleUrl: './right-sidebar.css',
 })
 export class RightSidebar {
-  // private readonly postService = inject(PostService);
-  // posts = this.postService.posts;
-  // isLoading = this.postService.isPostLoading;
-  // skeletonArray = Array(10).fill(0);
+  currentPath: Signal<string>;
+
+  constructor(private router: Router) {
+    this.currentPath = toSignal(
+      this.router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        tap((event) => console.log('Route changes: ', event.url)),
+        map((event: NavigationEnd) => event.url),
+        startWith(this.router.url),
+      ),
+      { initialValue: this.router.url },
+    );
+  }
 }
