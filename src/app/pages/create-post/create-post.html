@@ -1,1 +1,95 @@
-<p>create-post works!</p>
+<div class="px-3 lg:px-15 2xl:px-23 py-10">
+  <div class="text-gray-500 font-bold tracking-wide mb-5">
+    <h2 class="text-3xl lg:text-4xl">Create Post</h2>
+  </div>
+
+  <button
+    #toggleButton
+    (click)="showCommunitySelection()"
+    class="relative px-3 rounded-2xl cursor-pointer bg-gray-500/30 hover:bg-gray-500/35 transition-colors duration-300"
+    [class.hidden]="isCommunitySelectionSelected()"
+  >
+    <div class="flex items-center space-x-3">
+      <div
+        class="text-gray-400 absolute inset-y-0 left-0 pl-3 flex items-center bottom-[3px] pointer-events-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon icon-tabler icons-tabler-outline icon-tabler-users-group"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+          <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
+          <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+          <path d="M17 10h2a2 2 0 0 1 2 2v1" />
+          <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+          <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
+        </svg>
+      </div>
+
+      <span class="text-gray-400 max-w-5xl w-full pl-10 pr-3 py-2 font-medium"
+        >Select Community</span
+      >
+
+      <div class="text-gray-400">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M6 9l6 6l6 -6" />
+        </svg>
+      </div>
+    </div>
+  </button>
+
+  <form #formContainer class="flex flex-col">
+    <div class="relative mb-3" [class.hidden]="!isCommunitySelectionSelected()">
+      <div
+        class="absolute inset-y-0 left-0 pl-3 flex items-center bottom-[3px] pointer-events-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon icon-tabler icons-tabler-outline icon-tabler-device-ipad-horizontal-search h-5 w-5 text-gray-500"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M11.5 20h-6.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v5.5" />
+          <path d="M9 17h2" />
+          <path d="M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+          <path d="M20.2 20.2l1.8 1.8" />
+        </svg>
+      </div>
+
+      <input
+        #searchInput
+        type="text"
+        placeholder="Search your communities"
+        class="block border-gray-500/80 border rounded-md max-w-xs w-full pl-10 pr-3 py-2 text-gray-500 hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 text-sm transition-colors"
+      />
+    </div>
+  </form>
+</div>
