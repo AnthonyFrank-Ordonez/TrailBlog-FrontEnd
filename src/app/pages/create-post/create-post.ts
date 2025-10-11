@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
   DestroyRef,
@@ -17,9 +18,14 @@ import {
   ɵInternalFormsSharedModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UserCommunities } from '@core/models/interface/community';
+import { CreatePostRequest } from '@core/models/interface/posts';
 import { CommunityService } from '@core/services/community.service';
+import { MessageService } from '@core/services/message.service';
+import { PostService } from '@core/services/post.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
+import { handleHttpError } from '@shared/utils/utils';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
@@ -34,11 +40,16 @@ export class CreatePost implements OnInit {
   @ViewChild('toggleButton') toggleButton!: ElementRef;
   @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
 
+  private router = inject(Router);
   private communityService = inject(CommunityService);
+  private postService = inject(PostService);
+  private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
   private destoryRef = inject(DestroyRef);
 
   userCommunities = this.communityService.userCommunities;
+  isSubmitting = this.postService.isSubmitting;
+
   filteredUserCommunities = signal<UserCommunities[]>([]);
   isCommunitySelectionSelected = signal<boolean>(false);
   selectedCommunity = signal<UserCommunities | null>(null);
@@ -113,6 +124,21 @@ export class CreatePost implements OnInit {
     });
   }
 
+  get titleErrors() {
+    const control = this.postForm.get('title');
+    return control?.errors && control.touched;
+  }
+
+  get contentErrors() {
+    const control = this.postForm.get('content');
+    return control?.errors && control.touched;
+  }
+
+  get communityErrors() {
+    const control = this.postForm.get('communityId');
+    return control?.errors && control.touched;
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     if (!this.isCommunitySelectionSelected()) return;
@@ -121,9 +147,33 @@ export class CreatePost implements OnInit {
     const clickedButton = this.toggleButton?.nativeElement.contains(event.target);
     const clickedDropdown = this.dropdownContainer?.nativeElement.contains(event.target);
 
-    if (!clickedInsideForm && !clickedButton && !clickedDropdown) {
+    if (clickedInsideForm && !clickedButton && !clickedDropdown) {
       this.isCommunitySelectionSelected.set(false);
       this.searchControl.setValue('');
     }
+  }
+
+  onPostSubmit() {
+    if (this.postForm.invalid) {
+      return;
+    }
+
+    const postData: CreatePostRequest = {
+      title: this.postForm.value.title.trim(),
+      content: this.postForm.value.content.trim(),
+      communityId: this.postForm.value.communityId,
+    };
+
+    this.postService
+      .createPost(postData)
+      .pipe(takeUntilDestroyed(this.destoryRef))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/']);
+        },
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
   }
 }

@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Post } from '@core/models/interface/posts';
-import { catchError, finalize, firstValueFrom, of, tap } from 'rxjs';
+import { CreatePostRequest, Post } from '@core/models/interface/posts';
+import { catchError, finalize, firstValueFrom, of, tap, throwError } from 'rxjs';
 import { MessageService } from './message.service';
 import { handleHttpError } from '@shared/utils/utils';
 import { environment } from '@env/environment';
@@ -16,7 +16,10 @@ export class PostService {
   posts = this.#posts.asReadonly();
 
   #isPostLoading = signal<boolean>(false);
+  #isSubmitting = signal<boolean>(false);
+
   isPostLoading = this.#isPostLoading.asReadonly();
+  isSubmitting = this.#isSubmitting.asReadonly();
 
   env = environment;
 
@@ -43,5 +46,22 @@ export class PostService {
       this.#isPostLoading.set(false);
       console.error('An error occured: ', error);
     }
+  }
+
+  createPost(postData: CreatePostRequest) {
+    this.#isSubmitting.set(true);
+
+    return this.http.post<Post>(`${this.env.apiRoot}/post`, postData).pipe(
+      tap(() => console.log('creating posts...')),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+      tap((post) => {
+        this.#posts.update((values) => [...values, post]);
+      }),
+      finalize(() => {
+        this.#isSubmitting.set(false);
+      }),
+    );
   }
 }

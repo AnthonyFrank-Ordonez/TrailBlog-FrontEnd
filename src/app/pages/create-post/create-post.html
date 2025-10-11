@@ -97,7 +97,7 @@
     }
   </button>
 
-  <form [formGroup]="postForm" #formContainer class="flex flex-col">
+  <form [formGroup]="postForm" (ngSubmit)="onPostSubmit()" #formContainer class="flex flex-col">
     <!-- Community -->
     <div class="relative mb-3" [class.hidden]="!isCommunitySelectionSelected()">
       <div
@@ -135,28 +135,30 @@
       <!-- Dropdown container -->
       <div
         #dropdownContainer
-        class="absolute z-10 mt-2 max-w-xs w-full bg-primary border border-white/30 rounded-md"
+        class="scrollbar-container absolute z-10 mt-2 max-w-xs w-full bg-primary border border-white/30 rounded-md"
       >
-        @if (filteredUserCommunities().length === 0) {
-          <div class="px-4 py-3 text-gray-400 text-sm">No Communities Found</div>
-        } @else {
-          @for (community of filteredUserCommunities(); track community.id) {
-            <div
-              (click)="selectCommunity(community)"
-              class="px-4 py-3 hover:bg-gray-700/50 cursor-pointer transition-colors border-b border-gray-700/50 last:border-b-0"
-            >
-              <div class="flex items-center space-x-3 text-white">
-                <div class="w-7 h-7 bg-green-500 rounded-full flex items-center justify-center">
-                  <span class="text-white text-xs lg:text-sm font-bold">{{
-                    community.communityName | initials
-                  }}</span>
-                </div>
+        <div class="hide-scrollbar max-h-64 overflow-y-auto">
+          @if (filteredUserCommunities().length === 0) {
+            <div class="px-4 py-3 text-gray-400 text-sm">No Communities Found</div>
+          } @else {
+            @for (community of filteredUserCommunities(); track community.id) {
+              <div
+                (click)="selectCommunity(community)"
+                class="px-4 py-3 hover:bg-gray-700/50 cursor-pointer transition-colors border-b border-gray-700/50 last:border-b-0"
+              >
+                <div class="flex items-center space-x-3 text-white">
+                  <div class="w-7 h-7 bg-green-500 rounded-full flex items-center justify-center">
+                    <span class="text-white text-xs lg:text-sm font-bold">{{
+                      community.communityName | initials
+                    }}</span>
+                  </div>
 
-                <span class="font-medium">{{ community.communityName }}</span>
+                  <span class="font-medium">{{ community.communityName }}</span>
+                </div>
               </div>
-            </div>
+            }
           }
-        }
+        </div>
       </div>
     </div>
 
@@ -164,7 +166,32 @@
     <div
       class="mt-8 flex flex-col w-full bg-primary border border-white/30 px-3.5 py-1 rounded-md gap-1"
     >
-      <label for="title" class="text-gray-500 font-light form-label">Title</label>
+      <div class="flex justify-between space-x-2">
+        <label for="content" class="text-gray-500 font-light form-label">Title</label>
+        @if (titleErrors) {
+          <div class="flex items-center space-x-1 text-red-700">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-exclamation-circle w-4 h-4 mt-[-3px]"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+              <path d="M12 9v4" />
+              <path d="M12 16v.01" />
+            </svg>
+
+            <span class="text-sm">Title is required</span>
+          </div>
+        }
+      </div>
       <input
         id="title"
         formControlName="title"
@@ -173,10 +200,37 @@
       />
     </div>
 
+    <!-- Content -->
     <div
-      class="mt-8 mb-5 flex flex-col w-full bg-primary border border-white/30 px-3.5 py-1 rounded-md gap-1"
+      class="mt-8 flex flex-col w-full bg-primary border border-white/30 px-3.5 py-1 rounded-md gap-1"
     >
-      <label for="content" class="text-gray-500 font-light form-label">Content</label>
+      <div class="flex justify-between space-x-2">
+        <label for="content" class="text-gray-500 font-light form-label">Content</label>
+        @if (contentErrors) {
+          <div class="flex items-center space-x-1 text-red-700">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-exclamation-circle w-4 h-4 mt-[-3px]"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+              <path d="M12 9v4" />
+              <path d="M12 16v.01" />
+            </svg>
+
+            <span class="text-sm">Content is required</span>
+          </div>
+        }
+      </div>
+
       <textarea
         placeholder="What's on your mind?"
         id="content"
@@ -187,13 +241,53 @@
       ></textarea>
     </div>
 
-    <div class="flex justify-end">
+    <div class="flex justify-end mt-5">
       <button
         type="submit"
         [disabled]="postForm.invalid"
         class="text-white px-8 py-3 font-medium text-sm cursor-pointer bg-secondary rounded-full transition-colors duration-300 hover:bg-secondary/80 disabled:bg-gray-500/20 disabled:text-gray-600 disabled:cursor-not-allowed max-w-fit w-full"
       >
-        Create Post
+        @if (this.isSubmitting()) {
+          <div class="flex items-center justify-center py-2.5 px-8">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="w-8 h-8 absolute">
+              <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="40" cy="100">
+                <animate
+                  attributeName="opacity"
+                  calcMode="spline"
+                  dur="2"
+                  values="1;0;1;"
+                  keySplines=".5 0 .5 1;.5 0 .5 1"
+                  repeatCount="indefinite"
+                  begin="-.4"
+                ></animate>
+              </circle>
+              <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="100" cy="100">
+                <animate
+                  attributeName="opacity"
+                  calcMode="spline"
+                  dur="2"
+                  values="1;0;1;"
+                  keySplines=".5 0 .5 1;.5 0 .5 1"
+                  repeatCount="indefinite"
+                  begin="-.2"
+                ></animate>
+              </circle>
+              <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="160" cy="100">
+                <animate
+                  attributeName="opacity"
+                  calcMode="spline"
+                  dur="2"
+                  values="1;0;1;"
+                  keySplines=".5 0 .5 1;.5 0 .5 1"
+                  repeatCount="indefinite"
+                  begin="0"
+                ></animate>
+              </circle>
+            </svg>
+          </div>
+        } @else {
+          Create Post
+        }
       </button>
     </div>
   </form>

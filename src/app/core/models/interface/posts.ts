@@ -1,3 +1,5 @@
+import { Comment } from './comments';
+
 export interface Post {
   id: string;
   title: string;
@@ -8,7 +10,13 @@ export interface Post {
   username: string;
   communityName: string;
   communityId: string;
-  comments: Array<string> | null;
   totalLike: number;
   totalComment: number;
+  comments?: Comment[] | null;
+}
+
+export interface CreatePostRequest {
+  title: string;
+  content: string;
+  communityId: string;
 }
