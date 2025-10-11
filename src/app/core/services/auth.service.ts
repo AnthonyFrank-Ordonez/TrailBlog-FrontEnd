@@ -2,7 +2,13 @@ import { computed, effect, inject, Injectable, signal, untracked } from '@angula
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { environment } from '@env/environment';
-import { AuthResponse, Credentials, LoginResponse, RegisterData } from '../models/interface/auth';
+import {
+  AuthResponse,
+  Credentials,
+  LoginResponse,
+  RefreshTokenRequest,
+  RegisterData,
+} from '../models/interface/auth';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -92,6 +98,24 @@ export class AuthService {
         this.userService.clearUser();
       }),
     );
+  }
+
+  refreshUserToken(refreshData: RefreshTokenRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.env.apiRoot}/auth/refresh-token`, refreshData).pipe(
+      tap(() => console.log('Refreshing token...')),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+      tap((response) => {
+        this.setAuth(response);
+      }),
+    );
+  }
+
+  setAuth(authResponse: AuthResponse) {
+    this.#tokenSignal.set(authResponse.accessToken);
+    this.#refreshTokenSignal.set(authResponse.refreshToken);
+    this.userService.setUser(authResponse.user);
   }
 
   private initializeTokens(): void {

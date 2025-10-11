@@ -26,3 +26,8 @@ export interface AuthResponse {
   refreshToken: string;
   user: User;
 }
+
+export interface RefreshTokenRequest {
+  id: string | undefined;
+  refreshToken: string | null;
+}
