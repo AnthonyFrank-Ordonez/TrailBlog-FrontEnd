@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { CommunityService } from '@core/services/community.service';
 import { MessageService } from '@core/services/message.service';
+import { ModalService } from '@core/services/modal.service';
 import { UserSettingsService } from '@core/services/user-settings.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { handleHttpError } from '@shared/utils/utils';
@@ -22,6 +23,7 @@ export class SideNavigation {
   private communityService = inject(CommunityService);
   private messageService = inject(MessageService);
   private destroyRef = inject(DestroyRef);
+  private modalService = inject(ModalService);
 
   activeTab = signal<string>('home');
   currentSettings = this.userSettingsService.userSettings;
@@ -58,6 +60,14 @@ export class SideNavigation {
   toggleCustomFeed(): void {
     this.userSettingsService.updateUserSettings({
       customFeedExpanded: !this.currentSettings()?.customFeedExpanded,
+    });
+  }
+
+  showCommunityForm() {
+    this.modalService.openModal({
+      title: 'Tell us about your community',
+      description:
+        'A name and description help people understand what your community is all about.',
     });
   }
 

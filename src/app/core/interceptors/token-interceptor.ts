@@ -42,7 +42,6 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   return next(newRequest).pipe(
     catchError((error: unknown) => {
       if (error instanceof HttpErrorResponse && error.status === 401) {
-        debugger;
         return handle401Error(req, next, authService, refreshData);
       } else if (
         error instanceof HttpErrorResponse &&
@@ -51,7 +50,6 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
       ) {
         const apiError = error.error as ApiError;
         if (apiError.status === 401) {
-          debugger;
           return handle401Error(req, next, authService, refreshData);
         }
       }
@@ -83,7 +81,6 @@ function handle401Error<T>(
         isRefreshing = false;
         const newToken = response.accessToken;
 
-        debugger;
         refreshTokenSubject.next(newToken);
         return next(addToken(request, newToken));
       }),

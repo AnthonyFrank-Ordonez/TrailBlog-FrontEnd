@@ -14,4 +14,13 @@
     <!-- <app-recent-view class="hidden lg:block lg:col-span-3 2xl:col-span-2"></app-recent-view> -->
     <app-right-sidebar class="hidden lg:block lg:col-span-3 2xl:col-span-2"></app-right-sidebar>
   </div>
+
+  <app-modal
+    [isOpen]="isModalOpen()"
+    [title]="modalTitle()"
+    [description]="modalDescription()"
+    (closeModal)="closeModal()"
+  >
+    <app-community-form></app-community-form
+  ></app-modal>
 </main>
