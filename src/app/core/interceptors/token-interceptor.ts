@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { ApiError } from '@core/models/interface/api-error';
-import { AuthResponse, RefreshTokenRequest } from '@core/models/interface/auth';
+import { RefreshTokenRequest } from '@core/models/interface/auth';
 import { AuthService } from '@core/services/auth.service';
 import { UserService } from '@core/services/user.service';
 import { BehaviorSubject, catchError, filter, Observable, switchMap, take, throwError } from 'rxjs';
