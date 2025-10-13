@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -6,6 +6,7 @@ import {
   Validators,
   ɵInternalFormsSharedModule,
 } from '@angular/forms';
+import { ModalService } from '@core/services/modal.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 
 @Component({
@@ -15,11 +16,24 @@ import { InitialsPipe } from '@shared/pipes/initials-pipe';
   styleUrl: './community-form.css',
 })
 export class CommunityForm {
+  private modalService = inject(ModalService);
   private fb = inject(FormBuilder);
   private readonly NAME_MAX_LENGTH = 30;
   private readonly DESCIPTION_MAX_LENGTH = 300;
 
   communityForm: FormGroup = this.createForm();
+
+  constructor() {
+    effect(() => {
+      const isModalOpen = this.modalService.isModalOpen();
+
+      if (!isModalOpen) {
+        setTimeout(() => {
+          this.resetForm();
+        }, 350);
+      }
+    });
+  }
 
   private createForm(): FormGroup {
     return this.fb.group({
@@ -36,6 +50,10 @@ export class CommunityForm {
         Validators.minLength(10),
       ],
     });
+  }
+
+  private resetForm(): void {
+    this.communityForm.reset();
   }
 
   get communityName(): string {
