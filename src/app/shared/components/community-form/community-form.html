@@ -40,13 +40,15 @@
       <div class="flex justify-start gap-3 pt-3 dark:border-gray-700">
         <button
           type="button"
+          [disabled]="isSubmitting()"
           (click)="cancelCreateCommunity()"
-          class="px-5 py-3 text-sm cursor-pointer text-white bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors font-medium"
+          class="px-5 py-3 text-sm cursor-pointer text-white bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors font-medium disabled:cursor-not-allowed disabled:bg-gray-500/20 disabled:text-gray-600"
         >
           Cancel
         </button>
         <button
           type="submit"
+          [disabled]="communityForm.invalid"
           class="px-5 py-3 text-sm text-white bg-secondary hover:bg-secondary/80 disabled:cursor-not-allowed rounded-xl transition-colors font-medium cursor-pointer"
         >
           @if (this.isSubmitting()) {

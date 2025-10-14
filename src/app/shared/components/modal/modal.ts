@@ -1,12 +1,14 @@
 import {
   Component,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   Output,
   signal,
   SimpleChanges,
 } from '@angular/core';
+import { CommunityService } from '@core/services/community.service';
 
 @Component({
   selector: 'app-modal',
@@ -20,7 +22,10 @@ export class Modal implements OnChanges {
   @Input() description = '';
   @Output() closeModal = new EventEmitter<void>();
 
+  private communityService = inject(CommunityService);
+
   isClosing = signal<boolean>(false);
+  isCommunityCreating = this.communityService.isSubmitting;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen']) {
