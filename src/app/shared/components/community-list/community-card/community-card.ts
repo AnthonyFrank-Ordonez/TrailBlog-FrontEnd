@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { UserCommunities } from '@core/models/interface/community';
+import { Communities } from '@core/models/interface/community';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 
 @Component({
@@ -9,5 +9,5 @@ import { InitialsPipe } from '@shared/pipes/initials-pipe';
   styleUrl: './community-card.css',
 })
 export class CommunityCard {
-  community = input.required<UserCommunities>();
+  community = input.required<Communities>();
 }

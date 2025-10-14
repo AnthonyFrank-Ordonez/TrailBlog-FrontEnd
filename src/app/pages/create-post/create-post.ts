@@ -19,7 +19,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserCommunities } from '@core/models/interface/community';
+import { Communities } from '@core/models/interface/community';
 import { CreatePostRequest } from '@core/models/interface/posts';
 import { CommunityService } from '@core/services/community.service';
 import { MessageService } from '@core/services/message.service';
@@ -45,14 +45,14 @@ export class CreatePost implements OnInit {
   private postService = inject(PostService);
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
-  private destoryRef = inject(DestroyRef);
+  private destroyRef = inject(DestroyRef);
 
   userCommunities = this.communityService.userCommunities;
   isSubmitting = this.postService.isSubmitting;
 
-  filteredUserCommunities = signal<UserCommunities[]>([]);
+  filteredUserCommunities = signal<Communities[]>([]);
   isCommunitySelectionSelected = signal<boolean>(false);
-  selectedCommunity = signal<UserCommunities | null>(null);
+  selectedCommunity = signal<Communities | null>(null);
 
   searchControl = new FormControl('');
   postForm: FormGroup = this.createForm();
@@ -64,7 +64,7 @@ export class CreatePost implements OnInit {
     console.log(this.filteredUserCommunities());
 
     this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destoryRef))
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((searchTerm) => {
         this.filterUserCommunities(searchTerm || '');
       });
@@ -106,7 +106,7 @@ export class CreatePost implements OnInit {
     }, 0);
   }
 
-  selectCommunity(community: UserCommunities) {
+  selectCommunity(community: Communities) {
     this.selectedCommunity.set(community);
 
     this.postForm.patchValue({
@@ -166,7 +166,7 @@ export class CreatePost implements OnInit {
 
     this.postService
       .createPost(postData)
-      .pipe(takeUntilDestroyed(this.destoryRef))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.router.navigate(['/']);

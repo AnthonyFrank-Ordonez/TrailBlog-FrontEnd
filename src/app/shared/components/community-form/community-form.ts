@@ -1,4 +1,6 @@
-import { Component, effect, inject } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, DestroyRef, effect, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormGroup,
@@ -6,8 +8,12 @@ import {
   Validators,
   ɵInternalFormsSharedModule,
 } from '@angular/forms';
+import { CreateCommunityRequest } from '@core/models/interface/community';
+import { CommunityService } from '@core/services/community.service';
+import { MessageService } from '@core/services/message.service';
 import { ModalService } from '@core/services/modal.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
+import { handleHttpError } from '@shared/utils/utils';
 
 @Component({
   selector: 'app-community-form',
@@ -17,9 +23,14 @@ import { InitialsPipe } from '@shared/pipes/initials-pipe';
 })
 export class CommunityForm {
   private modalService = inject(ModalService);
+  private communityService = inject(CommunityService);
+  private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
+  private destroyRef = inject(DestroyRef);
   private readonly NAME_MAX_LENGTH = 30;
   private readonly DESCIPTION_MAX_LENGTH = 300;
+
+  isSubmitting = this.communityService.isSubmitting;
 
   communityForm: FormGroup = this.createForm();
 
@@ -39,15 +50,15 @@ export class CommunityForm {
     return this.fb.group({
       name: [
         '',
-        Validators.required,
-        Validators.maxLength(this.NAME_MAX_LENGTH),
-        Validators.minLength(3),
+        [Validators.required, Validators.maxLength(this.NAME_MAX_LENGTH), Validators.minLength(3)],
       ],
       description: [
         '',
-        Validators.required,
-        Validators.maxLength(this.DESCIPTION_MAX_LENGTH),
-        Validators.minLength(10),
+        [
+          Validators.required,
+          Validators.maxLength(this.DESCIPTION_MAX_LENGTH),
+          Validators.minLength(10),
+        ],
       ],
     });
   }
@@ -76,5 +87,26 @@ export class CommunityForm {
     if (this.communityForm.invalid) {
       return;
     }
+
+    const communityFormData: CreateCommunityRequest = {
+      name: this.communityForm.value.name.trim(),
+      description: this.communityForm.value.description.trim(),
+    };
+
+    this.communityService
+      .createCommunity(communityFormData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.modalService.closeModal();
+        },
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
+  }
+
+  cancelCreateCommunity(): void {
+    this.modalService.closeModal();
   }
 }

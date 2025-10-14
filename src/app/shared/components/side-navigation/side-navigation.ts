@@ -1,5 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, effect, inject, OnInit, Signal, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  Signal,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
@@ -25,6 +34,8 @@ export class SideNavigation {
   private destroyRef = inject(DestroyRef);
   private modalService = inject(ModalService);
 
+  private readonly MAX_COMMUNITIES_DISPLAY = 5;
+
   activeTab = signal<string>('home');
   currentSettings = this.userSettingsService.userSettings;
   isAuthenticated = this.authService.isAuthenticated;
@@ -32,6 +43,22 @@ export class SideNavigation {
   userCommunitiesLoading = this.communityService.userCommunitiesLoading;
 
   skeletonArray = Array(3).fill(0);
+
+  displayedCommunities = computed(() => {
+    const communities = this.userCommunities();
+
+    if (communities.length <= this.MAX_COMMUNITIES_DISPLAY) {
+      return communities;
+    }
+
+    return communities.slice(0, this.MAX_COMMUNITIES_DISPLAY);
+  });
+
+  hasMoreCommunities = computed(() => {
+    const communities = this.userCommunities();
+
+    return communities.length > this.MAX_COMMUNITIES_DISPLAY;
+  });
 
   constructor() {
     effect(() => {

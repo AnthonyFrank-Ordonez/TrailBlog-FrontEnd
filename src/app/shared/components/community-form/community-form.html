@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 -mt-3">
   <!-- left side form -->
   <div class="order-2 lg:order-1">
-    <form [formGroup]="communityForm" class="space-y-3">
+    <form [formGroup]="communityForm" (ngSubmit)="handleCommunitySubmit()" class="space-y-3">
       <!-- Community Name -->
       <div>
         <label for="community-name" class="block text-gray-500 font-medium mb-2"
@@ -40,6 +40,7 @@
       <div class="flex justify-start gap-3 pt-3 dark:border-gray-700">
         <button
           type="button"
+          (click)="cancelCreateCommunity()"
           class="px-5 py-3 text-sm cursor-pointer text-white bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors font-medium"
         >
           Cancel
@@ -48,7 +49,51 @@
           type="submit"
           class="px-5 py-3 text-sm text-white bg-secondary hover:bg-secondary/80 disabled:cursor-not-allowed rounded-xl transition-colors font-medium cursor-pointer"
         >
-          Create Community
+          @if (this.isSubmitting()) {
+            <div class="flex items-center justify-center py-2.5 px-15">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 200 200"
+                class="w-8 h-8 absolute"
+              >
+                <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="40" cy="100">
+                  <animate
+                    attributeName="opacity"
+                    calcMode="spline"
+                    dur="2"
+                    values="1;0;1;"
+                    keySplines=".5 0 .5 1;.5 0 .5 1"
+                    repeatCount="indefinite"
+                    begin="-.4"
+                  ></animate>
+                </circle>
+                <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="100" cy="100">
+                  <animate
+                    attributeName="opacity"
+                    calcMode="spline"
+                    dur="2"
+                    values="1;0;1;"
+                    keySplines=".5 0 .5 1;.5 0 .5 1"
+                    repeatCount="indefinite"
+                    begin="-.2"
+                  ></animate>
+                </circle>
+                <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="160" cy="100">
+                  <animate
+                    attributeName="opacity"
+                    calcMode="spline"
+                    dur="2"
+                    values="1;0;1;"
+                    keySplines=".5 0 .5 1;.5 0 .5 1"
+                    repeatCount="indefinite"
+                    begin="0"
+                  ></animate>
+                </circle>
+              </svg>
+            </div>
+          } @else {
+            Create Community
+          }
         </button>
       </div>
     </form>
