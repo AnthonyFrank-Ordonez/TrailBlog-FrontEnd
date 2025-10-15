@@ -1,8 +1,15 @@
 <div class="rounded-lg px-4 py-3 hover:bg-gray-800/30 cursor-pointer">
   <div class="flex items-center justify-between">
     <div class="flex items-center space-x-2 font-light text-sm">
-      <p class="text-gray-500 font-bold">{{ post().communityName }}</p>
-      <p class="text-gray-500">{{ post().createdAt | date: 'mediumDate' }}</p>
+      <div class="w-5.5 h-5.5 bg-secondary rounded-full flex items-center justify-center">
+        <span class="text-white text-xs lg:text-[10px] font-bold">{{
+          post().communityName | initials
+        }}</span>
+      </div>
+      <p class="text-gray-500 font-bold line-clamp-1 break-words text-xs lg:text-sm">
+        {{ post().communityName }}
+      </p>
+      <p class="text-gray-500 text-xs lg:text-sm">{{ post().createdAt | date: 'mediumDate' }}</p>
     </div>
 
     <div class="flex items-center space-x-1">

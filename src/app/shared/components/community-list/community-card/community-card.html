@@ -2,7 +2,7 @@
   <div class="flex justify-between items-center">
     <div class="flex items-center space-x-2">
       <!-- Community Image -->
-      <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+      <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
         <span class="text-white text-xs lg:text-sm font-bold">{{
           community().communityName | initials
         }}</span>
@@ -39,7 +39,9 @@
         </svg>
       </button>
 
-      <button class="cursor-pointer px-3.5 py-2 rounded-full text-[13px] bg-secondary font-medium">
+      <button
+        class="cursor-pointer px-3.5 py-2 rounded-full text-[13px] bg-secondary font-medium hover:bg-secondary/80 transition-colors duration-300"
+      >
         Leave
       </button>
     </div>

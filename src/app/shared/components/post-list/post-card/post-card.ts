@@ -5,6 +5,7 @@ import { CommunityService } from '@core/services/community.service';
 import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropdown-item.component';
 import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
 import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
+import { InitialsPipe } from '@shared/pipes/initials-pipe';
 
 @Component({
   selector: 'app-post-card',
@@ -14,6 +15,7 @@ import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trig
     ZardDropdownMenuItemComponent,
     ZardDropdownDirective,
     NgClass,
+    InitialsPipe,
   ],
   templateUrl: './post-card.html',
   styleUrl: './post-card.css',

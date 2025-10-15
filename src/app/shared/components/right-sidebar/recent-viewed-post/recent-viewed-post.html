@@ -39,7 +39,14 @@
       @for (post of posts(); track post.id) {
         <div class="px-3 py-2 w-full cursor-pointer hover:bg-gray-800/50 rounded-lg">
           <div class="flex justify-between items-center mb-2">
-            <span class="text-gray-400 text-xs">{{ post.communityName }}</span>
+            <div class="flex items-center space-x-1">
+              <div class="w-5 h-5 bg-secondary rounded-full flex items-center justify-center">
+                <span class="text-white text-xs lg:text-[10px] font-bold">{{
+                  post.communityName | initials
+                }}</span>
+              </div>
+              <span class="text-gray-400 text-xs">{{ post.communityName }}</span>
+            </div>
             <span class="text-gray-500 text-xs">{{ post.createdAt | date: 'mediumDate' }}</span>
           </div>
 
