@@ -54,12 +54,6 @@ export class SideNavigation {
     return communities.slice(0, this.MAX_COMMUNITIES_DISPLAY);
   });
 
-  hasMoreCommunities = computed(() => {
-    const communities = this.userCommunities();
-
-    return communities.length > this.MAX_COMMUNITIES_DISPLAY;
-  });
-
   constructor() {
     effect(() => {
       if (this.isAuthenticated()) {
