@@ -89,6 +89,8 @@ export class SideNavigation {
       title: 'Tell us about your community',
       description:
         'A name and description help people understand what your community is all about.',
+      content: 'community-form',
+      type: 'form',
     });
   }
 

@@ -1,31 +1,52 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { ModalConfig } from '@core/models/interface/modal';
+import { ModalConfig, ModalData } from '@core/models/interface/modal';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ModalService {
-  #isOpen = signal<boolean>(false);
-  #config = signal<ModalConfig>({
+  private readonly DEFAULT_CONFIG: ModalConfig = {
+    type: 'generic',
     title: '',
     description: '',
-  });
+  };
 
-  isModalOpen = this.#isOpen.asReadonly();
-  title = computed(() => this.#config().title || '');
-  description = computed(() => this.#config().description || '');
+  #isOpenSignal = signal<boolean>(false);
+  #modalConfigSignal = signal<ModalConfig>(this.DEFAULT_CONFIG);
+
+  isModalOpen = this.#isOpenSignal.asReadonly();
+  modalConfig = this.#modalConfigSignal.asReadonly();
+
+  title = computed(() => this.#modalConfigSignal()?.title ?? '');
+  description = computed(() => this.#modalConfigSignal()?.description ?? '');
 
   openModal(config: ModalConfig) {
-    this.#config.update((conf) => ({
-      conf,
-      ...config,
-    }));
-    this.#isOpen.set(true);
+    this.#modalConfigSignal.set(config);
+    this.#isOpenSignal.set(true);
     document.body.classList.add('overflow-hidden');
   }
 
   closeModal() {
-    this.#isOpen.set(false);
+    this.#isOpenSignal.set(false);
+
+    setTimeout(() => {
+      this.#modalConfigSignal.set(this.DEFAULT_CONFIG);
+    }, 350);
+
     document.body.classList.remove('overflow-hidden');
+  }
+
+  confirm() {
+    const currentModalConfig = this.#modalConfigSignal();
+
+    if (currentModalConfig?.type === 'community' && currentModalConfig.onConfirm) {
+      currentModalConfig.onConfirm(currentModalConfig.data.communityId);
+    }
+
+    this.closeModal();
+  }
+
+  cancel() {
+    this.closeModal();
   }
 }

@@ -15,6 +15,7 @@ export class CommunityService {
   #userCommunities = signal<Communities[]>([]);
   #userCommunitiesLoading = signal<boolean>(false);
   #isSubmitting = signal<boolean>(false);
+  #isLeavingSignal = signal<boolean>(false);
 
   user = this.userService.user;
   env = environment;
@@ -28,6 +29,7 @@ export class CommunityService {
     return this.http.get<Communities[]>(`${this.env.apiRoot}/community/user`).pipe(
       tap((response) => {
         console.log('fetching user communities...');
+
         this.#userCommunities.set(response);
       }),
       catchError((error: HttpErrorResponse) => {
@@ -41,15 +43,37 @@ export class CommunityService {
     this.#isSubmitting.set(true);
 
     return this.http.post<Communities>(`${this.env.apiRoot}/community`, communityFormData).pipe(
-      tap(() => console.log('Creating community. Please wait...')),
+      tap((data) => {
+        console.log('Creating community. Please wait...');
+
+        this.#userCommunities.update((value) => [...value, data]);
+      }),
       catchError((error) => {
         return throwError(() => error);
       }),
-      tap((data) => {
-        this.#userCommunities.update((value) => [...value, data]);
-      }),
       finalize(() => {
         this.#isSubmitting.set(false);
+      }),
+    );
+  }
+
+  leaveCommunity(communityId: string | undefined) {
+    this.#isLeavingSignal.set(true);
+
+    return this.http.post(`${this.env.apiRoot}/community/${communityId}/leave`, null).pipe(
+      tap(() => {
+        console.log('Leaving community...');
+
+        this.#userCommunities.update((communities) => {
+          return communities.filter((community) => community.id !== communityId);
+        });
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+
+      finalize(() => {
+        this.#isLeavingSignal.set(false);
       }),
     );
   }

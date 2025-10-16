@@ -17,10 +17,22 @@
 
   <app-modal
     [isOpen]="isModalOpen()"
-    [title]="modalTitle()"
-    [description]="modalDescription()"
-    (closeModal)="closeModal()"
+    [title]="modalConfig().title"
+    [description]="modalConfig().description"
+    (closeModal)="onModalCancel()"
   >
-    <app-community-form></app-community-form
-  ></app-modal>
+    @switch (modalConfig().content) {
+      @case ('community-form') {
+        <app-community-form></app-community-form>
+      }
+
+      @case ('leave-community') {
+        <app-confirmation-modal
+          confirmText="Leave Community"
+          (cancelFn)="onModalCancel()"
+          (confirmFn)="onModalConfirm()"
+        ></app-confirmation-modal>
+      }
+    }
+  </app-modal>
 </main>

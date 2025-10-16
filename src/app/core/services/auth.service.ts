@@ -60,54 +60,58 @@ export class AuthService {
 
   login(credentials: Credentials): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.env.apiRoot}/auth/login`, credentials).pipe(
-      tap(() => console.log('logging in...')),
-      catchError((error) => {
-        return throwError(() => error);
-      }),
       tap((response) => {
+        console.log('logging in...');
+
         this.#tokenSignal.set(response.accessToken);
         this.userService.setUser(response.user);
         this.#refreshTokenSignal.set(response.refreshToken);
+      }),
+      catchError((error) => {
+        return throwError(() => error);
       }),
     );
   }
 
   register(userData: RegisterData): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.env.apiRoot}/auth/register`, userData).pipe(
-      tap(() => console.log('Signing up user, please wait...')),
-      catchError((error) => {
-        return throwError(() => error);
-      }),
       tap((response) => {
+        console.log('Signing up user, please wait...');
+
         this.#tokenSignal.set(response.accessToken);
         this.#refreshTokenSignal.set(response.refreshToken);
         this.userService.setUser(response.user);
+      }),
+      catchError((error) => {
+        return throwError(() => error);
       }),
     );
   }
 
   logout(): Observable<void | object> {
     return this.http.post(`${this.env.apiRoot}/auth/logout`, null).pipe(
-      tap(() => console.log('Signing out user...')),
-      catchError((error) => {
-        return throwError(() => error);
-      }),
       tap(() => {
+        console.log('Signing out user...');
+
         this.#tokenSignal.set(null);
         this.#refreshTokenSignal.set(null);
         this.userService.clearUser();
+      }),
+      catchError((error) => {
+        return throwError(() => error);
       }),
     );
   }
 
   refreshUserToken(refreshData: RefreshTokenRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.env.apiRoot}/auth/refresh-token`, refreshData).pipe(
-      tap(() => console.log('Refreshing token...')),
+      tap((response) => {
+        console.log('Refreshing token...');
+
+        this.setAuth(response);
+      }),
       catchError((error) => {
         return throwError(() => error);
-      }),
-      tap((response) => {
-        this.setAuth(response);
       }),
     );
   }
