@@ -49,12 +49,25 @@ export class PostCard {
         data: { communityId: this.post().communityId },
         onConfirm: (communityId) => this.onLeaveConfirmed(communityId),
       });
+    } else {
+      this.joinCommunity(this.post().communityId);
     }
   }
 
   onLeaveConfirmed(communityId: string): void {
     this.communityService
       .leaveCommunity(communityId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
+  }
+
+  joinCommunity(communityId: string): void {
+    this.communityService
+      .joinCommunity(communityId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {

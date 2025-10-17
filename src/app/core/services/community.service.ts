@@ -4,6 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@env/environment';
 import { CreateCommunityRequest, Communities } from '@core/models/interface/community';
 import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
+import { OperationResult } from '@core/models/interface/operations';
 
 @Injectable({
   providedIn: 'root',
@@ -61,24 +62,40 @@ export class CommunityService {
     );
   }
 
-  leaveCommunity(communityId: string | undefined) {
+  leaveCommunity(communityId: string | undefined): Observable<OperationResult> {
     this.#isLeavingSignal.set(true);
 
-    return this.http.post(`${this.env.apiRoot}/community/${communityId}/leave`, null).pipe(
-      tap(() => {
-        console.log('Leaving community...');
+    return this.http
+      .post<OperationResult>(`${this.env.apiRoot}/community/${communityId}/leave`, null)
+      .pipe(
+        tap(() => {
+          console.log('Leaving community...');
 
-        this.#userCommunities.update((communities) => {
-          return communities.filter((community) => community.id !== communityId);
-        });
-      }),
-      catchError((error) => {
-        return throwError(() => error);
-      }),
+          this.#userCommunities.update((communities) => {
+            return communities.filter((community) => community.id !== communityId);
+          });
+        }),
+        catchError((error) => {
+          return throwError(() => error);
+        }),
 
-      finalize(() => {
-        this.#isLeavingSignal.set(false);
-      }),
-    );
+        finalize(() => {
+          this.#isLeavingSignal.set(false);
+        }),
+      );
+  }
+
+  joinCommunity(communityId: string): Observable<OperationResult> {
+    return this.http
+      .post<OperationResult>(`${this.env.apiRoot}/community/${communityId}/join`, null)
+      .pipe(
+        tap(() => {
+          console.log('Joining community...');
+          this.loadUserCommunities().subscribe();
+        }),
+        catchError((error) => {
+          return throwError(() => error);
+        }),
+      );
   }
 }
