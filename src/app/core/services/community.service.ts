@@ -39,6 +39,10 @@ export class CommunityService {
     );
   }
 
+  resetUserCommunities(): void {
+    this.#userCommunities.set([]);
+  }
+
   createCommunity(communityFormData: CreateCommunityRequest): Observable<Communities> {
     this.#isSubmitting.set(true);
 
