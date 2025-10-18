@@ -7,6 +7,7 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiError } from '@core/models/interface/api-error';
 import { RefreshTokenRequest } from '@core/models/interface/auth';
 import { AuthService } from '@core/services/auth.service';
@@ -19,6 +20,7 @@ let refreshTokenSubject = new BehaviorSubject<string | null>(null);
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const userService = inject(UserService);
+  const router = inject(Router);
 
   const token = authService.token();
   const refreshToken = authService.refreshToken();
@@ -42,16 +44,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   return next(newRequest).pipe(
     catchError((error: unknown) => {
       if (error instanceof HttpErrorResponse && error.status === 401) {
-        return handle401Error(req, next, authService, refreshData);
-      } else if (
-        error instanceof HttpErrorResponse &&
-        error.error &&
-        typeof error.error === 'object'
-      ) {
-        const apiError = error.error as ApiError;
-        if (apiError.status === 401) {
-          return handle401Error(req, next, authService, refreshData);
-        }
+        return handle401Error(req, next, authService, refreshData, router);
       }
       return throwError(() => error);
     }),
@@ -71,6 +64,7 @@ function handle401Error<T>(
   next: HttpHandlerFn,
   authService: AuthService,
   refreshData: RefreshTokenRequest,
+  router: Router,
 ): Observable<HttpEvent<unknown>> {
   if (!isRefreshing) {
     isRefreshing = true;
@@ -86,7 +80,9 @@ function handle401Error<T>(
       }),
       catchError((err): Observable<HttpEvent<T>> => {
         isRefreshing = false;
-        authService.logout();
+        authService.clearAuth();
+        router.navigate(['/login']);
+
         return throwError(() => err);
       }),
     );

@@ -63,9 +63,7 @@ export class AuthService {
       tap((response) => {
         console.log('logging in...');
 
-        this.#tokenSignal.set(response.accessToken);
-        this.userService.setUser(response.user);
-        this.#refreshTokenSignal.set(response.refreshToken);
+        this.setAuth(response);
       }),
       catchError((error) => {
         return throwError(() => error);
@@ -78,9 +76,7 @@ export class AuthService {
       tap((response) => {
         console.log('Signing up user, please wait...');
 
-        this.#tokenSignal.set(response.accessToken);
-        this.#refreshTokenSignal.set(response.refreshToken);
-        this.userService.setUser(response.user);
+        this.setAuth(response);
       }),
       catchError((error) => {
         return throwError(() => error);
@@ -93,9 +89,7 @@ export class AuthService {
       tap(() => {
         console.log('Signing out user...');
 
-        this.#tokenSignal.set(null);
-        this.#refreshTokenSignal.set(null);
-        this.userService.clearUser();
+        this.clearAuth();
       }),
       catchError((error) => {
         return throwError(() => error);
@@ -116,12 +110,6 @@ export class AuthService {
     );
   }
 
-  setAuth(authResponse: AuthResponse) {
-    this.#tokenSignal.set(authResponse.accessToken);
-    this.#refreshTokenSignal.set(authResponse.refreshToken);
-    this.userService.setUser(authResponse.user);
-  }
-
   private initializeTokens(): void {
     const storedToken = localStorage.getItem('accessToken');
     const storedRefreshToken = localStorage.getItem('refreshToken');
@@ -138,5 +126,17 @@ export class AuthService {
     if (storeUser) {
       this.userService.setUser(JSON.parse(storeUser));
     }
+  }
+
+  private setAuth(authResponse: AuthResponse | LoginResponse) {
+    this.#tokenSignal.set(authResponse.accessToken);
+    this.#refreshTokenSignal.set(authResponse.refreshToken);
+    this.userService.setUser(authResponse.user);
+  }
+
+  clearAuth() {
+    this.#tokenSignal.set(null);
+    this.#refreshTokenSignal.set(null);
+    this.userService.clearUser();
   }
 }

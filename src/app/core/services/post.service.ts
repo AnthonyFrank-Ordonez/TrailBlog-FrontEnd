@@ -52,12 +52,13 @@ export class PostService {
     this.#isSubmitting.set(true);
 
     return this.http.post<Post>(`${this.env.apiRoot}/post`, postData).pipe(
-      tap(() => console.log('creating posts...')),
+      tap((post) => {
+        console.log('creating posts...');
+
+        this.#posts.update((values) => [...values, post]);
+      }),
       catchError((error) => {
         return throwError(() => error);
-      }),
-      tap((post) => {
-        this.#posts.update((values) => [...values, post]);
       }),
       finalize(() => {
         this.#isSubmitting.set(false);

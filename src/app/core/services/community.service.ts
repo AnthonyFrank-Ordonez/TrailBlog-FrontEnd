@@ -85,13 +85,13 @@ export class CommunityService {
       );
   }
 
-  joinCommunity(communityId: string): Observable<OperationResult> {
+  joinCommunity(communityId: string): Observable<Communities> {
     return this.http
-      .post<OperationResult>(`${this.env.apiRoot}/community/${communityId}/join`, null)
+      .post<Communities>(`${this.env.apiRoot}/community/${communityId}/join`, null)
       .pipe(
-        tap(() => {
+        tap((community) => {
           console.log('Joining community...');
-          this.loadUserCommunities().subscribe();
+          this.#userCommunities.update((communities) => [...communities, community]);
         }),
         catchError((error) => {
           return throwError(() => error);
