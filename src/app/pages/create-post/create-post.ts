@@ -61,7 +61,6 @@ export class CreatePost implements OnInit {
 
   ngOnInit(): void {
     this.filteredUserCommunities.set([...this.userCommunities()]);
-    console.log(this.filteredUserCommunities());
 
     this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))

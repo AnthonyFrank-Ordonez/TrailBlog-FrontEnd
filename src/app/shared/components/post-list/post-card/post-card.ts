@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Post } from '@core/models/interface/posts';
+import { AuthService } from '@core/services/auth.service';
 import { CommunityService } from '@core/services/community.service';
 import { MessageService } from '@core/services/message.service';
 import { ModalService } from '@core/services/modal.service';
@@ -29,8 +30,10 @@ export class PostCard {
   private communityService = inject(CommunityService);
   private messageService = inject(MessageService);
   private modalService = inject(ModalService);
+  private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
 
+  isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
   post = input.required<Post>();
   modalConfig = this.modalService.modalConfig;
