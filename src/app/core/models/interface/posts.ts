@@ -13,6 +13,8 @@ export interface Post {
   totalLike: number;
   totalComment: number;
   comments?: Comment[] | null;
+  isLiked: boolean;
+  isDisliked: boolean;
 }
 
 export interface CreatePostRequest {
