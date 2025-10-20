@@ -7,6 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
 import { Credentials } from '@core/models/interface/auth';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,7 @@ export class Login {
   private messageService = inject(MessageService);
   private destroyRef = inject(DestroyRef);
 
-  isLoading = signal<boolean>(false);
+  isLoggingIn = this.authService.isLoggingIn;
 
   loginForm: FormGroup = this.createForm();
 
@@ -33,12 +34,10 @@ export class Login {
   }
 
   async onLogin() {
-    if (this.loginForm.invalid) {
+    if (this.loginForm.invalid || this.isLoggingIn()) {
       this.markFormGroupTouched(this.loginForm);
       return;
     }
-
-    this.isLoading.set(true);
 
     const credentials: Credentials = this.loginForm.value;
 
@@ -47,12 +46,10 @@ export class Login {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.isLoading.set(false);
           this.router.navigate(['/']);
         },
         error: (error: HttpErrorResponse) => {
           handleHttpError(error, this.messageService);
-          this.isLoading.set(false);
         },
       });
   }

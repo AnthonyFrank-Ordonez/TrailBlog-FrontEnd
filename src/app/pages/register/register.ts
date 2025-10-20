@@ -31,6 +31,7 @@ export class Register {
   private destroyRef = inject(DestroyRef);
 
   isLoading = signal<boolean>(false);
+  isRegistering = this.authService.isRegistering;
 
   signupForm: FormGroup = this.createForm();
 
@@ -69,11 +70,9 @@ export class Register {
   }
 
   async onSignUp() {
-    if (this.signupForm.invalid) {
+    if (this.signupForm.invalid || this.isRegistering()) {
       return;
     }
-
-    this.isLoading.set(true);
 
     const { username, email, password } = this.signupForm.value;
 
@@ -88,13 +87,10 @@ export class Register {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.isLoading.set(false);
           this.router.navigate(['/']);
         },
         error: (error: HttpErrorResponse) => {
           handleHttpError(error, this.messageService);
-
-          this.isLoading.set(false);
         },
       });
   }

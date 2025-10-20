@@ -203,10 +203,10 @@
 
       <button
         type="submit"
-        [disabled]="signupForm.invalid"
+        [disabled]="signupForm.invalid || this.isRegistering()"
         class="w-full rounded-lg bg-secondary text-white py-3.5 tracking-wider text-sm cursor-pointer transition-colors duration-300 hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent disabled:cursor-not-allowed"
       >
-        @if (this.isLoading()) {
+        @if (this.isRegistering()) {
         <div class="flex items-center justify-center py-2.5">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="w-8 h-8 absolute">
             <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="40" cy="100">

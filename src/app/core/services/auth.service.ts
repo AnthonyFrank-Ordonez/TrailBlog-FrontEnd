@@ -1,6 +1,6 @@
 import { computed, effect, inject, Injectable, signal, untracked } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import { environment } from '@env/environment';
 import {
   AuthResponse,
@@ -22,9 +22,13 @@ export class AuthService {
 
   #tokenSignal = signal<string | null>(null);
   #refreshTokenSignal = signal<string | null>(null);
+  #isLoggingInSignal = signal<boolean>(false);
+  #isRegisteringSignal = signal<boolean>(false);
 
   token = this.#tokenSignal.asReadonly();
   refreshToken = this.#refreshTokenSignal.asReadonly();
+  isLoggingIn = this.#isLoggingInSignal.asReadonly();
+  isRegistering = this.#isRegisteringSignal.asReadonly();
 
   isAuthenticated = computed(() => !!this.#tokenSignal());
 
@@ -59,6 +63,8 @@ export class AuthService {
   }
 
   login(credentials: Credentials): Observable<LoginResponse> {
+    this.#isLoggingInSignal.set(true);
+
     return this.http.post<LoginResponse>(`${this.env.apiRoot}/auth/login`, credentials).pipe(
       tap((response) => {
         console.log('logging in...');
@@ -68,10 +74,13 @@ export class AuthService {
       catchError((error) => {
         return throwError(() => error);
       }),
+      finalize(() => this.#isLoggingInSignal.set(false)),
     );
   }
 
   register(userData: RegisterData): Observable<AuthResponse> {
+    this.#isRegisteringSignal.set(true);
+
     return this.http.post<AuthResponse>(`${this.env.apiRoot}/auth/register`, userData).pipe(
       tap((response) => {
         console.log('Signing up user, please wait...');
@@ -81,6 +90,7 @@ export class AuthService {
       catchError((error) => {
         return throwError(() => error);
       }),
+      finalize(() => this.#isRegisteringSignal.set(true)),
     );
   }
 
