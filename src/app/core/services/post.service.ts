@@ -58,4 +58,36 @@ export class PostService {
       }),
     );
   }
+
+  likePost(postId: string) {
+    return this.http.post<Post>(`${this.env.apiRoot}/like/${postId}/like`, null).pipe(
+      tap((updatedPost) => {
+        console.log('🚀 ~ PostService ~ likePost ~ updatedPost:', updatedPost);
+        console.log('liking the post...');
+
+        this.#posts.update((posts) =>
+          posts.map((post) => (post.id === updatedPost.id ? { ...post, ...updatedPost } : post)),
+        );
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  dislikePost(postId: string) {
+    return this.http.post<Post>(`${this.env.apiRoot}/like/${postId}/dislike`, null).pipe(
+      tap((updatedPost) => {
+        console.log('🚀 ~ PostService ~ dislikePost ~ updatedPost:', updatedPost);
+        console.log('disliking the post...');
+
+        this.#posts.update((posts) =>
+          posts.map((post) => (post.id === updatedPost.id ? { ...post, ...updatedPost } : post)),
+        );
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+    );
+  }
 }

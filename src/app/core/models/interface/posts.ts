@@ -1,5 +1,7 @@
 import { Comment } from './comments';
 
+export type ReactionType = 'like' | 'dislike';
+
 export interface Post {
   id: string;
   title: string;
