@@ -169,7 +169,7 @@
         </svg>
       </button>
 
-      <span>{{ post().totalLike }}</span>
+      <span>{{ post().totalLike - post().totalDislike }}</span>
 
       <button
         (click)="dislikePost()"

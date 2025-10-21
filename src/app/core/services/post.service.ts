@@ -60,7 +60,7 @@ export class PostService {
   }
 
   likePost(postId: string) {
-    return this.http.post<Post>(`${this.env.apiRoot}/like/${postId}/like`, null).pipe(
+    return this.http.post<Post>(`${this.env.apiRoot}/post/${postId}/like`, null).pipe(
       tap((updatedPost) => {
         console.log('liking the post...');
 
@@ -75,7 +75,7 @@ export class PostService {
   }
 
   dislikePost(postId: string) {
-    return this.http.post<Post>(`${this.env.apiRoot}/like/${postId}/dislike`, null).pipe(
+    return this.http.post<Post>(`${this.env.apiRoot}/post/${postId}/dislike`, null).pipe(
       tap((updatedPost) => {
         console.log('disliking the post...');
 

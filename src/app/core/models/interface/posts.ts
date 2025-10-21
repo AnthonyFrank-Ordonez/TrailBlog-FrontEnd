@@ -13,6 +13,7 @@ export interface Post {
   communityName: string;
   communityId: string;
   totalLike: number;
+  totalDislike: number;
   totalComment: number;
   comments?: Comment[] | null;
   isLiked: boolean;
