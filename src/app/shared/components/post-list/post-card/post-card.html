@@ -149,7 +149,7 @@
       <button
         (click)="likePost()"
         class="hover:text-secondary cursor-pointer transition-colors duration-300"
-        [class.text-secondary]="post().isLiked"
+        [class.text-secondary]="isAuthenticated() && post().isLiked"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -174,7 +174,7 @@
       <button
         (click)="dislikePost()"
         class="hover:text-secondary cursor-pointer transition-colors duration-300"
-        [class.text-secondary]="post().isDisliked"
+        [class.text-secondary]="isAuthenticated() && post().isDisliked"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
