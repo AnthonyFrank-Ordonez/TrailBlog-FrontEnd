@@ -25,3 +25,9 @@ export interface CreatePostRequest {
   content: string;
   communityId: string;
 }
+
+export interface ReactionList {
+  id: number;
+  type: string;
+  value: string;
+}

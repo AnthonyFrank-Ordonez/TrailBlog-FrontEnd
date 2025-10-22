@@ -4,15 +4,18 @@ import {
   Component,
   computed,
   DestroyRef,
+  ElementRef,
+  HostListener,
   inject,
   input,
   OnChanges,
   OnInit,
   signal,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Post, ReactionType } from '@core/models/interface/posts';
+import { Post, ReactionList, ReactionType } from '@core/models/interface/posts';
 import { AuthService } from '@core/services/auth.service';
 import { CommunityService } from '@core/services/community.service';
 import { MessageService } from '@core/services/message.service';
@@ -39,6 +42,8 @@ import { debounceTime, Subject, switchMap } from 'rxjs';
   styleUrl: './post-card.css',
 })
 export class PostCard implements OnInit {
+  @ViewChild('reactionContainer') reactionContainer!: ElementRef;
+
   private postService = inject(PostService);
   private communityService = inject(CommunityService);
   private messageService = inject(MessageService);
@@ -52,6 +57,15 @@ export class PostCard implements OnInit {
   userCommunities = this.communityService.userCommunities;
   post = input.required<Post>();
   modalConfig = this.modalService.modalConfig;
+  showReactionModal = signal<boolean>(false);
+
+  reactionList: ReactionList[] = [
+    { id: 1, type: '😂', value: 'laughReact' },
+    { id: 2, type: '🥲', value: 'sadReact' },
+    { id: 3, type: '😡', value: 'angryReact' },
+    { id: 4, type: '😍', value: 'loveReact' },
+    { id: 5, type: '🚀', value: 'rocketReact' },
+  ];
 
   ngOnInit(): void {
     this.reaction$
@@ -116,7 +130,36 @@ export class PostCard implements OnInit {
     this.reaction$.next('dislike');
   }
 
+  toggleReactionModal(): void {
+    if (this.showReactionModal()) {
+      this.closeReactModal();
+    }
+
+    this.showReactionModal.set(true);
+  }
+
+  selectReaction(): void {
+    this.closeReactModal();
+  }
+
+  closeReactModal(): void {
+    setTimeout(() => {
+      this.showReactionModal.set(false);
+    }, 200);
+  }
+
   get isJoined(): boolean {
     return this.userCommunities().some((uc) => uc.id === this.post().communityId);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    if (!this.showReactionModal()) return;
+
+    const clickedInside = this.reactionContainer.nativeElement.contains(event.target);
+
+    if (!clickedInside) {
+      this.closeReactModal();
+    }
   }
 }
