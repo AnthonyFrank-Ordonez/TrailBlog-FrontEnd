@@ -25,15 +25,15 @@ export class PostList implements OnInit {
   isPostLoading = this.postService.isPostLoading;
   skeletonArray = Array(5).fill(0);
 
-  // constructor() {
-  //   effect(() => {
-  //     const isAuth = this.isAuthenticated();
+  constructor() {
+    effect(() => {
+      const isAuth = this.isAuthenticated();
 
-  //     if (!isAuth) {
-  //       this.loadPosts();
-  //     }
-  //   });
-  // }
+      if (!isAuth) {
+        this.loadPosts();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.loadPosts();
