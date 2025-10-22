@@ -1,4 +1,5 @@
 import { Comment } from './comments';
+import { ReactionSummary } from './reactions';
 
 export type ReactionType = 'like' | 'dislike';
 
@@ -12,22 +13,15 @@ export interface Post {
   username: string;
   communityName: string;
   communityId: string;
-  totalLike: number;
-  totalDislike: number;
   totalComment: number;
   comments?: Comment[] | null;
-  isLiked: boolean;
-  isDisliked: boolean;
+  reactions: ReactionSummary[];
+  userReactionsIds: number[];
+  totalReactions: number;
 }
 
 export interface CreatePostRequest {
   title: string;
   content: string;
   communityId: string;
-}
-
-export interface ReactionList {
-  id: number;
-  type: string;
-  value: string;
 }

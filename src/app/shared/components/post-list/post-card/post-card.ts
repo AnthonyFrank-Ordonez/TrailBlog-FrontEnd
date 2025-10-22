@@ -15,7 +15,8 @@ import {
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Post, ReactionList, ReactionType } from '@core/models/interface/posts';
+import { Post, ReactionType } from '@core/models/interface/posts';
+import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { CommunityService } from '@core/services/community.service';
 import { MessageService } from '@core/services/message.service';
@@ -51,7 +52,7 @@ export class PostCard implements OnInit {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
 
-  private reaction$ = new Subject<ReactionType>();
+  private reaction$ = new Subject<ReactionRequest>();
 
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
@@ -72,10 +73,8 @@ export class PostCard implements OnInit {
       .pipe(
         debounceTime(600),
         takeUntilDestroyed(this.destroyRef),
-        switchMap((type) =>
-          type === 'like'
-            ? this.postService.likePost(this.post().id)
-            : this.postService.dislikePost(this.post().id),
+        switchMap((reactionData: ReactionRequest) =>
+          this.postService.toggleReactions(this.post().id, reactionData),
         ),
       )
       .subscribe({
@@ -122,14 +121,6 @@ export class PostCard implements OnInit {
       });
   }
 
-  likePost(): void {
-    this.reaction$.next('like');
-  }
-
-  dislikePost(): void {
-    this.reaction$.next('dislike');
-  }
-
   toggleReactionModal(): void {
     if (this.showReactionModal()) {
       this.closeReactModal();
@@ -138,7 +129,13 @@ export class PostCard implements OnInit {
     this.showReactionModal.set(true);
   }
 
-  selectReaction(): void {
+  selectReaction(reactionId: number): void {
+    const reactionData = {
+      reactionId: reactionId,
+    };
+
+    this.reaction$.next(reactionData);
+
     this.closeReactModal();
   }
 
@@ -146,10 +143,6 @@ export class PostCard implements OnInit {
     setTimeout(() => {
       this.showReactionModal.set(false);
     }, 200);
-  }
-
-  get isJoined(): boolean {
-    return this.userCommunities().some((uc) => uc.id === this.post().communityId);
   }
 
   @HostListener('document:click', ['$event'])
@@ -161,5 +154,17 @@ export class PostCard implements OnInit {
     if (!clickedInside) {
       this.closeReactModal();
     }
+  }
+
+  hasReaction(reactionId: number): boolean {
+    return this.post().userReactionsIds.includes(reactionId);
+  }
+
+  getReactionById(id: number): ReactionList | undefined {
+    return this.reactionList.find((r) => r.id === id);
+  }
+
+  get isJoined(): boolean {
+    return this.userCommunities().some((uc) => uc.id === this.post().communityId);
   }
 }
