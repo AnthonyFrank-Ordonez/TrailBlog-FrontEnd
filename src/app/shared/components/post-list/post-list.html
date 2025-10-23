@@ -37,9 +37,7 @@
 }
 
 @if (!isPostLoading() && !hasMore() && posts().length > 0) {
-  <div class="text-center py-8 text-gray-400">
-    🎉 You've reached the end! ({{ posts().length }} posts loaded)
-  </div>
+  <div class="text-center py-8 text-gray-400">🎉 You've reached the end!</div>
 }
 
 @if (posts().length === 0 && !isPostLoading()) {
