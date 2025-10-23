@@ -1,4 +1,13 @@
-import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+  untracked,
+} from '@angular/core';
 import { PostCard } from './post-card/post-card';
 import { PostService } from '@core/services/post.service';
 import { ZardDividerComponent } from '@shared/components/divider/divider.component';
@@ -13,7 +22,7 @@ import { AuthService } from '@core/services/auth.service';
   templateUrl: './post-list.html',
   styleUrl: './post-list.css',
 })
-export class PostList implements OnInit {
+export class PostList {
   private readonly postService = inject(PostService);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
@@ -29,14 +38,10 @@ export class PostList implements OnInit {
     effect(() => {
       const isAuth = this.isAuthenticated();
 
-      if (!isAuth) {
+      untracked(() => {
         this.loadPosts();
-      }
+      });
     });
-  }
-
-  ngOnInit(): void {
-    this.loadPosts();
   }
 
   private loadPosts() {

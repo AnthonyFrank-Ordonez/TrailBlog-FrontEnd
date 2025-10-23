@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { CreatePostRequest, Post } from '@core/models/interface/posts';
 import { catchError, finalize, firstValueFrom, Observable, of, tap, throwError } from 'rxjs';
@@ -15,31 +15,49 @@ export class PostService {
   private http = inject(HttpClient);
 
   #posts = signal<Post[]>([]);
-  posts = this.#posts.asReadonly();
-
   #isPostLoading = signal<boolean>(false);
   #isSubmitting = signal<boolean>(false);
+  #currentPageSignal = signal<number>(1);
+  #pageSizeSignal = signal<number>(10);
+  #sessionIdSignal = signal<string>('');
 
   isPostLoading = this.#isPostLoading.asReadonly();
   isSubmitting = this.#isSubmitting.asReadonly();
+  posts = this.#posts.asReadonly();
 
   env = environment;
 
-  loadALlPosts(page: number = 1, pageSize: number = 10) {
+  loadALlPosts() {
     this.#isPostLoading.set(true);
 
-    return this.http.get<PageResult<Post>>(`${this.env.apiRoot}/post?page=1&pageSize=10`).pipe(
-      tap((result) => {
-        console.log('fetching posts....');
-        this.#posts.set(result.data);
-      }),
-      catchError((error: HttpErrorResponse) => {
-        return throwError(() => error);
-      }),
-      finalize(() => {
-        this.#isPostLoading.set(false);
-      }),
-    );
+    let params = new HttpParams()
+      .set('page', this.#currentPageSignal())
+      .set('pageSize', this.#pageSizeSignal());
+
+    if (this.#sessionIdSignal()) {
+      params = params.set('sessionId', this.#sessionIdSignal());
+    }
+
+    return this.http
+      .get<PageResult<Post>>(`${this.env.apiRoot}/post`, { params, observe: 'response' })
+      .pipe(
+        tap((result) => {
+          const response = result.body!;
+          const sessionId = result.headers.get('X-Session-Id');
+
+          if (sessionId) {
+            this.#sessionIdSignal.set(sessionId);
+          }
+
+          this.#posts.set(response.data);
+        }),
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        }),
+        finalize(() => {
+          this.#isPostLoading.set(false);
+        }),
+      );
   }
 
   createPost(postData: CreatePostRequest) {
