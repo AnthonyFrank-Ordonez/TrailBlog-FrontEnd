@@ -45,9 +45,13 @@
                   post.communityName | initials
                 }}</span>
               </div>
-              <span class="text-gray-400 text-xs">{{ post.communityName }}</span>
+              <span class="text-gray-400 text-xs line-clamp-1 break-words">{{
+                post.communityName
+              }}</span>
             </div>
-            <span class="text-gray-500 text-xs">{{ post.createdAt | date: 'mediumDate' }}</span>
+            <span class="text-gray-500 text-xs line-clamp-1 break-words">{{
+              post.createdAt | timeago
+            }}</span>
           </div>
 
           <p class="font-light">{{ post.title }}</p>

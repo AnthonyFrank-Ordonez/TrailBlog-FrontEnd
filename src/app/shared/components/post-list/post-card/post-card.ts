@@ -26,13 +26,14 @@ import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropd
 import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
 import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
+import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 import { handleHttpError } from '@shared/utils/utils';
 import { debounceTime, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-post-card',
   imports: [
-    DatePipe,
+    TimeagoPipe,
     ZardDropdownMenuContentComponent,
     ZardDropdownMenuItemComponent,
     ZardDropdownDirective,

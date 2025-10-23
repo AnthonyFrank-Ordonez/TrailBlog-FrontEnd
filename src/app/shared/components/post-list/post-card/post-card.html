@@ -9,7 +9,7 @@
       <p class="text-gray-500 font-bold line-clamp-1 break-words text-xs lg:text-sm">
         {{ post().communityName }}
       </p>
-      <p class="text-gray-500 text-xs lg:text-sm">{{ post().createdAt | date: 'mediumDate' }}</p>
+      <p class="text-gray-500 text-xs lg:text-sm">{{ post().createdAt | timeago }}</p>
     </div>
 
     <div class="flex items-center space-x-1">

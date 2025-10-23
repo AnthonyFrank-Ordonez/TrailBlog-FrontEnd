@@ -3,10 +3,11 @@ import { Component, inject } from '@angular/core';
 import { PostService } from '@core/services/post.service';
 import { ZardDividerComponent } from '@shared/components/divider/divider.component';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
+import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 
 @Component({
   selector: 'app-recent-viewed-post',
-  imports: [ZardDividerComponent, DatePipe, InitialsPipe],
+  imports: [ZardDividerComponent, TimeagoPipe, InitialsPipe],
   templateUrl: './recent-viewed-post.html',
   styleUrl: './recent-viewed-post.css',
 })
