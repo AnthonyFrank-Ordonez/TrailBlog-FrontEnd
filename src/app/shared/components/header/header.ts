@@ -31,15 +31,15 @@ import { UserService } from '@core/services/user.service';
 })
 export class Header implements OnDestroy {
   private authService = inject(AuthService);
-  private router = inject(Router);
   private messageService = inject(MessageService);
   private userService = inject(UserService);
+  private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
   isAuthenticated = this.authService.isAuthenticated;
   user = this.userService.user;
+  activeTab = this.userService.activeUserTab;
 
-  activeTab = signal<string>('home');
   hideHeader = false;
   hideBottomNav = false;
   scrollTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -81,7 +81,7 @@ export class Header implements OnDestroy {
   }
 
   setActiveTab(value: string): void {
-    this.activeTab.set(value);
+    this.userService.setActiveUserTab(value);
   }
 
   async onSignOut(): Promise<void> {

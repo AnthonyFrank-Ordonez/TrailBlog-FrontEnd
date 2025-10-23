@@ -1,23 +1,18 @@
+import { ViewportScroller } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  OnInit,
-  Signal,
-  signal,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Component, computed, DestroyRef, effect, inject, Signal, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { CommunityService } from '@core/services/community.service';
 import { MessageService } from '@core/services/message.service';
 import { ModalService } from '@core/services/modal.service';
+import { PostService } from '@core/services/post.service';
 import { UserSettingsService } from '@core/services/user-settings.service';
+import { UserService } from '@core/services/user.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { handleHttpError } from '@shared/utils/utils';
+import { filter, map, startWith, tap } from 'rxjs';
 
 @Component({
   selector: 'app-side-navigation',
@@ -28,15 +23,20 @@ import { handleHttpError } from '@shared/utils/utils';
 })
 export class SideNavigation {
   private userSettingsService = inject(UserSettingsService);
+  private postService = inject(PostService);
   private authService = inject(AuthService);
+  private userService = inject(UserService);
   private communityService = inject(CommunityService);
   private messageService = inject(MessageService);
-  private destroyRef = inject(DestroyRef);
   private modalService = inject(ModalService);
+  private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
+  private viewPortScroller = inject(ViewportScroller);
 
   private readonly MAX_COMMUNITIES_DISPLAY = 5;
 
-  activeTab = signal<string>('home');
+  currentPath: Signal<string>;
+  activeTab = this.userService.activeUserTab;
   currentSettings = this.userSettingsService.userSettings;
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
@@ -62,10 +62,19 @@ export class SideNavigation {
         this.resetCommunities();
       }
     });
+
+    this.currentPath = toSignal(
+      this.router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map((event: NavigationEnd) => event.url),
+        startWith(this.router.url),
+      ),
+      { initialValue: this.router.url },
+    );
   }
 
   setActiveTab(value: string): void {
-    this.activeTab.set(value);
+    this.userService.setActiveUserTab(value);
   }
 
   toggleCommunities(): void {
@@ -94,6 +103,23 @@ export class SideNavigation {
       content: 'community-form',
       type: 'form',
     });
+  }
+
+  toggleHome() {
+    if (this.currentPath() === '/') {
+      this.viewPortScroller.scrollToPosition([0, 0]);
+
+      this.postService
+        .loadInitialPosts()
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          error: (error) => {
+            handleHttpError(error, this.messageService);
+          },
+        });
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
   get isCommunitiesExpanded(): boolean | undefined {

@@ -5,27 +5,23 @@
       <nav class="space-y-1">
         <!-- Home -->
         <button
-          routerLink="/"
+          (click)="toggleHome()"
           class="flex w-full items-center space-x-2 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800/40 cursor-pointer"
           [class.text-secondary]="activeTab() === 'home'"
           [class.text-white]="activeTab() !== 'home'"
           (click)="setActiveTab('home')"
         >
           <svg
-            class="w-6 h-6"
-            aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
-            fill="none"
             viewBox="0 0 24 24"
+            fill="currentColor"
+            class="icon icon-tabler icons-tabler-filled icon-tabler-home -mt-1"
           >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"
+              d="M12.707 2.293l9 9c.63 .63 .184 1.707 -.707 1.707h-1v6a3 3 0 0 1 -3 3h-1v-7a3 3 0 0 0 -2.824 -2.995l-.176 -.005h-2a3 3 0 0 0 -3 3v7h-1a3 3 0 0 1 -3 -3v-6h-1c-.89 0 -1.337 -1.077 -.707 -1.707l9 -9a1 1 0 0 1 1.414 0m.293 11.707a1 1 0 0 1 1 1v7h-4v-7a1 1 0 0 1 .883 -.993l.117 -.007z"
             />
           </svg>
           <span class="font-light">Home</span>
@@ -38,12 +34,18 @@
           [class.text-white]="activeTab() !== 'popular'"
           (click)="setActiveTab('popular')"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            class="bi bi-fire"
+            viewBox="0 0 22 22"
+            id="Fire--Streamline-Bootstrap"
+            height="22"
+            width="22"
+          >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+              d="M11 22c4.55675 0 8.25 -2.75 8.25 -7.5625 0 -2.0625 -0.6875 -5.5 -3.4375 -8.25 0.34375 2.0625 -1.71875 2.75 -1.71875 2.75C15.125 5.5 12.375 0.6875 8.25 0c0.49087499999999995 2.75 0.6875 5.5 -2.75 8.25 -1.71875 1.375 -2.75 3.7523750000000002 -2.75 6.1875C2.75 19.25 6.44325 22 11 22m0 -1.375c-2.278375 0 -4.125 -1.375 -4.125 -3.78125 0 -1.03125 0.34375 -2.75 1.71875 -4.125C8.421875 13.75 9.625 14.4375 9.625 14.4375c-0.515625 -1.71875 0.6875 -4.46875 2.75 -4.8125 -0.24612499999999998 1.375 -0.34375 2.75 1.375 4.125 0.859375 0.6875 1.375 1.8755000000000002 1.375 3.09375C15.125 19.25 13.278375 20.625 11 20.625"
+              stroke-width="1.375"
             ></path>
           </svg>
           <span class="font-light">Popular</span>
@@ -51,48 +53,45 @@
 
         <!-- Explore Communities -->
         <button
-          class="flex items-center w-full cursor-pointer space-x-3 px-3 py-2 rounded-lg hover:bg-gray-800/40 transition-colors"
+          class="flex items-center w-full cursor-pointer space-x-2 px-3 py-2 rounded-lg hover:bg-gray-800/40 transition-colors"
           [class.text-secondary]="activeTab() === 'explore'"
           [class.text-white]="activeTab() !== 'explore'"
           (click)="setActiveTab('explore')"
         >
           <svg
-            class="w-5 h-5"
-            aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 -960 960 960"
             fill="currentColor"
+            viewBox="0 0 24 24"
+            id="Explore-Fill--Streamline-Sharp-Fill-Material"
+            height="24"
+            width="24"
           >
             <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="m260-260 300-140 140-300-300 140zm220-180q-17 0-28.5-11.5T440-480t11.5-28.5T480-520t28.5 11.5T520-480t-11.5 28.5T480-440m0 360q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320"
-            />
+              d="m6.575 17.425 7.25 -3.575 3.575 -7.25 -7.25 3.575 -3.575 7.25ZM12 13c-0.28335 0 -0.52085 -0.09585 -0.7125 -0.2875S11 12.28335 11 12c0 -0.28335 0.09585 -0.52085 0.2875 -0.7125S11.71665 11 12 11c0.28335 0 0.52085 0.09585 0.7125 0.2875S13 11.71665 13 12c0 0.28335 -0.09585 0.52085 -0.2875 0.7125S12.28335 13 12 13Zm0 9c-1.36665 0 -2.65835 -0.2625 -3.875 -0.7875 -1.21665 -0.525 -2.27915 -1.24165 -3.1875 -2.15 -0.908335 -0.90835 -1.625 -1.97085 -2.15 -3.1875C2.2625 14.65835 2 13.36665 2 12c0 -1.38335 0.2625 -2.68335 0.7875 -3.9 0.525 -1.21665 1.241665 -2.275 2.15 -3.175 0.90835 -0.9 1.97085 -1.6125 3.1875 -2.1375C9.34165 2.2625 10.63335 2 12 2c1.38335 0 2.68335 0.2625 3.9 0.7875 1.21665 0.525 2.275 1.2375 3.175 2.1375 0.9 0.9 1.6125 1.95835 2.1375 3.175C21.7375 9.31665 22 10.61665 22 12c0 1.36665 -0.2625 2.65835 -0.7875 3.875 -0.525 1.21665 -1.2375 2.27915 -2.1375 3.1875 -0.9 0.90835 -1.95835 1.625 -3.175 2.15C14.68335 21.7375 13.38335 22 12 22Z"
+              stroke-width="0.5"
+            ></path>
           </svg>
           <span class="font-light">Explore</span>
         </button>
 
         <!-- About -->
         <button
-          class="flex items-center w-full cursor-pointer space-x-3 px-3 py-2 rounded-lg hover:bg-gray-800/40 transition-colors"
+          class="flex items-center w-full cursor-pointer space-x-2 px-3 py-2 rounded-lg hover:bg-gray-800/40 transition-colors"
           [class.text-secondary]="activeTab() === 'about'"
           [class.text-white]="activeTab() !== 'about'"
           (click)="setActiveTab('about')"
         >
           <svg
-            class="w-5 h-5"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
-            viewBox="0 -960 960 960"
+            viewBox="0 0 24 24"
             fill="currentColor"
+            class="icon icon-tabler icons-tabler-filled icon-tabler-info-circle -mt-1"
           >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path
-              d="M440-280h80v-240h-80zm40-320q17 0 28.5-11.5T520-640t-11.5-28.5T480-680t-28.5 11.5T440-640t11.5 28.5T480-600m0 520q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320"
+              d="M12 2c5.523 0 10 4.477 10 10a10 10 0 0 1 -19.995 .324l-.005 -.324l.004 -.28c.148 -5.393 4.566 -9.72 9.996 -9.72zm0 9h-1l-.117 .007a1 1 0 0 0 0 1.986l.117 .007v3l.007 .117a1 1 0 0 0 .876 .876l.117 .007h1l.117 -.007a1 1 0 0 0 .876 -.876l.007 -.117l-.007 -.117a1 1 0 0 0 -.764 -.857l-.112 -.02l-.117 -.006v-3l-.007 -.117a1 1 0 0 0 -.876 -.876l-.117 -.007zm.01 -3l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007z"
             />
           </svg>
           <span class="font-light">About</span>

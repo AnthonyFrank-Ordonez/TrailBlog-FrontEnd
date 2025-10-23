@@ -6,9 +6,11 @@ import { User } from '@core/models/interface/user';
 })
 export class UserService {
   #userSignal = signal<User | null>(null);
+  #activeUserTabSignal = signal<string>('home');
   isAdmin = computed(() => this.#userSignal()?.roles.includes('Admin'));
 
   user = this.#userSignal.asReadonly();
+  activeUserTab = this.#activeUserTabSignal.asReadonly();
 
   setUser(user: User): void {
     this.#userSignal.set(user);
@@ -16,5 +18,9 @@ export class UserService {
 
   clearUser(): void {
     this.#userSignal.set(null);
+  }
+
+  setActiveUserTab(value: string): void {
+    this.#activeUserTabSignal.set(value);
   }
 }
