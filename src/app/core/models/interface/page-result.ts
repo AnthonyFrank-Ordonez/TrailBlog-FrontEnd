@@ -3,7 +3,7 @@ export interface PageResult<T> {
   page: number;
   pageSize: number;
   totalCount: number;
-  totalPage: number;
+  totalPages: number;
   hasPrevious: boolean;
   hasNext: boolean;
   metadata?: Object;

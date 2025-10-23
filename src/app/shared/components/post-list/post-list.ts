@@ -3,6 +3,7 @@ import {
   computed,
   DestroyRef,
   effect,
+  HostListener,
   inject,
   OnInit,
   signal,
@@ -33,6 +34,7 @@ export class PostList {
 
   isPostLoading = this.postService.isPostLoading;
   skeletonArray = Array(5).fill(0);
+  hasMore = this.postService.hasMore;
 
   constructor() {
     effect(() => {
@@ -44,9 +46,29 @@ export class PostList {
     });
   }
 
+  @HostListener('window:scroll')
+  onScroll(): void {
+    const scrollPosition = window.pageYOffset + window.innerHeight;
+    const pageHeight = document.documentElement.scrollHeight;
+
+    // Trigger at 80%
+    const threshold = pageHeight * 1;
+
+    if (scrollPosition >= threshold && this.hasMore()) {
+      this.postService
+        .loadMorePosts()
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          error: (error) => {
+            handleHttpError(error, this.messageService);
+          },
+        });
+    }
+  }
+
   private loadPosts() {
     this.postService
-      .loadALlPosts()
+      .loadInitialPosts()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error) => {
