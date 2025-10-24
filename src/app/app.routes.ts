@@ -7,6 +7,7 @@ import { Communities } from './pages/communities/communities';
 import { authGuard } from './core/guards/auth-guard';
 import { noAuthGuard } from './core/guards/no-auth-guard';
 import { CreatePost } from '@pages/create-post/create-post';
+import { PostDetail } from '@pages/post-detail/post-detail';
 
 export const routes: Routes = [
   {
@@ -27,6 +28,10 @@ export const routes: Routes = [
         path: 'create',
         component: CreatePost,
         canActivate: [authGuard],
+      },
+      {
+        path: 'post/:slug',
+        component: PostDetail,
       },
     ],
   },

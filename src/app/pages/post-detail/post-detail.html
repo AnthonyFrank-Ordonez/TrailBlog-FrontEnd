@@ -1,0 +1,358 @@
+@if (isPostLoading()) {
+  <div class="px-3 lg:px-15 2xl:px-23 py-10">
+    <div class="flex justify-between mb-5">
+      <div class="flex items-center space-x-2">
+        <div class="w-7 h-7 bg-gray-800 rounded-full animate-pulse"></div>
+        <div class="w-7 h-7 bg-gray-800 rounded-full animate-pulse"></div>
+        <div class="w-32 h-4 bg-gray-800 rounded animate-pulse"></div>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <div class="w-7 h-7 bg-gray-800 rounded-full animate-pulse"></div>
+      </div>
+    </div>
+
+    <div class="pl-10">
+      <div class="w-48 h-4 bg-gray-800 rounded animate-pulse mb-3"></div>
+
+      <div class="w-3/4 h-8 bg-gray-800 rounded animate-pulse mb-4"></div>
+
+      <div class="space-y-2">
+        <div class="w-full h-4 bg-gray-800 rounded animate-pulse"></div>
+        <div class="w-full h-4 bg-gray-800 rounded animate-pulse"></div>
+        <div class="w-3/4 h-4 bg-gray-800 rounded animate-pulse"></div>
+      </div>
+
+      <div class="flex items-center space-x-2 mt-4">
+        <div class="w-20 h-8 bg-gray-800 rounded-full animate-pulse"></div>
+        <div class="w-20 h-8 bg-gray-800 rounded-full animate-pulse"></div>
+        <div class="w-20 h-8 bg-gray-800 rounded-full animate-pulse"></div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="px-3 lg:px-15 2xl:px-23 py-10">
+    <!-- Community and back section -->
+    <div class="flex justify-between mb-5">
+      <!-- Community Title -->
+      <div class="flex items-center space-x-2 text-white">
+        <button
+          (click)="toggleBack()"
+          class="cursor-pointer mr-3 hover:text-white/80 duration-200 transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="icon icon-tabler icons-tabler-filled icon-tabler-circle-arrow-left w-7 h-7"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M12 2a10 10 0 0 1 .324 19.995l-.324 .005l-.324 -.005a10 10 0 0 1 .324 -19.995zm.707 5.293a1 1 0 0 0 -1.414 0l-4 4a1.048 1.048 0 0 0 -.083 .094l-.064 .092l-.052 .098l-.044 .11l-.03 .112l-.017 .126l-.003 .075l.004 .09l.007 .058l.025 .118l.035 .105l.054 .113l.043 .07l.071 .095l.054 .058l4 4l.094 .083a1 1 0 0 0 1.32 -1.497l-2.292 -2.293h5.585l.117 -.007a1 1 0 0 0 -.117 -1.993h-5.586l2.293 -2.293l.083 -.094a1 1 0 0 0 -.083 -1.32z"
+            />
+          </svg>
+        </button>
+
+        <div class="w-7 h-7 bg-secondary rounded-full flex items-center justify-center">
+          <span class="text-white text-sm font-bold">{{ post().communityName | initials }}</span>
+        </div>
+
+        <p class="text-gray-500 font-medium tracking-wider">{{ post().communityName }}</p>
+      </div>
+
+      <!-- Three dots -->
+      <div>
+        <button
+          class="text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
+          z-dropdown
+          [zDropdownMenu]="postDetailMenu"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-three-dots"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"
+            />
+          </svg>
+        </button>
+
+        <z-dropdown-menu-content
+          #postDetailMenu="zDropdownMenuContent"
+          class="bg-primary text-white border-white/30 hidden lg:block -mx-43"
+        >
+          @if (isAuthenticated()) {
+            <!-- Save -->
+            <z-dropdown-menu-item
+              class="text-white flex items-center space-x-1 hover:bg-gray-800/50"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+              >
+                <path
+                  d="M12.5 1h-9l-.5.5v13l.872.335L8 10.247l4.128 4.588L13 14.5v-13l-.5-.5zM12 13.2L8.372 9.165h-.744L4 13.2V2h8v11.2z"
+                />
+              </svg>
+
+              <span>Save</span>
+            </z-dropdown-menu-item>
+
+            <!-- Hide -->
+            <z-dropdown-menu-item
+              class="text-white flex items-center space-x-1 hover:bg-gray-800/50"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+              >
+                <path
+                  d="M1.47978 1.4797C1.30227 1.65721 1.28614 1.93498 1.43137 2.13072L1.47978 2.1868L4.1695 4.87652C2.88817 5.77616 1.93052 7.11985 1.53259 8.70952C1.46554 8.97738 1.62834 9.24892 1.89621 9.31598C2.16409 9.38298 2.4356 9.22025 2.50266 8.95232C2.85564 7.54225 3.72742 6.35956 4.88944 5.59626L6.09586 6.80278C5.62419 7.28378 5.33334 7.94278 5.33334 8.66965C5.33334 10.1424 6.52724 11.3363 8 11.3363C8.72694 11.3363 9.38587 11.0454 9.86694 10.5738L13.8131 14.5201C14.0084 14.7154 14.3249 14.7154 14.5202 14.5201C14.6977 14.3426 14.7139 14.0649 14.5686 13.8691L14.5202 13.813L10.4445 9.73692L10.4453 9.73592L9.64527 8.93732L7.732 7.02445L7.73334 7.02392L5.81252 5.10513L5.81334 5.10392L5.05782 4.35024L2.18689 1.4797C1.99163 1.28444 1.67504 1.28444 1.47978 1.4797ZM6.80274 7.51025L9.15947 9.86698C8.85947 10.1575 8.4506 10.3363 8 10.3363C7.07954 10.3363 6.33334 9.59012 6.33334 8.66965C6.33334 8.21905 6.51216 7.81018 6.80274 7.51025ZM8 3.66658C7.33314 3.66658 6.68607 3.7653 6.07406 3.94992L6.89874 4.77404C7.25594 4.70346 7.62427 4.66658 8 4.66658C10.6154 4.66658 12.8733 6.45342 13.4981 8.95538C13.565 9.22325 13.8364 9.38618 14.1043 9.31932C14.3723 9.25238 14.5352 8.98098 14.4683 8.71305C13.7329 5.7684 11.077 3.66658 8 3.66658ZM8.1298 6.0061L10.664 8.53992C10.5961 7.16865 9.49814 6.07168 8.1298 6.0061Z"
+                />
+              </svg>
+
+              <span>Hide</span>
+            </z-dropdown-menu-item>
+
+            <!-- Report -->
+            <z-dropdown-menu-item
+              class="text-white flex items-center space-x-1 hover:bg-gray-800/50"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M1.5 1h13l.5.5v10l-.5.5H7.707l-2.853 2.854L4 14.5V12H1.5l-.5-.5v-10l.5-.5zm6 10H14V2H2v9h2.5l.5.5v1.793l2.146-2.147L7.5 11zm0-8h1v5h-1V3zm0 7h1V9h-1v1z"
+                />
+              </svg>
+
+              <span>Report</span>
+            </z-dropdown-menu-item>
+          } @else {
+            <z-dropdown-menu-item
+              class="text-white flex items-center space-x-1 hover:bg-gray-800/50"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M1.5 1h13l.5.5v10l-.5.5H7.707l-2.853 2.854L4 14.5V12H1.5l-.5-.5v-10l.5-.5zm6 10H14V2H2v9h2.5l.5.5v1.793l2.146-2.147L7.5 11zm0-8h1v5h-1V3zm0 7h1V9h-1v1z"
+                />
+              </svg>
+
+              <span>Report</span>
+            </z-dropdown-menu-item>
+          }
+        </z-dropdown-menu-content>
+      </div>
+    </div>
+
+    <div class="pl-10">
+      <!-- Post Title, Author, content, and Date -->
+      <div class="flex flex-col text-gray-500 mb-1">
+        <!-- Author -->
+        <p class="text-sm font-light mb-1">
+          Posted by <strong>{{ post().author }}</strong
+          >, {{ post().createdAt | timeago }}
+        </p>
+
+        <!-- Title -->
+        <p class="text-white text-3xl font-bold tracking-wide mb-2">{{ post().title }}</p>
+
+        <!-- Content -->
+        <div class="text-gray-500 font-light text-justify mb-3">
+          <p>{{ post().content }}</p>
+        </div>
+
+        <!-- Reactions -->
+        @if (post().reactions && post().reactions.length > 0) {
+          <div class="flex items-center space-x-1.5 mt-2">
+            @for (reaction of post().reactions; track $index) {
+              <button
+                (click)="selectReaction(getReactionById(reaction.reactionId)!.id)"
+                class="flex items-center space-x-1 px-2 py-1 text-white rounded-full cursor-pointer transition-colors duration-200"
+                [ngClass]="
+                  hasReaction(reaction.reactionId)
+                    ? 'bg-gray-500/60 hover:bg-gray-500/40'
+                    : 'bg-black border border-white/30 hover:border-white/50'
+                "
+              >
+                <span class="text-sm">{{ getReactionById(reaction.reactionId)?.type }}</span>
+                <span class="text-sm">{{ reaction.count }}</span>
+              </button>
+            }
+          </div>
+        }
+
+        <!-- Reaction List -->
+        <div class="flex items-center mt-3.5 space-x-2">
+          <!-- React Button -->
+          <div class="relative" #reactionContainer>
+            <button
+              (click)="toggleReactionModal()"
+              class="flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="icon icon-tabler icons-tabler-filled icon-tabler-mood-happy"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-2 9.66h-6a1 1 0 0 0 -1 1v.05a3.975 3.975 0 0 0 3.777 3.97l.227 .005a4.026 4.026 0 0 0 3.99 -3.79l.006 -.206a1 1 0 0 0 -1 -1.029zm-5.99 -5l-.127 .007a1 1 0 0 0 .117 1.993l.127 -.007a1 1 0 0 0 -.117 -1.993zm6 0l-.127 .007a1 1 0 0 0 .117 1.993l.127 -.007a1 1 0 0 0 -.117 -1.993z"
+                />
+              </svg>
+
+              <span>React</span>
+            </button>
+
+            <!-- Reaction Modal -->
+            @if (showReactionModal()) {
+              <div
+                animate.enter="reaction-fade-in"
+                animate.leave="reaction-fade-out"
+                class="absolute flex items-center mt-2 left-0 space-x-2 bg-black border border-white/30 rounded-full px-3 py-2 z-50"
+              >
+                @for (reaction of reactionList; track reaction.id) {
+                  <button
+                    (click)="selectReaction(reaction.id)"
+                    class="text-xl cursor-pointer hover:scale-125 transition-transform duration-200"
+                  >
+                    {{ reaction.type }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Comment button -->
+          <button
+            class="flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="icon icon-tabler icons-tabler-filled icon-tabler-message-circle"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path
+                d="M5.821 4.91c3.899 -2.765 9.468 -2.539 13.073 .535c3.667 3.129 4.168 8.238 1.152 11.898c-2.841 3.447 -7.965 4.583 -12.231 2.805l-.233 -.101l-4.374 .931l-.04 .006l-.035 .007h-.018l-.022 .005h-.038l-.033 .004l-.021 -.001l-.023 .001l-.033 -.003h-.035l-.022 -.004l-.022 -.002l-.035 -.007l-.034 -.005l-.016 -.004l-.024 -.005l-.049 -.016l-.024 -.005l-.011 -.005l-.022 -.007l-.045 -.02l-.03 -.012l-.011 -.006l-.014 -.006l-.031 -.018l-.045 -.024l-.016 -.011l-.037 -.026l-.04 -.027l-.002 -.004l-.013 -.009l-.043 -.04l-.025 -.02l-.006 -.007l-.056 -.062l-.013 -.014l-.011 -.014l-.039 -.056l-.014 -.019l-.005 -.01l-.042 -.073l-.007 -.012l-.004 -.008l-.007 -.012l-.014 -.038l-.02 -.042l-.004 -.016l-.004 -.01l-.017 -.061l-.007 -.018l-.002 -.015l-.005 -.019l-.005 -.033l-.008 -.042l-.002 -.031l-.003 -.01v-.016l-.004 -.054l.001 -.036l.001 -.023l.002 -.053l.004 -.025v-.019l.008 -.035l.005 -.034l.005 -.02l.004 -.02l.018 -.06l.003 -.013l1.15 -3.45l-.022 -.037c-2.21 -3.747 -1.209 -8.391 2.413 -11.119z"
+              />
+            </svg>
+
+            <span>{{ post().totalComment }}</span>
+          </button>
+
+          <!-- Share button -->
+          <div>
+            <button
+              class="flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+              z-dropdown
+              [zDropdownMenu]="shareMenu"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="icon icon-tabler icons-tabler-filled icon-tabler-chart-dots-3"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M18 2a4 4 0 1 1 -3.843 5.114l-6.295 .786a3 3 0 0 1 -.094 .257l6.446 4.431a3 3 0 1 1 -.695 4.099l-3.527 1.058q .008 .127 .008 .255a4 4 0 1 1 -8 0l.005 -.2a4 4 0 0 1 7.366 -1.954l3.64 -1.094l.01 -.102q .023 -.204 .074 -.4l-6.688 -4.6a3 3 0 0 1 -4.407 -2.65l.005 -.176a3 3 0 0 1 5.784 -.931l6.312 -.79a4 4 0 0 1 3.899 -3.103"
+                />
+              </svg>
+
+              <span>Share</span>
+
+              <z-dropdown-menu-content
+                #shareMenu="zDropdownMenuContent"
+                class="bg-primary text-white border-white/30 hidden lg:block"
+              >
+                <!-- Copy Link -->
+                <z-dropdown-menu-item
+                  class="text-white flex items-center space-x-1 hover:bg-gray-800/50"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M4 4l1-1h5.414L14 6.586V14l-1 1H5l-1-1V4zm9 3l-3-3H5v10h8V7z"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M3 1L2 2v10l1 1V2h6.414l-1-1H3z"
+                    />
+                  </svg>
+
+                  <span>Copy Link</span>
+                </z-dropdown-menu-item>
+
+                <!-- Copy Link -->
+                <z-dropdown-menu-item
+                  class="text-white flex items-center space-x-1 hover:bg-gray-800/50"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M10.57 1.14l3.28 3.3.15.36v9.7l-.5.5h-11l-.5-.5v-13l.5-.5h7.72l.35.14zM10 5h3l-3-3v3zM3 2v12h10V6H9.5L9 5.5V2H3zm2.062 7.533l1.817-1.828L6.17 7 4 9.179v.707l2.171 2.174.707-.707-1.816-1.82zM8.8 7.714l.7-.709 2.189 2.175v.709L9.5 12.062l-.705-.709 1.831-1.82L8.8 7.714z"
+                    />
+                  </svg>
+
+                  <span>Embed</span>
+                </z-dropdown-menu-item>
+
+                <!-- Add More Here -->
+              </z-dropdown-menu-content>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

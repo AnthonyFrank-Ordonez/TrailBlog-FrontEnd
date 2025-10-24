@@ -1,66 +1,59 @@
-import { DatePipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
-  computed,
   DestroyRef,
   ElementRef,
   HostListener,
   inject,
-  input,
-  OnChanges,
   OnInit,
+  runInInjectionContext,
   signal,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
-import { Post, ReactionType } from '@core/models/interface/posts';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
-import { CommunityService } from '@core/services/community.service';
 import { MessageService } from '@core/services/message.service';
-import { ModalService } from '@core/services/modal.service';
 import { PostService } from '@core/services/post.service';
+import { UserService } from '@core/services/user.service';
 import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropdown-item.component';
 import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
 import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 import { handleHttpError } from '@shared/utils/utils';
-import { debounceTime, Subject, switchMap } from 'rxjs';
+import { debounceTime, Subject, switchMap, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-post-card',
+  selector: 'app-post-detail',
   imports: [
+    NgClass,
+    InitialsPipe,
     TimeagoPipe,
     ZardDropdownMenuContentComponent,
     ZardDropdownMenuItemComponent,
     ZardDropdownDirective,
-    NgClass,
-    InitialsPipe,
-    RouterLink,
   ],
-  templateUrl: './post-card.html',
-  styleUrl: './post-card.css',
+  templateUrl: './post-detail.html',
+  styleUrl: './post-detail.css',
 })
-export class PostCard implements OnInit {
+export class PostDetail implements OnInit {
   @ViewChild('reactionContainer') reactionContainer!: ElementRef;
 
-  private postService = inject(PostService);
-  private communityService = inject(CommunityService);
-  private messageService = inject(MessageService);
-  private modalService = inject(ModalService);
-  private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private destroyRef = inject(DestroyRef);
-
+  private postService = inject(PostService);
+  private messageService = inject(MessageService);
+  private authService = inject(AuthService);
+  private userService = inject(UserService);
   private reaction$ = new Subject<ReactionRequest>();
 
+  post = this.postService.postDetail;
+  isPostLoading = this.postService.isPostLoading;
   isAuthenticated = this.authService.isAuthenticated;
-  userCommunities = this.communityService.userCommunities;
-  post = input.required<Post>();
-  modalConfig = this.modalService.modalConfig;
   showReactionModal = signal<boolean>(false);
 
   reactionList: ReactionList[] = [
@@ -72,6 +65,14 @@ export class PostCard implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      const slug = params.get('slug');
+
+      if (slug) {
+        this.fetchPost(slug);
+      }
+    });
+
     this.reaction$
       .pipe(
         debounceTime(600),
@@ -87,26 +88,9 @@ export class PostCard implements OnInit {
       });
   }
 
-  toggleJoin(event?: MouseEvent): void {
-    event?.stopPropagation();
-
-    if (this.isJoined) {
-      this.modalService.openModal({
-        type: 'community',
-        title: 'Leave Community',
-        description: 'Are you sure you want to leave this community?',
-        content: 'leave-community',
-        data: { communityId: this.post().communityId },
-        onConfirm: (communityId) => this.onLeaveConfirmed(communityId),
-      });
-    } else {
-      this.joinCommunity(this.post().communityId);
-    }
-  }
-
-  onLeaveConfirmed(communityId: string): void {
-    this.communityService
-      .leaveCommunity(communityId)
+  fetchPost(slug: string) {
+    this.postService
+      .loadPostDetail(slug)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {
@@ -115,20 +99,7 @@ export class PostCard implements OnInit {
       });
   }
 
-  joinCommunity(communityId: string): void {
-    this.communityService
-      .joinCommunity(communityId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        error: (error: HttpErrorResponse) => {
-          handleHttpError(error, this.messageService);
-        },
-      });
-  }
-
-  toggleReactionModal(event?: MouseEvent): void {
-    event?.stopPropagation();
-
+  toggleReactionModal(): void {
     if (this.showReactionModal()) {
       this.closeReactModal();
     }
@@ -136,9 +107,7 @@ export class PostCard implements OnInit {
     this.showReactionModal.set(true);
   }
 
-  selectReaction(reactionId: number, event?: MouseEvent): void {
-    event?.stopPropagation();
-
+  selectReaction(reactionId: number): void {
     const reactionData = {
       reactionId: reactionId,
     };
@@ -152,6 +121,11 @@ export class PostCard implements OnInit {
     setTimeout(() => {
       this.showReactionModal.set(false);
     }, 200);
+  }
+
+  toggleBack(): void {
+    this.router.navigate(['/']);
+    this.userService.setActiveUserTab('home');
   }
 
   @HostListener('document:click', ['$event'])
@@ -171,9 +145,5 @@ export class PostCard implements OnInit {
 
   getReactionById(id: number): ReactionList | undefined {
     return this.reactionList.find((r) => r.id === id);
-  }
-
-  get isJoined(): boolean {
-    return this.userCommunities().some((uc) => uc.id === this.post().communityId);
   }
 }

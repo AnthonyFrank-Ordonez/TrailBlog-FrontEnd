@@ -2,6 +2,23 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ApiError } from '@core/models/interface/api-error';
 import { MessageService } from '@core/services/message.service';
 
+export const POST_PLACEHOLDER = {
+  id: '',
+  title: '',
+  content: '',
+  author: '',
+  slug: '',
+  createdAt: new Date(),
+  username: '',
+  communityName: '',
+  communityId: '',
+  totalComment: 0,
+  comments: [],
+  reactions: [],
+  userReactionsIds: [],
+  totalReactions: 0,
+};
+
 export function handleHttpError(error: HttpErrorResponse, messageService: MessageService) {
   if (error.error instanceof ErrorEvent) {
     messageService.showMessage('error', error.error.message);

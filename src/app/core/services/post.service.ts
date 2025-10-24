@@ -3,7 +3,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { CreatePostRequest, Post } from '@core/models/interface/posts';
 import { catchError, EMPTY, finalize, firstValueFrom, Observable, of, tap, throwError } from 'rxjs';
 import { MessageService } from './message.service';
-import { handleHttpError } from '@shared/utils/utils';
+import { handleHttpError, POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
 import { PageResult } from '@core/models/interface/page-result';
 import { ReactionRequest } from '@core/models/interface/reactions';
@@ -12,9 +12,12 @@ import { ReactionRequest } from '@core/models/interface/reactions';
   providedIn: 'root',
 })
 export class PostService {
+  env = environment;
   private http = inject(HttpClient);
+  private readonly apiUrl = `${this.env.apiRoot}/post`;
 
   #postsSignal = signal<Post[]>([]);
+  #postDetailSignal = signal<Post>(POST_PLACEHOLDER);
   #isPostLoading = signal<boolean>(false);
   #isSubmitting = signal<boolean>(false);
   #currentPageSignal = signal<number>(0);
@@ -26,8 +29,7 @@ export class PostService {
   isPostLoading = this.#isPostLoading.asReadonly();
   isSubmitting = this.#isSubmitting.asReadonly();
   posts = this.#postsSignal.asReadonly();
-
-  env = environment;
+  postDetail = this.#postDetailSignal.asReadonly();
 
   readonly hasMore = computed(() => this.#currentPageSignal() < this.#totalPagesSignal());
 
@@ -61,36 +63,50 @@ export class PostService {
       params = params.set('sessionId', this.#sessionIdSignal());
     }
 
-    return this.http
-      .get<PageResult<Post>>(`${this.env.apiRoot}/post`, { params, observe: 'response' })
-      .pipe(
-        tap((result) => {
-          const response = result.body!;
-          const sessionId = result.headers.get('X-Session-Id');
+    return this.http.get<PageResult<Post>>(this.apiUrl, { params, observe: 'response' }).pipe(
+      tap((result) => {
+        const response = result.body!;
+        const sessionId = result.headers.get('X-Session-Id');
 
-          if (sessionId) {
-            this.#sessionIdSignal.set(sessionId);
-          }
+        if (sessionId) {
+          this.#sessionIdSignal.set(sessionId);
+        }
 
-          this.#postsSignal.update((currentPosts) => [...currentPosts, ...response.data]);
+        this.#postsSignal.update((currentPosts) => [...currentPosts, ...response.data]);
 
-          this.#totalCountSignal.set(response.totalCount);
-          this.#totalPagesSignal.set(response.totalPages);
-          this.#currentPageSignal.set(nextPage);
-        }),
-        catchError((error: HttpErrorResponse) => {
-          return throwError(() => error);
-        }),
-        finalize(() => {
-          this.#isPostLoading.set(false);
-        }),
-      );
+        this.#totalCountSignal.set(response.totalCount);
+        this.#totalPagesSignal.set(response.totalPages);
+        this.#currentPageSignal.set(nextPage);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.#isPostLoading.set(false);
+      }),
+    );
+  }
+
+  loadPostDetail(slug: string): Observable<Post> {
+    this.#isPostLoading.set(true);
+
+    return this.http.get<Post>(`${this.apiUrl}/slug/${encodeURIComponent(slug)}`).pipe(
+      tap((response) => {
+        console.log('Fetching post detail..');
+
+        this.#postDetailSignal.set(response);
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+      finalize(() => this.#isPostLoading.set(false)),
+    );
   }
 
   createPost(postData: CreatePostRequest) {
     this.#isSubmitting.set(true);
 
-    return this.http.post<Post>(`${this.env.apiRoot}/post`, postData).pipe(
+    return this.http.post<Post>(this.apiUrl, postData).pipe(
       tap((post) => {
         console.log('creating posts...');
 
@@ -106,7 +122,7 @@ export class PostService {
   }
 
   likePost(postId: string) {
-    return this.http.post<Post>(`${this.env.apiRoot}/post/${postId}/like`, null).pipe(
+    return this.http.post<Post>(`${this.apiUrl}/${postId}/like`, null).pipe(
       tap((updatedPost) => {
         console.log('liking the post...');
 
@@ -121,7 +137,7 @@ export class PostService {
   }
 
   dislikePost(postId: string) {
-    return this.http.post<Post>(`${this.env.apiRoot}/post/${postId}/dislike`, null).pipe(
+    return this.http.post<Post>(`${this.apiUrl}/${postId}/dislike`, null).pipe(
       tap((updatedPost) => {
         console.log('disliking the post...');
 
@@ -136,13 +152,21 @@ export class PostService {
   }
 
   toggleReactions(postId: string, reactionData: ReactionRequest): Observable<Post> {
-    return this.http.post<Post>(`${this.env.apiRoot}/post/${postId}/reaction`, reactionData).pipe(
+    return this.http.post<Post>(`${this.apiUrl}/${postId}/reaction`, reactionData).pipe(
       tap((updatedPost) => {
         console.log('Reacting to the post...');
 
         this.#postsSignal.update((posts) =>
           posts.map((post) => (post.id === updatedPost.id ? { ...post, ...updatedPost } : post)),
         );
+
+        this.#postDetailSignal.update((currentPost) => {
+          if (!currentPost) return currentPost;
+          if (currentPost.id === updatedPost.id) {
+            return { ...currentPost, ...updatedPost };
+          }
+          return currentPost;
+        });
       }),
       catchError((error) => {
         return throwError(() => error);

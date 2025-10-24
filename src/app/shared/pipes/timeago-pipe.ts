@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'timeago',
 })
 export class TimeagoPipe implements PipeTransform {
-  transform(value: string | Date | number): string {
+  transform(value: string | Date | number | undefined): string {
     if (!value) return 'just now';
 
     const seconds = Math.floor((Date.now() - new Date(value).getTime()) / 1000);
