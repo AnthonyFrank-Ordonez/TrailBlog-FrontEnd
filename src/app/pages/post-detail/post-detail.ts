@@ -18,6 +18,7 @@ import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
 import { PostService } from '@core/services/post.service';
 import { UserService } from '@core/services/user.service';
+import { ZardDividerComponent } from '@shared/components/divider/divider.component';
 import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropdown-item.component';
 import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
 import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
@@ -35,6 +36,7 @@ import { debounceTime, Subject, switchMap, tap } from 'rxjs';
     ZardDropdownMenuContentComponent,
     ZardDropdownMenuItemComponent,
     ZardDropdownDirective,
+    ZardDividerComponent,
   ],
   templateUrl: './post-detail.html',
   styleUrl: './post-detail.css',

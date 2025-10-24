@@ -15,7 +15,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Post, ReactionType } from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
@@ -23,6 +23,7 @@ import { CommunityService } from '@core/services/community.service';
 import { MessageService } from '@core/services/message.service';
 import { ModalService } from '@core/services/modal.service';
 import { PostService } from '@core/services/post.service';
+import { UserService } from '@core/services/user.service';
 import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropdown-item.component';
 import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
 import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
@@ -48,12 +49,14 @@ import { debounceTime, Subject, switchMap } from 'rxjs';
 export class PostCard implements OnInit {
   @ViewChild('reactionContainer') reactionContainer!: ElementRef;
 
+  private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
   private postService = inject(PostService);
   private communityService = inject(CommunityService);
   private messageService = inject(MessageService);
   private modalService = inject(ModalService);
   private authService = inject(AuthService);
-  private destroyRef = inject(DestroyRef);
+  private userService = inject(UserService);
 
   private reaction$ = new Subject<ReactionRequest>();
 
@@ -152,6 +155,12 @@ export class PostCard implements OnInit {
     setTimeout(() => {
       this.showReactionModal.set(false);
     }, 200);
+  }
+
+  togglePostDetail(slug: string) {
+    this.router.navigate(['/post', slug]);
+
+    this.userService.setActiveUserTab('post-detail');
   }
 
   @HostListener('document:click', ['$event'])

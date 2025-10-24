@@ -1,5 +1,5 @@
 <div
-  [routerLink]="['/post', post().slug]"
+  (click)="togglePostDetail(post().slug)"
   class="rounded-lg px-4 py-3 hover:bg-gray-800/30 cursor-pointer"
 >
   <div class="flex items-center justify-between">
