@@ -1,4 +1,4 @@
-import { NgClass } from '@angular/common';
+import { NgClass, NgOptimizedImage } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
@@ -31,6 +31,7 @@ import { debounceTime, Subject, switchMap, tap } from 'rxjs';
   selector: 'app-post-detail',
   imports: [
     NgClass,
+    NgOptimizedImage,
     InitialsPipe,
     TimeagoPipe,
     ZardDropdownMenuContentComponent,
@@ -43,6 +44,7 @@ import { debounceTime, Subject, switchMap, tap } from 'rxjs';
 })
 export class PostDetail implements OnInit {
   @ViewChild('reactionContainer') reactionContainer!: ElementRef;
+  @ViewChild('commentArea') commentArea!: ElementRef;
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -55,6 +57,7 @@ export class PostDetail implements OnInit {
 
   post = this.postService.postDetail;
   isPostLoading = this.postService.isPostLoading;
+  isCommentSelected = signal<boolean>(false);
   isAuthenticated = this.authService.isAuthenticated;
   showReactionModal = signal<boolean>(false);
 
@@ -128,6 +131,20 @@ export class PostDetail implements OnInit {
   toggleBack(): void {
     this.router.navigate(['/']);
     this.userService.setActiveUserTab('home');
+  }
+
+  showCommentSection(): void {
+    this.isCommentSelected.set(true);
+
+    setTimeout(() => {
+      if (this.commentArea) {
+        this.commentArea.nativeElement.focus();
+      }
+    }, 0);
+  }
+
+  cancelCommentSection() {
+    this.isCommentSelected.set(false);
   }
 
   @HostListener('document:click', ['$event'])

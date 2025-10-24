@@ -41,7 +41,6 @@ import { debounceTime, Subject, switchMap } from 'rxjs';
     ZardDropdownDirective,
     NgClass,
     InitialsPipe,
-    RouterLink,
   ],
   templateUrl: './post-card.html',
   styleUrl: './post-card.css',
