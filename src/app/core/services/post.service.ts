@@ -162,7 +162,11 @@ export class PostService {
         this.#postsSignal.update((posts) =>
           posts.map((post) =>
             post.id === newComment.postId
-              ? { ...post, comments: [newComment, ...(post.comments ?? [])] }
+              ? {
+                  ...post,
+                  totalComment: (post.totalComment += 1),
+                  comments: [newComment, ...(post.comments ?? [])],
+                }
               : post,
           ),
         );
@@ -171,7 +175,11 @@ export class PostService {
           if (!currentPost) return currentPost;
 
           if (currentPost.id === newComment.postId) {
-            return { ...currentPost, comments: [newComment, ...(currentPost.comments ?? [])] };
+            return {
+              ...currentPost,
+              totalComment: (currentPost.totalComment += 1),
+              comments: [newComment, ...(currentPost.comments ?? [])],
+            };
           }
 
           return currentPost;

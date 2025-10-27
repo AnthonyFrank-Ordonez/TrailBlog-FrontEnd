@@ -192,6 +192,9 @@ export class PostDetail implements OnInit {
       .addPostComment(commentData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
+        next: () => {
+          this.resetCommentForm();
+        },
         error: (error: HttpErrorResponse) => {
           handleHttpError(error, this.messageService);
         },
@@ -202,5 +205,11 @@ export class PostDetail implements OnInit {
     return this.fb.group({
       content: ['', Validators.required],
     });
+  }
+
+  private resetCommentForm() {
+    this.commentForm.reset();
+
+    this.isCommentSelected.set(false);
   }
 }
