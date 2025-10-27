@@ -7,6 +7,7 @@ import { handleHttpError, POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
 import { PageResult } from '@core/models/interface/page-result';
 import { ReactionRequest } from '@core/models/interface/reactions';
+import { AddCommentRequest, Comment } from '@core/models/interface/comments';
 
 @Injectable({
   providedIn: 'root',
@@ -151,6 +152,42 @@ export class PostService {
     );
   }
 
+  addPostComment(commentData: AddCommentRequest): Observable<Comment> {
+    this.#isSubmitting.set(true);
+
+    return this.http.post<Comment>(`${this.env.apiRoot}/comment`, commentData).pipe(
+      tap((newComment) => {
+        console.log('Adding Comment...');
+
+        this.#postsSignal.update((posts) =>
+          posts.map((post) =>
+            post.id === newComment.postId
+              ? { ...post, comments: [newComment, ...(post.comments ?? [])] }
+              : post,
+          ),
+        );
+
+        this.#postDetailSignal.update((currentPost) => {
+          if (!currentPost) return currentPost;
+
+          if (currentPost.id === newComment.postId) {
+            return { ...currentPost, comments: [newComment, ...(currentPost.comments ?? [])] };
+          }
+
+          return currentPost;
+        });
+
+        this.#postDetailSignal;
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.#isSubmitting.set(false);
+      }),
+    );
+  }
+
   toggleReactions(postId: string, reactionData: ReactionRequest): Observable<Post> {
     return this.http.post<Post>(`${this.apiUrl}/${postId}/reaction`, reactionData).pipe(
       tap((updatedPost) => {
@@ -162,9 +199,11 @@ export class PostService {
 
         this.#postDetailSignal.update((currentPost) => {
           if (!currentPost) return currentPost;
+
           if (currentPost.id === updatedPost.id) {
             return { ...currentPost, ...updatedPost };
           }
+
           return currentPost;
         });
       }),

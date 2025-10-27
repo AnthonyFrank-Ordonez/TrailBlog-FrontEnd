@@ -366,14 +366,17 @@
         </button>
 
         <form
+          [formGroup]="commentForm"
           #formContainer
           class="border border-white/20 rounded-xl p-3"
           [class.hidden]="!isCommentSelected()"
+          (ngSubmit)="onCommentSubmit()"
         >
           <textarea
             #commentArea
             id="content"
             rows="6"
+            formControlName="content"
             placeholder="What's on your mind?"
             class="form-control w-full text-white focus:outline-none focus:border-transparent font-light placeholder:text-gray-600"
           ></textarea>

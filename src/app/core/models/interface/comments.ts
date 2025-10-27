@@ -1,10 +1,15 @@
 export interface Comment {
-  Id: string;
-  UserId: string | null;
-  PostId: string | null;
-  Content: string;
-  Username: string;
-  LastUpdateAt: Date;
-  CommentedAt: Date;
-  IsDeleted: boolean;
+  id: string;
+  content: string;
+  username: string;
+  commentedAt: Date;
+  lastUpdatedAt: Date;
+  isDeleted: boolean;
+  userId: string | null;
+  postId: string | null;
+}
+
+export interface AddCommentRequest {
+  postId: string;
+  content: string;
 }

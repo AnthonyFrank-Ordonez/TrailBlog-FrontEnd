@@ -12,7 +12,15 @@ import {
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+  ɵInternalFormsSharedModule,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AddCommentRequest } from '@core/models/interface/comments';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
@@ -34,6 +42,7 @@ import { debounceTime, Subject, switchMap, tap } from 'rxjs';
     NgOptimizedImage,
     InitialsPipe,
     TimeagoPipe,
+    ReactiveFormsModule,
     ZardDropdownMenuContentComponent,
     ZardDropdownMenuItemComponent,
     ZardDropdownDirective,
@@ -49,6 +58,7 @@ export class PostDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
   private postService = inject(PostService);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
@@ -60,6 +70,8 @@ export class PostDetail implements OnInit {
   isCommentSelected = signal<boolean>(false);
   isAuthenticated = this.authService.isAuthenticated;
   showReactionModal = signal<boolean>(false);
+
+  commentForm: FormGroup = this.createForm();
 
   reactionList: ReactionList[] = [
     { id: 1, type: '😂', value: 'laughReact' },
@@ -164,5 +176,31 @@ export class PostDetail implements OnInit {
 
   getReactionById(id: number): ReactionList | undefined {
     return this.reactionList.find((r) => r.id === id);
+  }
+
+  onCommentSubmit() {
+    if (this.commentForm.invalid) {
+      return;
+    }
+
+    const commentData: AddCommentRequest = {
+      postId: this.post().id,
+      content: this.commentForm.value.content?.trim(),
+    };
+
+    this.postService
+      .addPostComment(commentData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
+  }
+
+  private createForm() {
+    return this.fb.group({
+      content: ['', Validators.required],
+    });
   }
 }
