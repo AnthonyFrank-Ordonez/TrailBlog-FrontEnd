@@ -37,7 +37,10 @@
       }
     } @else {
       @for (post of recentViewedPosts(); track post.postId) {
-        <div class="px-3 py-2 w-full cursor-pointer hover:bg-gray-800/50 rounded-lg">
+        <div
+          (click)="toggleRecentViewedPost(post.slug)"
+          class="px-3 py-2 w-full cursor-pointer hover:bg-gray-800/50 rounded-lg"
+        >
           <div class="flex justify-between items-center mb-2">
             <div class="flex items-center space-x-1">
               <div class="w-5 h-5 bg-secondary rounded-full flex items-center justify-center">
