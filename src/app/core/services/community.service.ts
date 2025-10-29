@@ -40,10 +40,6 @@ export class CommunityService {
     );
   }
 
-  resetUserCommunities(): void {
-    this.#userCommunities.set([]);
-  }
-
   createCommunity(communityFormData: CreateCommunityRequest): Observable<Communities> {
     this.#isSubmitting.set(true);
 
@@ -97,5 +93,9 @@ export class CommunityService {
           return throwError(() => error);
         }),
       );
+  }
+
+  resetCommunityServiceData(): void {
+    this.#userCommunities.set([]);
   }
 }

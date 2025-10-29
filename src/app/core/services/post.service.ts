@@ -241,4 +241,8 @@ export class PostService {
       }),
     );
   }
+
+  resetPostServiceData(): void {
+    this.#recentViewedPostsSignal.set([]);
+  }
 }

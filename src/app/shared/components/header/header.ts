@@ -13,6 +13,9 @@ import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
 import { UserService } from '@core/services/user.service';
+import { tap } from 'rxjs';
+import { PostService } from '@core/services/post.service';
+import { CommunityService } from '@core/services/community.service';
 
 @Component({
   selector: 'app-header',
@@ -33,6 +36,8 @@ export class Header implements OnDestroy {
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
   private userService = inject(UserService);
+  private postService = inject(PostService);
+  private communityService = inject(CommunityService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
@@ -84,10 +89,15 @@ export class Header implements OnDestroy {
     this.userService.setActiveUserTab(value);
   }
 
-  async onSignOut(): Promise<void> {
+  onSignOut() {
     this.authService
       .logout()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        tap(() => {
+          this.clearServiceData();
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: () => {
           this.router.navigate(['/']);
@@ -96,5 +106,10 @@ export class Header implements OnDestroy {
           handleHttpError(error, this.messageService);
         },
       });
+  }
+
+  private clearServiceData() {
+    this.postService.resetPostServiceData();
+    this.communityService.resetCommunityServiceData();
   }
 }

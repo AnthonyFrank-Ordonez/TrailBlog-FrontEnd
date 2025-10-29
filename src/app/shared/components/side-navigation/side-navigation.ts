@@ -58,8 +58,6 @@ export class SideNavigation {
     effect(() => {
       if (this.isAuthenticated()) {
         this.loadCommunities();
-      } else {
-        this.resetCommunities();
       }
     });
 
@@ -145,7 +143,4 @@ export class SideNavigation {
       });
   }
 
-  private resetCommunities(): void {
-    this.communityService.resetUserCommunities();
-  }
 }
