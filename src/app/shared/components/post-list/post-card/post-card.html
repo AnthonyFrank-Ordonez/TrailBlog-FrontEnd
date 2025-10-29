@@ -148,7 +148,7 @@
     <div class="flex items-center space-x-1.5 mt-2">
       @for (reaction of post().reactions; track $index) {
         <button
-          (click)="selectReaction(getReactionById(reaction.reactionId)!.id)"
+          (click)="selectReaction(getReactionById(reaction.reactionId)!.id, $event)"
           class="flex items-center space-x-1 px-2 py-1 text-white rounded-full cursor-pointer transition-colors duration-200"
           [ngClass]="
             hasReaction(reaction.reactionId)
