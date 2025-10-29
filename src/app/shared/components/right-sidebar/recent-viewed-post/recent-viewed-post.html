@@ -36,7 +36,7 @@
         <z-divider class="bg-white/20"></z-divider>
       }
     } @else {
-      @for (post of posts(); track post.id) {
+      @for (post of recentViewedPosts(); track post.postId) {
         <div class="px-3 py-2 w-full cursor-pointer hover:bg-gray-800/50 rounded-lg">
           <div class="flex justify-between items-center mb-2">
             <div class="flex items-center space-x-1">

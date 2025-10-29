@@ -18,7 +18,6 @@ export class RightSidebar {
     this.currentPath = toSignal(
       this.router.events.pipe(
         filter((event) => event instanceof NavigationEnd),
-        tap((event) => console.log('Route changes: ', event.url)),
         map((event: NavigationEnd) => event.url),
         startWith(this.router.url),
       ),

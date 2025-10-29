@@ -16,6 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { handleHttpError } from '@shared/utils/utils';
 import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-post-list',
@@ -71,7 +72,7 @@ export class PostList {
       .loadInitialPosts()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
           handleHttpError(error, this.messageService);
         },
       });

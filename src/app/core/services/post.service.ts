@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { CreatePostRequest, Post } from '@core/models/interface/posts';
+import { CreatePostRequest, Post, RecentViewedPost } from '@core/models/interface/posts';
 import { catchError, EMPTY, finalize, firstValueFrom, Observable, of, tap, throwError } from 'rxjs';
 import { MessageService } from './message.service';
 import { handleHttpError, POST_PLACEHOLDER } from '@shared/utils/utils';
@@ -19,18 +19,22 @@ export class PostService {
 
   #postsSignal = signal<Post[]>([]);
   #postDetailSignal = signal<Post>(POST_PLACEHOLDER);
-  #isPostLoading = signal<boolean>(false);
-  #isSubmitting = signal<boolean>(false);
+  #recentViewedPostsSignal = signal<RecentViewedPost[]>([]);
+  #isPostLoadingSignal = signal<boolean>(false);
+  #isRecentPostsLoadingSignal = signal<boolean>(false);
+  #isSubmittingSignal = signal<boolean>(false);
   #currentPageSignal = signal<number>(0);
   #pageSizeSignal = signal<number>(10);
   #totalPagesSignal = signal<number>(0);
   #totalCountSignal = signal<number>(0);
   #sessionIdSignal = signal<string>('');
 
-  isPostLoading = this.#isPostLoading.asReadonly();
-  isSubmitting = this.#isSubmitting.asReadonly();
   posts = this.#postsSignal.asReadonly();
   postDetail = this.#postDetailSignal.asReadonly();
+  recentViewedPosts = this.#recentViewedPostsSignal.asReadonly();
+  isPostLoading = this.#isPostLoadingSignal.asReadonly();
+  isRecentPostsLoading = this.#isRecentPostsLoadingSignal.asReadonly();
+  isSubmitting = this.#isSubmittingSignal.asReadonly();
 
   readonly hasMore = computed(() => this.#currentPageSignal() < this.#totalPagesSignal());
 
@@ -43,7 +47,7 @@ export class PostService {
   }
 
   loadMorePosts() {
-    if (this.#isPostLoading()) {
+    if (this.#isPostLoadingSignal()) {
       console.log('Already loading, skipping...');
       return EMPTY;
     }
@@ -54,7 +58,7 @@ export class PostService {
       return EMPTY;
     }
 
-    this.#isPostLoading.set(true);
+    this.#isPostLoadingSignal.set(true);
 
     const nextPage = this.#currentPageSignal() + 1;
 
@@ -83,13 +87,13 @@ export class PostService {
         return throwError(() => error);
       }),
       finalize(() => {
-        this.#isPostLoading.set(false);
+        this.#isPostLoadingSignal.set(false);
       }),
     );
   }
 
   loadPostDetail(slug: string): Observable<Post> {
-    this.#isPostLoading.set(true);
+    this.#isPostLoadingSignal.set(true);
 
     return this.http.get<Post>(`${this.apiUrl}/slug/${encodeURIComponent(slug)}`).pipe(
       tap((response) => {
@@ -100,12 +104,29 @@ export class PostService {
       catchError((error) => {
         return throwError(() => error);
       }),
-      finalize(() => this.#isPostLoading.set(false)),
+      finalize(() => this.#isPostLoadingSignal.set(false)),
+    );
+  }
+
+  loadRecentViewedPosts(): Observable<RecentViewedPost[]> {
+    this.#isRecentPostsLoadingSignal.set(true);
+
+    return this.http.get<RecentViewedPost[]>(`${this.apiUrl}/recent-viewed-posts`).pipe(
+      tap((response) => {
+        console.log('Fetching recent viewed posts...');
+        this.#recentViewedPostsSignal.set(response);
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.#isRecentPostsLoadingSignal.set(false);
+      }),
     );
   }
 
   createPost(postData: CreatePostRequest) {
-    this.#isSubmitting.set(true);
+    this.#isSubmittingSignal.set(true);
 
     return this.http.post<Post>(this.apiUrl, postData).pipe(
       tap((post) => {
@@ -117,7 +138,7 @@ export class PostService {
         return throwError(() => error);
       }),
       finalize(() => {
-        this.#isSubmitting.set(false);
+        this.#isSubmittingSignal.set(false);
       }),
     );
   }
@@ -153,7 +174,7 @@ export class PostService {
   }
 
   addPostComment(commentData: AddCommentRequest): Observable<Comment> {
-    this.#isSubmitting.set(true);
+    this.#isSubmittingSignal.set(true);
 
     return this.http.post<Comment>(`${this.env.apiRoot}/comment`, commentData).pipe(
       tap((newComment) => {
@@ -191,7 +212,7 @@ export class PostService {
         return throwError(() => error);
       }),
       finalize(() => {
-        this.#isSubmitting.set(false);
+        this.#isSubmittingSignal.set(false);
       }),
     );
   }

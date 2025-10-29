@@ -20,6 +20,18 @@ export interface Post {
   totalReactions: number;
 }
 
+export interface RecentViewedPost {
+  postId: string;
+  title: string;
+  content: string;
+  author: string;
+  slug: string;
+  createdAt: Date;
+  communityName: string;
+  totalComment: number;
+  totalReactions: number;
+}
+
 export interface CreatePostRequest {
   title: string;
   content: string;
