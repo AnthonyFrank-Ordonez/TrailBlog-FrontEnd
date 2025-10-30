@@ -1,9 +1,10 @@
-import { Component, Signal } from '@angular/core';
+import { Component, inject, Signal } from '@angular/core';
 import { RecentViewedPost } from './recent-viewed-post/recent-viewed-post';
 import { NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith, tap } from 'rxjs';
 import { ManageCommunitiesBar } from './manage-communities-bar/manage-communities-bar';
+import { AuthService } from '@core/services/auth.service';
 
 @Component({
   selector: 'app-right-sidebar',
@@ -12,7 +13,10 @@ import { ManageCommunitiesBar } from './manage-communities-bar/manage-communitie
   styleUrl: './right-sidebar.css',
 })
 export class RightSidebar {
+  private readonly authService = inject(AuthService);
+
   currentPath: Signal<string>;
+  isAuthenticated = this.authService.isAuthenticated;
 
   constructor(private router: Router) {
     this.currentPath = toSignal(

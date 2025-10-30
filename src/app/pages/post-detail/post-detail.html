@@ -355,49 +355,51 @@
 
         <z-divider zSpacing="default" class="bg-white/20"></z-divider>
 
-        <button
-          #toggleCommentBtn
-          (click)="showCommentSection()"
-          class="text-left px-5 py-2 text-gray-600 font-light border border-white/20 rounded-xl cursor-text hover:bg-gray-500/10 focus:outline-none focus:ring-1 focus:ring-gray-500 transition-colors duration-200"
-          [class.hidden]="isCommentSelected()"
-          aria-label="commentBtn"
-        >
-          Place your comment here
-        </button>
+        @if (isAuthenticated()) {
+          <button
+            #toggleCommentBtn
+            (click)="showCommentSection()"
+            class="text-left px-5 py-2 text-gray-600 font-light border border-white/20 rounded-xl cursor-text hover:bg-gray-500/10 focus:outline-none focus:ring-1 focus:ring-gray-500 transition-colors duration-200"
+            [class.hidden]="isCommentSelected()"
+            aria-label="commentBtn"
+          >
+            Place your comment here
+          </button>
 
-        <form
-          [formGroup]="commentForm"
-          #formContainer
-          class="border border-white/20 rounded-xl p-3"
-          [class.hidden]="!isCommentSelected()"
-          (ngSubmit)="onCommentSubmit()"
-        >
-          <textarea
-            #commentArea
-            id="content"
-            rows="6"
-            formControlName="content"
-            placeholder="What's on your mind?"
-            class="form-control text-sm w-full text-white focus:outline-none focus:border-transparent font-light placeholder:text-gray-600"
-          ></textarea>
+          <form
+            [formGroup]="commentForm"
+            #formContainer
+            class="border border-white/20 rounded-xl p-3"
+            [class.hidden]="!isCommentSelected()"
+            (ngSubmit)="onCommentSubmit()"
+          >
+            <textarea
+              #commentArea
+              id="content"
+              rows="6"
+              formControlName="content"
+              placeholder="What's on your mind?"
+              class="form-control text-sm w-full text-white focus:outline-none focus:border-transparent font-light placeholder:text-gray-600"
+            ></textarea>
 
-          <div class="flex space-x-2 items-center justify-end">
-            <button
-              type="button"
-              class="text-white text-sm px-5 py-1.5 font-medium rounded-md cursor-pointer duration-200 transition-colors bg-gray-700 hover:bg-gray-600"
-              (click)="cancelCommentSection()"
-            >
-              Cancel
-            </button>
+            <div class="flex space-x-2 items-center justify-end">
+              <button
+                type="button"
+                class="text-white text-sm px-5 py-1.5 font-medium rounded-md cursor-pointer duration-200 transition-colors bg-gray-700 hover:bg-gray-600"
+                (click)="cancelCommentSection()"
+              >
+                Cancel
+              </button>
 
-            <button
-              type="submit"
-              class="bg-secondary text-white text-sm px-3 py-1.5 font-medium rounded-md cursor-pointer duration-200 transition-colors hover:bg-secondary/80"
-            >
-              Comment
-            </button>
-          </div>
-        </form>
+              <button
+                type="submit"
+                class="bg-secondary text-white text-sm px-3 py-1.5 font-medium rounded-md cursor-pointer duration-200 transition-colors hover:bg-secondary/80"
+              >
+                Comment
+              </button>
+            </div>
+          </form>
+        }
 
         @if (post().comments?.length === 0) {
           <div class="flex flex-col items-center justify-center mt-10">

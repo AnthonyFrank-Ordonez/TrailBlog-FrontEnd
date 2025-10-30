@@ -2,7 +2,9 @@
   <div class="h-[calc(100vh-4.5rem)] overflow-y-auto hide-scrollbar">
     @switch (currentPath()) {
       @case ('/') {
-        <app-recent-viewed-post />
+        @if (isAuthenticated()) {
+          <app-recent-viewed-post />
+        }
       }
       @case ('/communities') {
         <app-manage-communities-bar />
