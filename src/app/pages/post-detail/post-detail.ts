@@ -53,6 +53,8 @@ import { debounceTime, Subject, switchMap, tap } from 'rxjs';
 })
 export class PostDetail implements OnInit {
   @ViewChild('reactionContainer') reactionContainer!: ElementRef;
+  @ViewChild('commentFormContainer') commentFormContainer!: ElementRef;
+  @ViewChild('toggleCommentBtn') toggleCommentBtn!: ElementRef;
   @ViewChild('commentArea') commentArea!: ElementRef;
 
   private route = inject(ActivatedRoute);
@@ -161,12 +163,16 @@ export class PostDetail implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
-    if (!this.showReactionModal()) return;
-
     const clickedInside = this.reactionContainer.nativeElement.contains(event.target);
+    const insideCommentForm = this.commentFormContainer.nativeElement.contains(event.target);
+    const clickToggleBtn = this.toggleCommentBtn.nativeElement.contains(event.target);
 
-    if (!clickedInside) {
+    if (this.showReactionModal() && !clickedInside) {
       this.closeReactModal();
+    }
+
+    if (this.isCommentSelected() && !insideCommentForm && !clickToggleBtn) {
+      this.isCommentSelected.set(false);
     }
   }
 
