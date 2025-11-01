@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { CreatePostRequest, Post, RecentViewedPost } from '@core/models/interface/posts';
 import { catchError, EMPTY, finalize, firstValueFrom, Observable, of, tap, throwError } from 'rxjs';
@@ -18,8 +18,9 @@ export class PostService {
   private readonly apiUrl = `${this.env.apiRoot}/post`;
 
   #postsSignal = signal<Post[]>([]);
-  #postDetailSignal = signal<Post>(POST_PLACEHOLDER);
+  #popularPostsSignal = signal<Post[]>([]);
   #recentViewedPostsSignal = signal<RecentViewedPost[]>([]);
+  #postDetailSignal = signal<Post>(POST_PLACEHOLDER);
   #isPostLoadingSignal = signal<boolean>(false);
   #isRecentPostsLoadingSignal = signal<boolean>(false);
   #isSubmittingSignal = signal<boolean>(false);
@@ -30,8 +31,9 @@ export class PostService {
   #sessionIdSignal = signal<string>('');
 
   posts = this.#postsSignal.asReadonly();
-  postDetail = this.#postDetailSignal.asReadonly();
   recentViewedPosts = this.#recentViewedPostsSignal.asReadonly();
+  popularPosts = this.#popularPostsSignal.asReadonly();
+  postDetail = this.#postDetailSignal.asReadonly();
   isPostLoading = this.#isPostLoadingSignal.asReadonly();
   isRecentPostsLoading = this.#isRecentPostsLoadingSignal.asReadonly();
   isSubmitting = this.#isSubmittingSignal.asReadonly();
@@ -46,7 +48,7 @@ export class PostService {
     return this.loadMorePosts();
   }
 
-  loadMorePosts() {
+  loadMorePosts(): Observable<HttpResponse<PageResult<Post>>> {
     if (this.#isPostLoadingSignal()) {
       console.log('Already loading, skipping...');
       return EMPTY;
@@ -105,6 +107,20 @@ export class PostService {
         return throwError(() => error);
       }),
       finalize(() => this.#isPostLoadingSignal.set(false)),
+    );
+  }
+
+  loadPopularPost(): Observable<PageResult<Post>> {
+    return this.http.get<PageResult<Post>>(`${this.apiUrl}/popular`).pipe(
+      tap((response) => {
+        console.log('Fetching popular posts...');
+
+        this.#popularPostsSignal.set(response.data);
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+      finalize(() => {}),
     );
   }
 
