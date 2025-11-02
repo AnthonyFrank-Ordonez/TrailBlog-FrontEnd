@@ -1,6 +1,11 @@
 import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { CreatePostRequest, Post, RecentViewedPost } from '@core/models/interface/posts';
+import {
+  CreatePostRequest,
+  Post,
+  PostLoadingStrategy,
+  RecentViewedPost,
+} from '@core/models/interface/posts';
 import { catchError, EMPTY, finalize, firstValueFrom, Observable, of, tap, throwError } from 'rxjs';
 import { MessageService } from './message.service';
 import { handleHttpError, POST_PLACEHOLDER } from '@shared/utils/utils';
@@ -17,10 +22,11 @@ export class PostService {
   private http = inject(HttpClient);
   private readonly apiUrl = `${this.env.apiRoot}/post`;
 
-  #postsSignal = signal<Post[]>([]);
+  #regularPostsSignal = signal<Post[]>([]);
   #popularPostsSignal = signal<Post[]>([]);
   #recentViewedPostsSignal = signal<RecentViewedPost[]>([]);
   #postDetailSignal = signal<Post>(POST_PLACEHOLDER);
+  #postLoadingStrategySignal = signal<PostLoadingStrategy>('regular');
   #isPostLoadingSignal = signal<boolean>(false);
   #isRecentPostsLoadingSignal = signal<boolean>(false);
   #isSubmittingSignal = signal<boolean>(false);
@@ -30,7 +36,7 @@ export class PostService {
   #totalCountSignal = signal<number>(0);
   #sessionIdSignal = signal<string>('');
 
-  posts = this.#postsSignal.asReadonly();
+  regularPosts = this.#regularPostsSignal.asReadonly();
   recentViewedPosts = this.#recentViewedPostsSignal.asReadonly();
   popularPosts = this.#popularPostsSignal.asReadonly();
   postDetail = this.#postDetailSignal.asReadonly();
@@ -40,10 +46,12 @@ export class PostService {
 
   readonly hasMore = computed(() => this.#currentPageSignal() < this.#totalPagesSignal());
 
-  loadInitialPosts() {
-    this.#postsSignal.set([]);
+  loadInitialPosts(strategy: PostLoadingStrategy = 'regular') {
+    this.#regularPostsSignal.set([]);
+    this.#popularPostsSignal.set([]);
     this.#currentPageSignal.set(0);
     this.#sessionIdSignal.set('');
+    this.#postLoadingStrategySignal.set(strategy);
 
     return this.loadMorePosts();
   }
@@ -60,6 +68,12 @@ export class PostService {
       return EMPTY;
     }
 
+    const strategy = this.#postLoadingStrategySignal();
+
+    return strategy === 'regular' ? this.loadPosts() : this.loadPopularPost();
+  }
+
+  loadPosts(): Observable<HttpResponse<PageResult<Post>>> {
     this.#isPostLoadingSignal.set(true);
 
     const nextPage = this.#currentPageSignal() + 1;
@@ -79,7 +93,7 @@ export class PostService {
           this.#sessionIdSignal.set(sessionId);
         }
 
-        this.#postsSignal.update((currentPosts) => [...currentPosts, ...response.data]);
+        this.#regularPostsSignal.update((currentPosts) => [...currentPosts, ...response.data]);
 
         this.#totalCountSignal.set(response.totalCount);
         this.#totalPagesSignal.set(response.totalPages);
@@ -92,6 +106,35 @@ export class PostService {
         this.#isPostLoadingSignal.set(false);
       }),
     );
+  }
+
+  loadPopularPost(): Observable<HttpResponse<PageResult<Post>>> {
+    this.#isPostLoadingSignal.set(true);
+
+    const nextPage = this.#currentPageSignal() + 1;
+
+    let params = new HttpParams().set('page', nextPage).set('pageSize', this.#pageSizeSignal());
+
+    return this.http
+      .get<PageResult<Post>>(`${this.apiUrl}/popular`, { params, observe: 'response' })
+      .pipe(
+        tap((result) => {
+          const response = result.body!;
+          console.log('Fetching popular posts...');
+
+          this.#popularPostsSignal.update((currentPosts) => [...currentPosts, ...response.data]);
+
+          this.#totalCountSignal.set(response.totalCount);
+          this.#totalPagesSignal.set(response.totalPages);
+          this.#currentPageSignal.set(nextPage);
+        }),
+        catchError((error) => {
+          return throwError(() => error);
+        }),
+        finalize(() => {
+          this.#isPostLoadingSignal.set(false);
+        }),
+      );
   }
 
   loadPostDetail(slug: string): Observable<Post> {
@@ -107,20 +150,6 @@ export class PostService {
         return throwError(() => error);
       }),
       finalize(() => this.#isPostLoadingSignal.set(false)),
-    );
-  }
-
-  loadPopularPost(): Observable<PageResult<Post>> {
-    return this.http.get<PageResult<Post>>(`${this.apiUrl}/popular`).pipe(
-      tap((response) => {
-        console.log('Fetching popular posts...');
-
-        this.#popularPostsSignal.set(response.data);
-      }),
-      catchError((error) => {
-        return throwError(() => error);
-      }),
-      finalize(() => {}),
     );
   }
 
@@ -148,7 +177,7 @@ export class PostService {
       tap((post) => {
         console.log('creating posts...');
 
-        this.#postsSignal.update((values) => [...values, post]);
+        this.#regularPostsSignal.update((values) => [...values, post]);
       }),
       catchError((error) => {
         return throwError(() => error);
@@ -164,7 +193,7 @@ export class PostService {
       tap((updatedPost) => {
         console.log('liking the post...');
 
-        this.#postsSignal.update((posts) =>
+        this.#regularPostsSignal.update((posts) =>
           posts.map((post) => (post.id === updatedPost.id ? { ...post, ...updatedPost } : post)),
         );
       }),
@@ -179,7 +208,7 @@ export class PostService {
       tap((updatedPost) => {
         console.log('disliking the post...');
 
-        this.#postsSignal.update((posts) =>
+        this.#regularPostsSignal.update((posts) =>
           posts.map((post) => (post.id === updatedPost.id ? { ...post, ...updatedPost } : post)),
         );
       }),
@@ -196,7 +225,7 @@ export class PostService {
       tap((newComment) => {
         console.log('Adding Comment...');
 
-        this.#postsSignal.update((posts) =>
+        this.#regularPostsSignal.update((posts) =>
           posts.map((post) =>
             post.id === newComment.postId
               ? {
@@ -238,7 +267,7 @@ export class PostService {
       tap((updatedPost) => {
         console.log('Reacting to the post...');
 
-        this.#postsSignal.update((posts) =>
+        this.#regularPostsSignal.update((posts) =>
           posts.map((post) => (post.id === updatedPost.id ? { ...post, ...updatedPost } : post)),
         );
 

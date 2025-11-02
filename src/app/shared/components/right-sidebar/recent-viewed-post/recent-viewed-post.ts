@@ -26,7 +26,6 @@ export class RecentViewedPost {
   private readonly authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
 
-  posts = this.postService.posts;
   recentViewedPosts = this.postService.recentViewedPosts;
   isRecentLoading = this.postService.isRecentPostsLoading;
   isAuthenticated = this.authService.isAuthenticated;
@@ -45,8 +44,6 @@ export class RecentViewedPost {
 
   toggleRecentViewedPost(slug: string) {
     this.router.navigate(['/post', slug]);
-
-    this.userService.setActiveUserTab('post-detail');
   }
 
   private loadRecentViewedPosts() {

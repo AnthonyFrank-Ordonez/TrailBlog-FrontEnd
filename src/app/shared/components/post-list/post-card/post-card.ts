@@ -158,8 +158,6 @@ export class PostCard implements OnInit {
 
   togglePostDetail(slug: string) {
     this.router.navigate(['/post', slug]);
-
-    this.userService.setActiveUserTab('post-detail');
   }
 
   @HostListener('document:click', ['$event'])

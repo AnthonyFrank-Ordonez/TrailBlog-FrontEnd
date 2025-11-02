@@ -8,6 +8,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { noAuthGuard } from './core/guards/no-auth-guard';
 import { CreatePost } from '@pages/create-post/create-post';
 import { PostDetail } from '@pages/post-detail/post-detail';
+import { Popular } from '@pages/popular/popular';
 
 export const routes: Routes = [
   {
@@ -18,6 +19,10 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         component: Home,
+      },
+      {
+        path: 'popular',
+        component: Popular,
       },
       {
         path: 'communities',

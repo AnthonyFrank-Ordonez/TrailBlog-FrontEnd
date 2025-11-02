@@ -100,7 +100,6 @@
     </button>
 
     <button
-      (click)="setActiveTab('create')"
       class="flex flex-col items-center justify-center space-y-1 p-2 text-gray-500"
       [class.text-secondary]="activeTab() === 'create'"
       [class.text-gray-500]="activeTab() !== 'create'"
@@ -217,7 +216,6 @@
       @if (isAuthenticated()) {
         <!-- Create Btn -->
         <button
-          (click)="setActiveTab('create')"
           class="flex items-center space-x-1.5 px-2 py-2 text-white rounded-full text-sm font-medium transition-colors hover:bg-gray-800/40 cursor-pointer"
           routerLink="/create"
           zTooltip="Create Post"

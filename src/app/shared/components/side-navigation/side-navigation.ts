@@ -11,7 +11,7 @@ import { PostService } from '@core/services/post.service';
 import { UserSettingsService } from '@core/services/user-settings.service';
 import { UserService } from '@core/services/user.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
-import { handleHttpError } from '@shared/utils/utils';
+import { getStrategyFromPath, handleHttpError } from '@shared/utils/utils';
 import { filter, map, startWith, tap } from 'rxjs';
 
 @Component({
@@ -71,10 +71,6 @@ export class SideNavigation {
     );
   }
 
-  setActiveTab(value: string): void {
-    this.userService.setActiveUserTab(value);
-  }
-
   toggleCommunities(): void {
     this.userSettingsService.updateUserSettings({
       communityExpanded: !this.currentSettings()?.communityExpanded,
@@ -103,12 +99,31 @@ export class SideNavigation {
     });
   }
 
+  toggleNavigation(targetPath: string) {
+    if (this.currentPath() === targetPath) {
+      this.viewPortScroller.scrollToPosition([0, 0]);
+
+      const strategy = getStrategyFromPath(targetPath);
+
+      this.postService
+        .loadInitialPosts(strategy)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          error: (error) => {
+            handleHttpError(error, this.messageService);
+          },
+        });
+    } else {
+      this.router.navigate([targetPath]);
+    }
+  }
+
   toggleHome() {
     if (this.currentPath() === '/') {
       this.viewPortScroller.scrollToPosition([0, 0]);
 
       this.postService
-        .loadInitialPosts()
+        .loadInitialPosts('regular')
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           error: (error) => {
@@ -142,5 +157,4 @@ export class SideNavigation {
         },
       });
   }
-
 }

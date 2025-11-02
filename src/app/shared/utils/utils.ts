@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiError } from '@core/models/interface/api-error';
+import { PostLoadingStrategy } from '@core/models/interface/posts';
 import { MessageService } from '@core/services/message.service';
 
 export const POST_PLACEHOLDER = {
@@ -32,4 +33,30 @@ export function handleHttpError(error: HttpErrorResponse, messageService: Messag
   } else {
     console.error('Http error occured: ', error);
   }
+}
+
+export function getStrategyFromPath(path: string): PostLoadingStrategy {
+  const strategyMap: Record<string, PostLoadingStrategy> = {
+    '/': 'regular',
+    '/popular': 'popular',
+  };
+
+  const strategy = strategyMap[path];
+
+  if (!strategy) {
+    console.warn(`Unknown Path: ${path}. Default to 'regular'`);
+    return 'regular';
+  }
+
+  return strategy;
+}
+
+export function getActiveTabFromPath(path: string): string {
+  console.log('path', path);
+  if (path.startsWith('/popular')) return 'popular';
+  if (path.startsWith('/create')) return 'create';
+  if (path.startsWith('/community')) return 'community';
+  if (path.startsWith('/post/')) return 'post-detail';
+
+  return 'home';
 }

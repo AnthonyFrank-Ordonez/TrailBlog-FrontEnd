@@ -5,11 +5,10 @@
       <nav class="space-y-1">
         <!-- Home -->
         <button
-          (click)="toggleHome()"
           class="flex w-full items-center space-x-2 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800/40 cursor-pointer"
           [class.text-secondary]="activeTab() === 'home'"
           [class.text-white]="activeTab() !== 'home'"
-          (click)="setActiveTab('home')"
+          (click)="toggleNavigation('/')"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +31,7 @@
           class="flex w-full cursor-pointer items-center space-x-2 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800/40"
           [class.text-secondary]="activeTab() === 'popular'"
           [class.text-white]="activeTab() !== 'popular'"
-          (click)="setActiveTab('popular')"
+          (click)="toggleNavigation('/popular')"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +55,6 @@
           class="flex items-center w-full cursor-pointer space-x-2 px-3 py-2 rounded-lg hover:bg-gray-800/40 transition-colors"
           [class.text-secondary]="activeTab() === 'explore'"
           [class.text-white]="activeTab() !== 'explore'"
-          (click)="setActiveTab('explore')"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +77,6 @@
           class="flex items-center w-full cursor-pointer space-x-2 px-3 py-2 rounded-lg hover:bg-gray-800/40 transition-colors"
           [class.text-secondary]="activeTab() === 'about'"
           [class.text-white]="activeTab() !== 'about'"
-          (click)="setActiveTab('about')"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +120,6 @@
               class="flex items-center cursor-pointer w-full space-x-3 px-5 py-2.5 rounded-lg hover:bg-gray-800/40 transition-colors"
               animate.enter="slide-enter"
               animate.leave="slide-leave"
-              (click)="setActiveTab('')"
             >
               <svg
                 class="w-5 h-5"
@@ -214,7 +210,6 @@
               <button
                 routerLink="/communities"
                 class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
-                (click)="setActiveTab('')"
               >
                 <svg
                   class="w-5 h-5"

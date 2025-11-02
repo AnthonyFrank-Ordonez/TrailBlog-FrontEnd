@@ -1,16 +1,29 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
 import { User } from '@core/models/interface/user';
+import { getActiveTabFromPath } from '@shared/utils/utils';
+import { filter, map, startWith } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  #userSignal = signal<User | null>(null);
-  #activeUserTabSignal = signal<string>('home');
-  isAdmin = computed(() => this.#userSignal()?.roles.includes('Admin'));
+  private router = inject(Router);
+  private currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      map(() => this.router.url),
+      startWith(this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
 
+  #userSignal = signal<User | null>(null);
+
+  isAdmin = computed(() => this.#userSignal()?.roles.includes('Admin'));
+  activeUserTab = computed(() => getActiveTabFromPath(this.currentUrl() ?? '/'));
   user = this.#userSignal.asReadonly();
-  activeUserTab = this.#activeUserTabSignal.asReadonly();
 
   setUser(user: User): void {
     this.#userSignal.set(user);
@@ -18,9 +31,5 @@ export class UserService {
 
   clearUser(): void {
     this.#userSignal.set(null);
-  }
-
-  setActiveUserTab(value: string): void {
-    this.#activeUserTabSignal.set(value);
   }
 }

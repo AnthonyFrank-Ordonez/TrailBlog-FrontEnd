@@ -7,7 +7,6 @@ import {
   HostListener,
   inject,
   OnInit,
-  runInInjectionContext,
   signal,
   ViewChild,
 } from '@angular/core';
@@ -144,7 +143,6 @@ export class PostDetail implements OnInit {
 
   toggleBack(): void {
     this.router.navigate(['/']);
-    this.userService.setActiveUserTab('home');
   }
 
   showCommentSection(): void {
@@ -163,6 +161,10 @@ export class PostDetail implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
+    if (!this.reactionContainer || !this.commentFormContainer || !this.toggleCommentBtn) {
+      return;
+    }
+
     const clickedInside = this.reactionContainer.nativeElement.contains(event.target);
     const insideCommentForm = this.commentFormContainer.nativeElement.contains(event.target);
     const clickToggleBtn = this.toggleCommentBtn.nativeElement.contains(event.target);

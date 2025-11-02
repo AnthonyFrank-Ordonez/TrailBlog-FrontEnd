@@ -5,18 +5,23 @@ import {
   effect,
   HostListener,
   inject,
+  input,
   OnInit,
+  Signal,
   signal,
   untracked,
 } from '@angular/core';
 import { PostCard } from './post-card/post-card';
 import { PostService } from '@core/services/post.service';
 import { ZardDividerComponent } from '@shared/components/divider/divider.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { handleHttpError } from '@shared/utils/utils';
 import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter, map, startWith } from 'rxjs';
+import { Post } from '@core/models/interface/posts';
 
 @Component({
   selector: 'app-post-list',
@@ -25,13 +30,16 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './post-list.css',
 })
 export class PostList {
-  private readonly postService = inject(PostService);
+  private postService = inject(PostService);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
 
+  posts = input.required<Post[]>();
+
+  currentPath: Signal<string>;
   isAuthenticated = this.authService.isAuthenticated;
-  posts = this.postService.posts;
 
   isPostLoading = this.postService.isPostLoading;
   skeletonArray = Array(5).fill(0);
@@ -45,6 +53,15 @@ export class PostList {
         this.loadPosts();
       });
     });
+
+    this.currentPath = toSignal(
+      this.router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map((event: NavigationEnd) => event.url),
+        startWith(this.router.url),
+      ),
+      { initialValue: this.router.url },
+    );
   }
 
   @HostListener('window:scroll')
@@ -68,13 +85,29 @@ export class PostList {
   }
 
   private loadPosts() {
-    this.postService
-      .loadInitialPosts()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        error: (error: HttpErrorResponse) => {
-          handleHttpError(error, this.messageService);
-        },
-      });
+    switch (this.currentPath()) {
+      case '/':
+        this.postService
+          .loadInitialPosts('regular')
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            error: (error: HttpErrorResponse) => {
+              handleHttpError(error, this.messageService);
+            },
+          });
+        break;
+      case '/popular':
+        this.postService
+          .loadInitialPosts('popular')
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            error: (error: HttpErrorResponse) => {
+              handleHttpError(error, this.messageService);
+            },
+          });
+        break;
+      default:
+        break;
+    }
   }
 }

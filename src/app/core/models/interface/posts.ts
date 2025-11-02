@@ -3,6 +3,8 @@ import { ReactionSummary } from './reactions';
 
 export type ReactionType = 'like' | 'dislike';
 
+export type PostLoadingStrategy = 'regular' | 'popular';
+
 export interface Post {
   id: string;
   title: string;
