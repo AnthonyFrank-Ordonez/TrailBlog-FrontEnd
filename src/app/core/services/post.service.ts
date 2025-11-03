@@ -40,6 +40,7 @@ export class PostService {
   #postLoadingStrategySignal = signal<PostLoadingStrategy>('regular');
   #isPostLoadingSignal = signal<boolean>(false);
   #isRecentPostsLoadingSignal = signal<boolean>(false);
+  #isMostPopularPostsLoading = signal<boolean>(false);
   #isSubmittingSignal = signal<boolean>(false);
   #currentPageSignal = signal<number>(0);
   #pageSizeSignal = signal<number>(10);
@@ -52,6 +53,7 @@ export class PostService {
   recentViewedPosts = this.#recentViewedPostsSignal.asReadonly();
   postDetail = this.#postDetailSignal.asReadonly();
   isPostLoading = this.#isPostLoadingSignal.asReadonly();
+  isMostPopularPostsLoading = this.#isMostPopularPostsLoading.asReadonly();
   isRecentPostsLoading = this.#isRecentPostsLoadingSignal.asReadonly();
   isSubmitting = this.#isSubmittingSignal.asReadonly();
 
@@ -129,21 +131,20 @@ export class PostService {
   }
 
   loadMostPopularPost(): Observable<PageResult<Post>> {
-    this.#isPostLoadingSignal.set(true);
+    this.#isMostPopularPostsLoading.set(true);
 
     let params = new HttpParams().set('page', 1).set('pageSize', 5);
 
     return this.http.get<PageResult<Post>>(`${this.apiUrl}/popular`, { params }).pipe(
       tap((result) => {
         console.log('Fetching most popular posts...');
-
         this.#mostPopularPostsSignal.set(result.data);
       }),
       catchError((error) => {
         return throwError(() => error);
       }),
       finalize(() => {
-        this.#isPostLoadingSignal.set(false);
+        this.#isMostPopularPostsLoading.set(false);
       }),
     );
   }

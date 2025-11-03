@@ -1,18 +1,14 @@
 <aside class="sticky top-17 bg-black text-white scrollbar-container rounded-xl">
   <div class="h-[calc(100vh-4.5rem)] overflow-y-auto hide-scrollbar">
-    @switch (currentPath()) {
-      @case ('/') {
-        @if (isAuthenticated()) {
-          <app-recent-viewed-post />
-        }
+    @switch (sideBarComponent()) {
+      @case ('recent-viewed') {
+        <app-recent-viewed-post />
       }
-      @case ('/communities') {
+      @case ('manage-community') {
         <app-manage-communities-bar />
       }
-      @case ('/popular') {
-        @if (isAuthenticated()) {
-          <app-recent-viewed-post />
-        }
+      @default {
+        <app-most-popular-posts />
       }
     }
   </div>

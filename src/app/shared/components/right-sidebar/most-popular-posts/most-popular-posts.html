@@ -1,0 +1,81 @@
+<div class="p-4">
+  <div class="px-3 py-2 flex items-center justify-between">
+    <span class="text-sm dont-light text-gray-500">Most Popular Posts</span>
+    <button class="text-gray-600 font-light text-sm cursor-pointer">Clear</button>
+  </div>
+
+  <div class="space-y-1 py-2">
+    @if (isMostPopularPostsLoading()) {
+      @for (skeleton of skeletonArray; track $index) {
+        <div class="px-3 py-2 w-full cursor-pointer hover:bg-gray-800/50 rounded-lg">
+          <div class="animate-pulse">
+            <div class="flex justify-between items-center mb-2">
+              <div class="h-3 bg-gray-600 rounded w-20"></div>
+              <div class="h-3 bg-gray-600 rounded w-16"></div>
+            </div>
+
+            <div class="h-4 bg-gray-600 rounded w-3/4 mb-2"></div>
+            <div class="space-y-1 mb-3">
+              <div class="h-3 bg-gray-600 rounded w-full"></div>
+              <div class="h-3 bg-gray-600 rounded w-2/3"></div>
+            </div>
+
+            <div class="flex items-center space-x-2 py-1 mt-3">
+              <div class="flex items-center space-x-1">
+                <div class="h-3 bg-gray-600 rounded w-6"></div>
+                <div class="h-3 bg-gray-600 rounded w-8"></div>
+              </div>
+
+              <div class="flex items-center space-x-1">
+                <div class="h-3 bg-gray-600 rounded w-6"></div>
+                <div class="h-3 bg-gray-600 rounded w-12"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <z-divider class="bg-white/20"></z-divider>
+      }
+    } @else {
+      @for (post of mostPopulatPosts(); track post.id) {
+        <div
+          (click)="togglePopularPost(post.slug)"
+          class="px-3 py-2 w-full cursor-pointer hover:bg-gray-800/50 rounded-lg"
+        >
+          <div class="flex justify-between items-center mb-2">
+            <div class="flex items-center space-x-1">
+              <div class="w-5 h-5 bg-secondary rounded-full flex items-center justify-center">
+                <span class="text-white text-xs lg:text-[10px] font-bold">{{
+                  post.communityName | initials
+                }}</span>
+              </div>
+              <span class="text-gray-400 text-xs line-clamp-1 break-words">{{
+                post.communityName
+              }}</span>
+            </div>
+            <span class="text-gray-500 text-xs line-clamp-1 break-words">{{
+              post.createdAt | timeago
+            }}</span>
+          </div>
+
+          <p class="font-light">{{ post.title }}</p>
+          <p class="text-xs font-extralight text-gray-500 line-clamp-2 break-words">
+            {{ post.content }}
+          </p>
+
+          <div class="flex items-center text-xs space-x-2 py-1 mt-3 text-gray-400">
+            <div class="flex items-center space-x-1">
+              <span>{{ post.totalReactions }}</span>
+              <p>Reactions</p>
+            </div>
+
+            <div class="flex items-center space-x-1">
+              <span>{{ post.totalComment }}</span>
+              <p>comments</p>
+            </div>
+          </div>
+        </div>
+        <z-divider class="bg-white/20"></z-divider>
+      }
+    }
+  </div>
+</div>
