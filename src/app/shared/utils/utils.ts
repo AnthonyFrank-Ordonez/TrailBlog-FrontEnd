@@ -55,7 +55,7 @@ export function getActiveTabFromPath(path: string): string {
   console.log('path', path);
   if (path.startsWith('/popular')) return 'popular';
   if (path.startsWith('/create')) return 'create';
-  if (path.startsWith('/community')) return 'community';
+  if (path.startsWith('/communities')) return 'community';
   if (path.startsWith('/post/')) return 'post-detail';
 
   return 'home';

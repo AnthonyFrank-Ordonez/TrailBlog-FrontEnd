@@ -39,3 +39,8 @@ export interface CreatePostRequest {
   content: string;
   communityId: string;
 }
+
+export interface PostStrategyConfig {
+  endpoint: string;
+  useSessionId: boolean;
+}

@@ -21,7 +21,7 @@ import { PostService } from '@core/services/post.service';
 export class Home {
   private postService = inject(PostService);
 
-  regularPosts = this.postService.regularPosts;
+  regularPosts = this.postService.posts;
 
   onSort() {
     console.log('Sort Clicked!');

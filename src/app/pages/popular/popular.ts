@@ -21,5 +21,5 @@ import { PostList } from '@shared/components/post-list/post-list';
 export class Popular {
   private postService = inject(PostService);
 
-  popularPosts = this.postService.popularPosts;
+  popularPosts = this.postService.posts;
 }

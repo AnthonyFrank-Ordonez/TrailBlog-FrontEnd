@@ -118,23 +118,6 @@ export class SideNavigation {
     }
   }
 
-  toggleHome() {
-    if (this.currentPath() === '/') {
-      this.viewPortScroller.scrollToPosition([0, 0]);
-
-      this.postService
-        .loadInitialPosts('regular')
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          error: (error) => {
-            handleHttpError(error, this.messageService);
-          },
-        });
-    } else {
-      this.router.navigate(['/']);
-    }
-  }
-
   get isCommunitiesExpanded(): boolean | undefined {
     return this.currentSettings()?.communityExpanded;
   }

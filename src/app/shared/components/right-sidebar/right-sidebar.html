@@ -9,6 +9,11 @@
       @case ('/communities') {
         <app-manage-communities-bar />
       }
+      @case ('/popular') {
+        @if (isAuthenticated()) {
+          <app-recent-viewed-post />
+        }
+      }
     }
   </div>
 </aside>
