@@ -5,6 +5,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { CommunityService } from '@core/services/community.service';
+import { CurrentRouteService } from '@core/services/current-route.service';
 import { MessageService } from '@core/services/message.service';
 import { ModalService } from '@core/services/modal.service';
 import { PostService } from '@core/services/post.service';
@@ -28,6 +29,7 @@ export class SideNavigation {
   private userService = inject(UserService);
   private communityService = inject(CommunityService);
   private messageService = inject(MessageService);
+  private currentRouteService = inject(CurrentRouteService);
   private modalService = inject(ModalService);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
@@ -35,7 +37,7 @@ export class SideNavigation {
 
   private readonly MAX_COMMUNITIES_DISPLAY = 5;
 
-  currentPath: Signal<string>;
+  currentPath = this.currentRouteService.currentPath;
   activeTab = this.userService.activeUserTab;
   currentSettings = this.userSettingsService.userSettings;
   isAuthenticated = this.authService.isAuthenticated;
@@ -60,15 +62,6 @@ export class SideNavigation {
         this.loadCommunities();
       }
     });
-
-    this.currentPath = toSignal(
-      this.router.events.pipe(
-        filter((event) => event instanceof NavigationEnd),
-        map((event: NavigationEnd) => event.url),
-        startWith(this.router.url),
-      ),
-      { initialValue: this.router.url },
-    );
   }
 
   toggleCommunities(): void {

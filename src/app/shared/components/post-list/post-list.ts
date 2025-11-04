@@ -22,6 +22,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
 import { Post } from '@core/models/interface/posts';
+import { CurrentRouteService } from '@core/services/current-route.service';
 
 @Component({
   selector: 'app-post-list',
@@ -33,12 +34,13 @@ export class PostList {
   private postService = inject(PostService);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
+  private currentRouteService = inject(CurrentRouteService);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
 
   posts = input.required<Post[]>();
 
-  currentPath: Signal<string>;
+  currentPath = this.currentRouteService.currentPath;
   isAuthenticated = this.authService.isAuthenticated;
 
   isPostLoading = this.postService.isPostLoading;
@@ -53,15 +55,6 @@ export class PostList {
         this.loadPosts();
       });
     });
-
-    this.currentPath = toSignal(
-      this.router.events.pipe(
-        filter((event) => event instanceof NavigationEnd),
-        map((event: NavigationEnd) => event.url),
-        startWith(this.router.url),
-      ),
-      { initialValue: this.router.url },
-    );
   }
 
   @HostListener('window:scroll')
