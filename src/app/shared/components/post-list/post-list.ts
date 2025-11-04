@@ -15,13 +15,13 @@ import { PostCard } from './post-card/post-card';
 import { PostService } from '@core/services/post.service';
 import { ZardDividerComponent } from '@shared/components/divider/divider.component';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { handleHttpError } from '@shared/utils/utils';
+import { getStrategyFromPath, handleHttpError } from '@shared/utils/utils';
 import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
-import { Post } from '@core/models/interface/posts';
+import { Post, PostLoadingStrategy } from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 
 @Component({
@@ -78,29 +78,15 @@ export class PostList {
   }
 
   private loadPosts() {
-    switch (this.currentPath()) {
-      case '/':
-        this.postService
-          .loadInitialPosts('regular')
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe({
-            error: (error: HttpErrorResponse) => {
-              handleHttpError(error, this.messageService);
-            },
-          });
-        break;
-      case '/popular':
-        this.postService
-          .loadInitialPosts('popular')
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe({
-            error: (error: HttpErrorResponse) => {
-              handleHttpError(error, this.messageService);
-            },
-          });
-        break;
-      default:
-        break;
-    }
+    const strategy = getStrategyFromPath(this.currentPath());
+
+    this.postService
+      .loadInitialPosts(strategy)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
   }
 }
