@@ -15,6 +15,7 @@ export interface Post {
   username: string;
   communityName: string;
   communityId: string;
+  isOwner: boolean;
   totalComment: number;
   comments?: Comment[] | null;
   reactions: ReactionSummary[];

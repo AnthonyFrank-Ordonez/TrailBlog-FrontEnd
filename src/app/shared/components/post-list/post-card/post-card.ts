@@ -61,6 +61,7 @@ export class PostCard implements OnInit {
 
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
+  currentUser = this.userService.user;
   post = input.required<Post>();
   modalConfig = this.modalService.modalConfig;
   showReactionModal = signal<boolean>(false);

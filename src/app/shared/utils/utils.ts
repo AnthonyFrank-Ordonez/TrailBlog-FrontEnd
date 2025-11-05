@@ -13,6 +13,7 @@ export const POST_PLACEHOLDER = {
   username: '',
   communityName: '',
   communityId: '',
+  isOwner: false,
   totalComment: 0,
   comments: [],
   reactions: [],
