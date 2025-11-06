@@ -45,3 +45,11 @@ export interface PostStrategyConfig {
   endpoint: string;
   useSessionId: boolean;
 }
+
+export interface PostMenuItems {
+  label: string;
+  iconClass: string;
+  svgPath: Array<string>;
+  ownerOnly: boolean;
+  action: (event?: MouseEvent) => void;
+}
