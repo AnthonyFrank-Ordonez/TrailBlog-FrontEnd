@@ -65,7 +65,7 @@ export class PostCard implements OnInit {
   modalConfig = this.modalService.modalConfig;
   showReactionModal = signal<boolean>(false);
   postMenuModalId = this.postService.postMenuModalId;
-  postReactModalId = this.postService.postReactModalId;
+  activeDropdown = this.postService.activeDropdown;
 
   readonly reactionList: ReactionList[] = [
     { id: 1, type: '😂', value: 'laughReact' },
@@ -144,6 +144,8 @@ export class PostCard implements OnInit {
     event?.stopPropagation();
 
     if (this.isJoined) {
+      this.postService.closeDropdown();
+
       this.modalService.openModal({
         type: 'community',
         title: 'Leave Community',
@@ -153,6 +155,7 @@ export class PostCard implements OnInit {
         onConfirm: (communityId) => this.onLeaveConfirmed(communityId),
       });
     } else {
+      this.postService.closeDropdown();
       this.joinCommunity(this.post().communityId);
     }
   }
@@ -182,29 +185,23 @@ export class PostCard implements OnInit {
   toggleReactionModal(event?: MouseEvent): void {
     event?.stopPropagation();
 
-    if (this.isPostMenuOpen) {
-      this.closeMenuModal();
-    }
-
     if (this.isPostReactModalOpen) {
-      this.closeReactModal();
+      this.postService.closeDropdown();
+      return;
     }
 
-    this.postService.updatePostReactModalId(this.post().id);
+    this.postService.updateActiveDropdown('reaction', this.post().id);
   }
 
   toggleMenuItems(event?: MouseEvent): void {
     event?.stopPropagation();
 
-    if (this.isPostReactModalOpen) {
-      this.closeReactModal();
-    }
-
     if (this.isPostMenuOpen) {
-      this.closeMenuModal();
+      this.postService.closeDropdown();
+      return;
     }
 
-    this.postService.updatePostMenuModalId(this.post().id);
+    this.postService.updateActiveDropdown('menu', this.post().id);
   }
 
   selectReaction(reactionId: number, event?: MouseEvent): void {
@@ -216,23 +213,12 @@ export class PostCard implements OnInit {
 
     this.reaction$.next(reactionData);
 
-    this.closeReactModal();
+    this.postService.closeDropdown();
   }
 
   togglePostDetail(slug: string) {
+    this.postService.closeDropdown();
     this.router.navigate(['/post', slug]);
-  }
-
-  closeReactModal(): void {
-    setTimeout(() => {
-      this.postService.updatePostReactModalId(null);
-    }, 200);
-  }
-
-  closeMenuModal() {
-    setTimeout(() => {
-      this.postService.updatePostMenuModalId(null);
-    }, 200);
   }
 
   handleSave(event?: MouseEvent): void {
@@ -248,12 +234,12 @@ export class PostCard implements OnInit {
     const insideReactModal = this.reactionContainer.nativeElement.contains(event.target);
     const insideMenuModal = this.menuContainer.nativeElement.contains(event.target);
 
-    if (this.postReactModalId() && !insideReactModal) {
-      this.closeReactModal();
+    if (this.isPostMenuOpen && !insideReactModal) {
+      this.postService.closeDropdown();
     }
 
-    if (this.postMenuModalId() && !insideMenuModal) {
-      this.closeMenuModal();
+    if (this.isPostReactModalOpen && !insideMenuModal) {
+      this.postService.closeDropdown();
     }
   }
 
@@ -278,10 +264,12 @@ export class PostCard implements OnInit {
   }
 
   get isPostMenuOpen() {
-    return this.postMenuModalId() === this.post().id;
+    const active = this.activeDropdown();
+    return active.type === 'menu' && active.postId === this.post().id;
   }
 
   get isPostReactModalOpen() {
-    return this.postReactModalId() === this.post().id;
+    const active = this.activeDropdown();
+    return active.type === 'reaction' && active.postId === this.post().id;
   }
 }

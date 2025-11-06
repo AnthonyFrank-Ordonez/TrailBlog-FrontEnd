@@ -2,7 +2,9 @@ import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angula
 import { computed, inject, Injectable, signal } from '@angular/core';
 import {
   CreatePostRequest,
+  DropdownType,
   Post,
+  PostDropdown,
   PostLoadingStrategy,
   PostStrategyConfig,
   RecentViewedPost,
@@ -48,7 +50,7 @@ export class PostService {
   #totalCountSignal = signal<number>(0);
   #sessionIdSignal = signal<string>('');
   #postMenuModalIdSignal = signal<string | null>(null);
-  #postReactModalIdSignal = signal<string | null>(null);
+  #activeDropdown = signal<PostDropdown>({ type: null, postId: null });
 
   posts = this.#postSignal.asReadonly();
   mostPopularPosts = this.#mostPopularPostsSignal.asReadonly();
@@ -59,7 +61,7 @@ export class PostService {
   isRecentPostsLoading = this.#isRecentPostsLoadingSignal.asReadonly();
   isSubmitting = this.#isSubmittingSignal.asReadonly();
   postMenuModalId = this.#postMenuModalIdSignal.asReadonly();
-  postReactModalId = this.#postReactModalIdSignal.asReadonly();
+  activeDropdown = this.#activeDropdown.asReadonly();
 
   readonly hasMore = computed(() => this.#currentPageSignal() < this.#totalPagesSignal());
 
@@ -273,12 +275,12 @@ export class PostService {
     );
   }
 
-  updatePostMenuModalId(id: string | null) {
-    this.#postMenuModalIdSignal.set(id);
+  updateActiveDropdown(type: DropdownType, postId: string) {
+    this.#activeDropdown.set({ type: type, postId: postId });
   }
 
-  updatePostReactModalId(id: string | null) {
-    this.#postReactModalIdSignal.set(id);
+  closeDropdown() {
+    this.#activeDropdown.set({ type: null, postId: null });
   }
 
   resetPostServiceData(): void {

@@ -5,6 +5,8 @@ export type ReactionType = 'like' | 'dislike';
 
 export type PostLoadingStrategy = 'regular' | 'popular';
 
+export type DropdownType = 'menu' | 'share' | 'reaction';
+
 export interface Post {
   id: string;
   title: string;
@@ -53,4 +55,9 @@ export interface PostMenuItems {
   ownerOnly: boolean;
   forAuthenticated: boolean;
   action: (event?: MouseEvent) => void;
+}
+
+export interface PostDropdown {
+  type: DropdownType | null;
+  postId: string | null;
 }
