@@ -51,5 +51,6 @@ export interface PostMenuItems {
   iconClass: string;
   svgPath: Array<string>;
   ownerOnly: boolean;
+  forAuthenticated: boolean;
   action: (event?: MouseEvent) => void;
 }

@@ -80,8 +80,9 @@ export class PostCard implements OnInit {
       label: 'Save',
       iconClass: 'icon-tabler-bookmark',
       svgPath: ['M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z'],
-      action: (event?: MouseEvent) => this.handleSave(event),
       ownerOnly: false,
+      forAuthenticated: true,
+      action: (event?: MouseEvent) => this.handleSave(event),
     },
     {
       label: 'Hide',
@@ -92,6 +93,7 @@ export class PostCard implements OnInit {
         'M3 3l18 18',
       ],
       ownerOnly: false,
+      forAuthenticated: true,
       action: (event?: MouseEvent) => this.handleSave(event),
     },
     {
@@ -103,6 +105,7 @@ export class PostCard implements OnInit {
         'M12 14v.01',
       ],
       ownerOnly: false,
+      forAuthenticated: false,
       action: (event?: MouseEvent) => this.handleSave(event),
     },
     {
@@ -116,6 +119,7 @@ export class PostCard implements OnInit {
         'M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3',
       ],
       ownerOnly: true,
+      forAuthenticated: true,
       action: (event?: MouseEvent) => this.handleSave(event),
     },
   ];
@@ -215,6 +219,10 @@ export class PostCard implements OnInit {
     this.closeReactModal();
   }
 
+  togglePostDetail(slug: string) {
+    this.router.navigate(['/post', slug]);
+  }
+
   closeReactModal(): void {
     setTimeout(() => {
       this.postService.updatePostReactModalId(null);
@@ -225,10 +233,6 @@ export class PostCard implements OnInit {
     setTimeout(() => {
       this.postService.updatePostMenuModalId(null);
     }, 200);
-  }
-
-  togglePostDetail(slug: string) {
-    this.router.navigate(['/post', slug]);
   }
 
   handleSave(event?: MouseEvent): void {
@@ -266,7 +270,11 @@ export class PostCard implements OnInit {
   }
 
   get filteredMenuItems() {
-    return this.menuItems.filter((item) => !item.ownerOnly || this.post().isOwner);
+    return this.menuItems.filter(
+      (item) =>
+        (!item.ownerOnly && !item.forAuthenticated) ||
+        (this.isAuthenticated() && (!item.ownerOnly || this.post().isOwner)),
+    );
   }
 
   get isPostMenuOpen() {
