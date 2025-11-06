@@ -1,8 +1,8 @@
-.reaction-fade-in {
+.dropdown-fade-in {
   animation: fadeIn 0.2s ease-in-out;
 }
 
-.reaction-fade-out {
+.dropdown-fade-out {
   animation: fadeOut 0.2s ease-in-out;
 }
 

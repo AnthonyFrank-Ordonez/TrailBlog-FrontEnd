@@ -48,7 +48,7 @@ export interface PostStrategyConfig {
   useSessionId: boolean;
 }
 
-export interface PostMenuItems {
+export interface PostDropdownItems {
   label: string;
   iconClass: string;
   svgPath: Array<string>;

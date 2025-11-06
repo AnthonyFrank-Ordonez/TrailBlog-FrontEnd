@@ -1,1 +1,32 @@
-<p>dropdown-menu works!</p>
+<div
+  class="absolute flex flex-col z-50 bg-black border border-white/30 p-0.5 rounded-md"
+  [ngClass]="styles()"
+>
+  @for (item of filteredMenuItems; track item.label) {
+    <button
+      class="text-white flex gap-1 text-left cursor-pointer hover:bg-white/20 duration-300 transition-colors w-full rounded-md px-2 py-1.5"
+      (click)="item.action($event)"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="icon icon-tabler icons-tabler-outline w-5 h-5"
+        [class]="item.iconClass"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        @for (path of item.svgPath; track $index) {
+          <path [attr.d]="path" />
+        }
+      </svg>
+
+      <span class="text-sm">{{ item.label }}</span>
+    </button>
+  }
+</div>

@@ -50,39 +50,13 @@
         </button>
 
         @if (isPostMenuOpen) {
-          <div
-            animate.enter="reaction-fade-in"
-            animate.leave="reaction-fade-out"
-            class="absolute flex flex-col z-50 bg-black border border-white/30 w-32 p-0.5 rounded-md right-0"
-          >
-            @for (item of filteredMenuItems; track item.label) {
-              <button
-                class="text-white flex gap-1 text-left cursor-pointer hover:bg-white/20 duration-300 transition-colors w-full rounded-md px-2 py-1.5"
-                (click)="item.action($event)"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="icon icon-tabler icons-tabler-outline w-5 h-5"
-                  [class]="item.iconClass"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  @for (path of item.svgPath; track $index) {
-                    <path [attr.d]="path" />
-                  }
-                </svg>
-
-                <span class="text-sm">{{ item.label }}</span>
-              </button>
-            }
-          </div>
+          <app-dropdown-menu
+            animate.enter="dropdown-fade-in"
+            animate.leave="dropdown-fade-out"
+            styles="w-32 right-0"
+            [isOwner]="post().isOwner"
+            [dropdownItems]="menuItems"
+          />
         }
       </div>
     </div>
@@ -139,8 +113,8 @@
       <!-- Reaction Modal -->
       @if (isPostReactModalOpen) {
         <div
-          animate.enter="reaction-fade-in"
-          animate.leave="reaction-fade-out"
+          animate.enter="dropdown-fade-in"
+          animate.leave="dropdown-fade-out"
           class="absolute flex items-center mt-2 left-0 space-x-2 bg-black border border-white/30 rounded-full px-3 py-2 z-50"
         >
           @for (reaction of reactionList; track reaction.id) {
@@ -177,11 +151,10 @@
     </button>
 
     <!-- Share button -->
-    <div>
+    <div class="relative" #shareContainer>
       <button
         class="flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
-        z-dropdown
-        [zDropdownMenu]="shareMenu"
+        (click)="toggleShareItems($event)"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -198,53 +171,16 @@
         </svg>
 
         <span>Share</span>
-
-        <z-dropdown-menu-content
-          #shareMenu="zDropdownMenuContent"
-          class="bg-primary text-white border-white/30 hidden lg:block"
-        >
-          <!-- Copy Link -->
-          <z-dropdown-menu-item class="text-white flex items-center space-x-1 hover:bg-gray-800/50">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M4 4l1-1h5.414L14 6.586V14l-1 1H5l-1-1V4zm9 3l-3-3H5v10h8V7z"
-              />
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M3 1L2 2v10l1 1V2h6.414l-1-1H3z" />
-            </svg>
-
-            <span>Copy Link</span>
-          </z-dropdown-menu-item>
-
-          <!-- Copy Link -->
-          <z-dropdown-menu-item class="text-white flex items-center space-x-1 hover:bg-gray-800/50">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M10.57 1.14l3.28 3.3.15.36v9.7l-.5.5h-11l-.5-.5v-13l.5-.5h7.72l.35.14zM10 5h3l-3-3v3zM3 2v12h10V6H9.5L9 5.5V2H3zm2.062 7.533l1.817-1.828L6.17 7 4 9.179v.707l2.171 2.174.707-.707-1.816-1.82zM8.8 7.714l.7-.709 2.189 2.175v.709L9.5 12.062l-.705-.709 1.831-1.82L8.8 7.714z"
-              />
-            </svg>
-
-            <span>Embed</span>
-          </z-dropdown-menu-item>
-
-          <!-- Add More Here -->
-        </z-dropdown-menu-content>
       </button>
+
+      @if (isShareModalOpen) {
+        <app-dropdown-menu
+          animate.enter="dropdown-fade-in"
+          animate.leave="dropdown-fade-out"
+          styles="w-32 mt-1 left-0"
+          [dropdownItems]="shareItems"
+        />
+      }
     </div>
   </div>
 </div>

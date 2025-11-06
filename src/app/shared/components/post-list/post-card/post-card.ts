@@ -16,7 +16,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
-import { Post, PostMenuItems, ReactionType } from '@core/models/interface/posts';
+import { Post, PostDropdownItems } from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { CommunityService } from '@core/services/community.service';
@@ -24,6 +24,7 @@ import { MessageService } from '@core/services/message.service';
 import { ModalService } from '@core/services/modal.service';
 import { PostService } from '@core/services/post.service';
 import { UserService } from '@core/services/user.service';
+import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
 import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropdown-item.component';
 import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
 import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
@@ -34,20 +35,14 @@ import { debounceTime, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-post-card',
-  imports: [
-    TimeagoPipe,
-    ZardDropdownMenuContentComponent,
-    ZardDropdownMenuItemComponent,
-    ZardDropdownDirective,
-    NgClass,
-    InitialsPipe,
-  ],
+  imports: [TimeagoPipe, InitialsPipe, NgClass, DropdownMenu],
   templateUrl: './post-card.html',
   styleUrl: './post-card.css',
 })
 export class PostCard implements OnInit {
   @ViewChild('reactionContainer') reactionContainer!: ElementRef;
   @ViewChild('menuContainer') menuContainer!: ElementRef;
+  @ViewChild('shareContainer') shareContainer!: ElementRef;
 
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
@@ -75,7 +70,7 @@ export class PostCard implements OnInit {
     { id: 5, type: '🚀', value: 'rocketReact' },
   ];
 
-  readonly menuItems: PostMenuItems[] = [
+  readonly menuItems: PostDropdownItems[] = [
     {
       label: 'Save',
       iconClass: 'icon-tabler-bookmark',
@@ -120,6 +115,29 @@ export class PostCard implements OnInit {
       ],
       ownerOnly: true,
       forAuthenticated: true,
+      action: (event?: MouseEvent) => this.handleSave(event),
+    },
+  ];
+
+  readonly shareItems: PostDropdownItems[] = [
+    {
+      label: 'Share',
+      iconClass: 'icon-tabler-clipboard',
+      svgPath: [
+        'M17.997 4.17a3 3 0 0 1 2.003 2.83v12a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 2.003 -2.83a4 4 0 0 0 3.997 3.83h4a4 4 0 0 0 3.98 -3.597zm-3.997 -2.17a2 2 0 1 1 0 4h-4a2 2 0 1 1 0 -4z',
+      ],
+      ownerOnly: false,
+      forAuthenticated: false,
+      action: (event?: MouseEvent) => this.handleSave(event),
+    },
+    {
+      label: 'Embed',
+      iconClass: 'icon-tabler-file-code-2',
+      svgPath: [
+        'M12 2l.117 .007a1 1 0 0 1 .876 .876l.007 .117v4l.005 .15a2 2 0 0 0 1.838 1.844l.157 .006h4l.117 .007a1 1 0 0 1 .876 .876l.007 .117v9a3 3 0 0 1 -2.824 2.995l-.176 .005h-10a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-14a3 3 0 0 1 2.824 -2.995l.176 -.005zm-2 9h-1a1 1 0 0 0 -1 1v5a1 1 0 0 0 1 1h1a1 1 0 0 0 1 -1l-.007 -.117a1 1 0 0 0 -.876 -.876l-.117 -.007v-3a1 1 0 0 0 0 -2m5 0h-1a1 1 0 0 0 0 2v3a1 1 0 0 0 0 2h1a1 1 0 0 0 1 -1v-5a1 1 0 0 0 -1 -1m-.001 -8.001l4.001 4.001h-4z',
+      ],
+      ownerOnly: false,
+      forAuthenticated: false,
       action: (event?: MouseEvent) => this.handleSave(event),
     },
   ];
@@ -204,6 +222,17 @@ export class PostCard implements OnInit {
     this.postService.updateActiveDropdown('menu', this.post().id);
   }
 
+  toggleShareItems(event?: MouseEvent): void {
+    event?.stopPropagation();
+
+    if (this.isShareModalOpen) {
+      this.postService.closeDropdown();
+      return;
+    }
+
+    this.postService.updateActiveDropdown('share', this.post().id);
+  }
+
   selectReaction(reactionId: number, event?: MouseEvent): void {
     event?.stopPropagation();
 
@@ -229,16 +258,21 @@ export class PostCard implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
-    if (!this.reactionContainer || !this.menuContainer) return;
+    if (!this.reactionContainer || !this.menuContainer || !this.shareContainer) return;
 
     const insideReactModal = this.reactionContainer.nativeElement.contains(event.target);
     const insideMenuModal = this.menuContainer.nativeElement.contains(event.target);
+    const insideShareModal = this.shareContainer.nativeElement.contains(event.target);
 
     if (this.isPostMenuOpen && !insideReactModal) {
       this.postService.closeDropdown();
     }
 
     if (this.isPostReactModalOpen && !insideMenuModal) {
+      this.postService.closeDropdown();
+    }
+
+    if (this.isShareModalOpen && !insideShareModal) {
       this.postService.closeDropdown();
     }
   }
@@ -271,5 +305,10 @@ export class PostCard implements OnInit {
   get isPostReactModalOpen() {
     const active = this.activeDropdown();
     return active.type === 'reaction' && active.postId === this.post().id;
+  }
+
+  get isShareModalOpen() {
+    const active = this.activeDropdown();
+    return active.type === 'share' && active.postId === this.post().id;
   }
 }

@@ -236,8 +236,8 @@
             <!-- Reaction Modal -->
             @if (showReactionModal()) {
               <div
-                animate.enter="reaction-fade-in"
-                animate.leave="reaction-fade-out"
+                animate.enter="dropdown-fade-in"
+                animate.leave="dropdown-fade-out"
                 class="absolute flex items-center mt-2 left-0 space-x-2 bg-black border border-white/30 rounded-full px-3 py-2 z-50"
               >
                 @for (reaction of reactionList; track reaction.id) {
