@@ -64,8 +64,8 @@ export class PostCard implements OnInit {
   post = input.required<Post>();
   modalConfig = this.modalService.modalConfig;
   showReactionModal = signal<boolean>(false);
-  showMenuModal = signal<boolean>(false);
   postMenuModalId = this.postService.postMenuModalId;
+  postReactModalId = this.postService.postReactModalId;
 
   readonly reactionList: ReactionList[] = [
     { id: 1, type: '😂', value: 'laughReact' },
@@ -178,17 +178,25 @@ export class PostCard implements OnInit {
   toggleReactionModal(event?: MouseEvent): void {
     event?.stopPropagation();
 
-    if (this.showReactionModal()) {
+    if (this.isPostMenuOpen) {
+      this.closeMenuModal();
+    }
+
+    if (this.isPostReactModalOpen) {
       this.closeReactModal();
     }
 
-    this.showReactionModal.set(true);
+    this.postService.updatePostReactModalId(this.post().id);
   }
 
   toggleMenuItems(event?: MouseEvent): void {
     event?.stopPropagation();
 
-    if (this.postMenuModalId() === this.post().id) {
+    if (this.isPostReactModalOpen) {
+      this.closeReactModal();
+    }
+
+    if (this.isPostMenuOpen) {
       this.closeMenuModal();
     }
 
@@ -209,7 +217,7 @@ export class PostCard implements OnInit {
 
   closeReactModal(): void {
     setTimeout(() => {
-      this.showReactionModal.set(false);
+      this.postService.updatePostReactModalId(null);
     }, 200);
   }
 
@@ -236,7 +244,7 @@ export class PostCard implements OnInit {
     const insideReactModal = this.reactionContainer.nativeElement.contains(event.target);
     const insideMenuModal = this.menuContainer.nativeElement.contains(event.target);
 
-    if (this.showReactionModal() && !insideReactModal) {
+    if (this.postReactModalId() && !insideReactModal) {
       this.closeReactModal();
     }
 
@@ -263,5 +271,9 @@ export class PostCard implements OnInit {
 
   get isPostMenuOpen() {
     return this.postMenuModalId() === this.post().id;
+  }
+
+  get isPostReactModalOpen() {
+    return this.postReactModalId() === this.post().id;
   }
 }

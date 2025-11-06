@@ -48,6 +48,7 @@ export class PostService {
   #totalCountSignal = signal<number>(0);
   #sessionIdSignal = signal<string>('');
   #postMenuModalIdSignal = signal<string | null>(null);
+  #postReactModalIdSignal = signal<string | null>(null);
 
   posts = this.#postSignal.asReadonly();
   mostPopularPosts = this.#mostPopularPostsSignal.asReadonly();
@@ -58,6 +59,7 @@ export class PostService {
   isRecentPostsLoading = this.#isRecentPostsLoadingSignal.asReadonly();
   isSubmitting = this.#isSubmittingSignal.asReadonly();
   postMenuModalId = this.#postMenuModalIdSignal.asReadonly();
+  postReactModalId = this.#postReactModalIdSignal.asReadonly();
 
   readonly hasMore = computed(() => this.#currentPageSignal() < this.#totalPagesSignal());
 
@@ -271,8 +273,12 @@ export class PostService {
     );
   }
 
-  updatePostMenuModalId(postId: string | null) {
-    this.#postMenuModalIdSignal.set(postId);
+  updatePostMenuModalId(id: string | null) {
+    this.#postMenuModalIdSignal.set(id);
+  }
+
+  updatePostReactModalId(id: string | null) {
+    this.#postReactModalIdSignal.set(id);
   }
 
   resetPostServiceData(): void {
