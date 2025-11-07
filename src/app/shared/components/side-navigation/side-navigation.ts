@@ -20,7 +20,6 @@ import { filter, map, startWith, tap } from 'rxjs';
   imports: [RouterLink, InitialsPipe],
   templateUrl: './side-navigation.html',
   styleUrl: './side-navigation.css',
-  animations: [],
 })
 export class SideNavigation {
   private userSettingsService = inject(UserSettingsService);

@@ -39,10 +39,13 @@ export class ModalService {
   confirm() {
     const currentModalConfig = this.#modalConfigSignal();
 
-    if (currentModalConfig?.type === 'community' && currentModalConfig.onConfirm) {
-      currentModalConfig.onConfirm(currentModalConfig.data.communityId);
+    if (currentModalConfig.onConfirm) {
+      if (currentModalConfig?.type === 'community') {
+        currentModalConfig.onConfirm(currentModalConfig.data.communityId);
+      } else {
+        currentModalConfig.onConfirm();
+      }
     }
-
     this.closeModal();
   }
 

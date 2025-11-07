@@ -1,15 +1,15 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-confirmation-modal',
+  selector: 'app-error-modal',
   imports: [],
-  templateUrl: './confirmation-modal.html',
-  styleUrl: './confirmation-modal.css',
+  templateUrl: './error-modal.html',
+  styleUrl: './error-modal.css',
 })
-export class ConfirmationModal {
+export class ErrorModal {
+  @Input() contentText: string | undefined;
   @Input() cancelText: string | undefined;
   @Input() confirmText: string | undefined;
-  @Input() contentText: string | undefined;
   @Output() cancelFn = new EventEmitter<void>();
   @Output() confirmFn = new EventEmitter<void>();
 

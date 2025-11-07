@@ -178,6 +178,23 @@ export class PostCard implements OnInit {
       });
     } else {
       this.postService.closeDropdown();
+
+      if (!this.isAuthenticated()) {
+        this.modalService.openModal({
+          type: 'error',
+          title: 'Oops, Something wen’t wrong',
+          description: 'Unable to process your request',
+          content: 'error-modal',
+          subcontent:
+            'You need to login first before you can use this react button for post, The login button will redirect you to the login page',
+          confirmBtnText: 'Login',
+
+          cancelBtnText: 'Cancel',
+          onConfirm: () => this.handleRedirection('login'),
+        });
+        return;
+      }
+
       this.joinCommunity(this.post().communityId);
     }
   }
@@ -240,9 +257,21 @@ export class PostCard implements OnInit {
   selectReaction(reactionId: number, event?: MouseEvent): void {
     event?.stopPropagation();
 
-    // Show modal indicating the user needs to login first before he can select a reaction
     if (!this.isAuthenticated()) {
-      //
+      this.modalService.openModal({
+        type: 'error',
+        title: 'Oops, Something wen’t wrong',
+        description: 'Unable to process your request',
+        content: 'error-modal',
+        subcontent:
+          'You need to login first before you can use this react button for post, The login button will redirect you to the login page',
+        confirmBtnText: 'Login',
+
+        cancelBtnText: 'Cancel',
+        onConfirm: () => this.handleRedirection('/login'),
+      });
+      this.postService.closeDropdown();
+      return;
     }
 
     const reactionData = {
@@ -263,6 +292,10 @@ export class PostCard implements OnInit {
     event?.stopPropagation();
 
     console.info('Save button click');
+  }
+
+  handleRedirection(path: string): void {
+    this.router.navigate([path]);
   }
 
   async handleCopy(event?: MouseEvent) {

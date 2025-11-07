@@ -35,6 +35,16 @@
           (confirmFn)="onModalConfirm()"
         ></app-confirmation-modal>
       }
+
+      @case ('error-modal') {
+        <app-error-modal
+          [confirmText]="modalConfig().confirmBtnText"
+          [cancelText]="modalConfig().cancelBtnText"
+          [contentText]="modalConfig().subcontent"
+          (cancelFn)="onModalCancel()"
+          (confirmFn)="onModalConfirm()"
+        ></app-error-modal>
+      }
     }
   </app-modal>
 </main>

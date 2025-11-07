@@ -13,6 +13,7 @@ import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { handleHttpError } from '@shared/utils/utils';
+import { ErrorModal } from '../error-modal/error-modal';
 
 @Component({
   selector: 'app-layout',
@@ -24,6 +25,7 @@ import { handleHttpError } from '@shared/utils/utils';
     Modal,
     CommunityForm,
     ConfirmationModal,
+    ErrorModal,
   ],
   templateUrl: './layout.html',
   styleUrl: './layout.css',

@@ -32,11 +32,19 @@ export interface GenericModalConfig extends BaseModalConfig {
   onConfirm?: () => void;
 }
 
+export interface ErrorModalConfig extends BaseModalConfig {
+  type: 'error';
+  icon?: string;
+  data?: unknown;
+  onConfirm?: () => void;
+}
+
 export type ModalConfig =
   | CommunityModalConfig
   | CommunityFormModalConfig
   | InfoModalConfig
-  | GenericModalConfig;
+  | GenericModalConfig
+  | ErrorModalConfig;
 
 export interface ModalData {
   communityId?: string;
