@@ -57,8 +57,8 @@ export class PostCard implements OnInit {
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
   post = input.required<Post>();
-  modalConfig = this.modalService.modalConfig;
   showReactionModal = signal<boolean>(false);
+  modalConfig = this.modalService.modalConfig;
   postMenuModalId = this.postService.postMenuModalId;
   activeDropdown = this.postService.activeDropdown;
 
@@ -121,14 +121,14 @@ export class PostCard implements OnInit {
 
   readonly shareItems: PostDropdownItems[] = [
     {
-      label: 'Share',
+      label: 'Copy',
       iconClass: 'icon-tabler-clipboard',
       svgPath: [
         'M17.997 4.17a3 3 0 0 1 2.003 2.83v12a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 2.003 -2.83a4 4 0 0 0 3.997 3.83h4a4 4 0 0 0 3.98 -3.597zm-3.997 -2.17a2 2 0 1 1 0 4h-4a2 2 0 1 1 0 -4z',
       ],
       ownerOnly: false,
       forAuthenticated: false,
-      action: (event?: MouseEvent) => this.handleSave(event),
+      action: (event?: MouseEvent) => this.handleCopy(event),
     },
     {
       label: 'Embed',
@@ -256,6 +256,14 @@ export class PostCard implements OnInit {
     console.info('Save button click');
   }
 
+  async handleCopy(event?: MouseEvent) {
+    event?.stopPropagation();
+    const url = `${window.location.origin}/post/${this.post().slug}`;
+
+    await this.postService.copyPostLink(url);
+    this.postService.closeDropdown();
+  }
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
     if (!this.reactionContainer || !this.menuContainer || !this.shareContainer) return;
@@ -287,14 +295,6 @@ export class PostCard implements OnInit {
 
   get isJoined(): boolean {
     return this.userCommunities().some((uc) => uc.id === this.post().communityId);
-  }
-
-  get filteredMenuItems() {
-    return this.menuItems.filter(
-      (item) =>
-        (!item.ownerOnly && !item.forAuthenticated) ||
-        (this.isAuthenticated() && (!item.ownerOnly || this.post().isOwner)),
-    );
   }
 
   get isPostMenuOpen() {

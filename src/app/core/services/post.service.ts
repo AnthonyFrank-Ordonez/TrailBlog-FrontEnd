@@ -286,4 +286,8 @@ export class PostService {
   resetPostServiceData(): void {
     this.#recentViewedPostsSignal.set([]);
   }
+
+  copyPostLink(url: string): Promise<void> {
+    return navigator.clipboard.writeText(url);
+  }
 }
