@@ -27,8 +27,12 @@ export class CommunityCard {
       type: 'community',
       title: 'Leave Community',
       description: 'Are you sure you want to leave this community?',
-      content: 'leave-community',
+      content: 'confirmation-modal',
+      subcontent:
+        ' Once you leave, you’ll no longer be a member or receive updates from this community. You can rejoin anytime.',
       data: { communityId: this.community().id },
+      confirmBtnText: 'Leave Community',
+      cancelBtnText: 'Cancel',
       onConfirm: (communityId) => this.leaveCommunity(communityId),
     });
   }

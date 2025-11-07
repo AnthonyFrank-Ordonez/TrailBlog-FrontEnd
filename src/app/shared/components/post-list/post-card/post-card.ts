@@ -168,7 +168,11 @@ export class PostCard implements OnInit {
         type: 'community',
         title: 'Leave Community',
         description: 'Are you sure you want to leave this community?',
-        content: 'leave-community',
+        content: 'confirmation-modal',
+        subcontent:
+          ' Once you leave, you’ll no longer be a member or receive updates from this community. You can rejoin anytime.',
+        confirmBtnText: 'Leave Community',
+        cancelBtnText: 'Cancel',
         data: { communityId: this.post().communityId },
         onConfirm: (communityId) => this.onLeaveConfirmed(communityId),
       });
@@ -235,6 +239,11 @@ export class PostCard implements OnInit {
 
   selectReaction(reactionId: number, event?: MouseEvent): void {
     event?.stopPropagation();
+
+    // Show modal indicating the user needs to login first before he can select a reaction
+    if (!this.isAuthenticated()) {
+      //
+    }
 
     const reactionData = {
       reactionId: reactionId,

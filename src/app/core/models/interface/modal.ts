@@ -2,6 +2,9 @@ interface BaseModalConfig {
   title: string;
   description: string;
   content?: string;
+  subcontent?: string;
+  confirmBtnText?: string;
+  cancelBtnText?: string;
 }
 
 export interface CommunityModalConfig extends BaseModalConfig {

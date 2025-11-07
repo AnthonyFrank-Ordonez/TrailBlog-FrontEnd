@@ -8,8 +8,9 @@ import { ModalService } from '@core/services/modal.service';
   styleUrl: './confirmation-modal.css',
 })
 export class ConfirmationModal {
-  @Input() cancelText = 'Cancel';
-  @Input() confirmText = 'Confirm';
+  @Input() cancelText: string | undefined;
+  @Input() confirmText: string | undefined;
+  @Input() contentText: string | undefined;
   @Output() cancelFn = new EventEmitter<void>();
   @Output() confirmFn = new EventEmitter<void>();
 

@@ -20,7 +20,6 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { MessageService } from './message.service';
 import { handleHttpError, POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
 import { PageResult } from '@core/models/interface/page-result';

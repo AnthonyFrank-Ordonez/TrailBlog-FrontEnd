@@ -26,9 +26,11 @@
         <app-community-form></app-community-form>
       }
 
-      @case ('leave-community') {
+      @case ('confirmation-modal') {
         <app-confirmation-modal
-          confirmText="Leave Community"
+          [confirmText]="modalConfig().confirmBtnText"
+          [cancelText]="modalConfig().cancelBtnText"
+          [contentText]="modalConfig().subcontent"
           (cancelFn)="onModalCancel()"
           (confirmFn)="onModalConfirm()"
         ></app-confirmation-modal>
