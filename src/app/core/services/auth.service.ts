@@ -24,11 +24,13 @@ export class AuthService {
   #refreshTokenSignal = signal<string | null>(null);
   #isLoggingInSignal = signal<boolean>(false);
   #isRegisteringSignal = signal<boolean>(false);
+  #isRefreshingSignal = signal<boolean>(false);
 
   token = this.#tokenSignal.asReadonly();
   refreshToken = this.#refreshTokenSignal.asReadonly();
   isLoggingIn = this.#isLoggingInSignal.asReadonly();
   isRegistering = this.#isRegisteringSignal.asReadonly();
+  isRefreshing = this.#isRefreshingSignal.asReadonly();
 
   isAuthenticated = computed(() => !!this.#tokenSignal());
 
@@ -111,7 +113,6 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.env.apiRoot}/auth/refresh-token`, refreshData).pipe(
       tap((response) => {
         console.log('Refreshing token...');
-
         this.setAuth(response);
       }),
       catchError((error) => {
@@ -148,5 +149,9 @@ export class AuthService {
     this.#tokenSignal.set(null);
     this.#refreshTokenSignal.set(null);
     this.userService.clearUser();
+  }
+
+  setIsRefreshing(value: boolean) {
+    this.#isRefreshingSignal.set(value);
   }
 }

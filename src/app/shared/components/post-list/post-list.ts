@@ -42,6 +42,7 @@ export class PostList {
 
   currentPath = this.currentRouteService.currentPath;
   isAuthenticated = this.authService.isAuthenticated;
+  token = this.authService.token;
 
   isPostLoading = this.postService.isPostLoading;
   skeletonArray = Array(5).fill(0);
@@ -49,7 +50,7 @@ export class PostList {
 
   constructor() {
     effect(() => {
-      const isAuth = this.isAuthenticated();
+      const token = this.token();
 
       untracked(() => {
         this.loadPosts();

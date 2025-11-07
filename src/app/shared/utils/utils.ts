@@ -53,7 +53,6 @@ export function getStrategyFromPath(path: string): PostLoadingStrategy {
 }
 
 export function getActiveTabFromPath(path: string): string {
-  console.log('path', path);
   if (path.startsWith('/popular')) return 'popular';
   if (path.startsWith('/create')) return 'create';
   if (path.startsWith('/communities')) return 'community';
