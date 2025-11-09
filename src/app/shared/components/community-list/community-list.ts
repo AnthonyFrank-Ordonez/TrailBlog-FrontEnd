@@ -12,5 +12,6 @@ export class CommunityList {
   private readonly communityService = inject(CommunityService);
 
   userCommunities = this.communityService.userCommunities;
-  isLoading = signal<boolean>(false);
+  communitiesLoading = this.communityService.userCommunitiesLoading;
+  skeletonArray = Array(5).fill(0);
 }
