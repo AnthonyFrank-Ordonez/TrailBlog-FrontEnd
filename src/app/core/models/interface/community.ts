@@ -1,10 +1,11 @@
-import { Post } from './posts';
+export type CommunityFilterType = 'All' | 'Favorite';
 
 export interface Communities {
   id: string;
   communityName: string;
   description?: string;
   owner: string;
+  isFavorite: boolean;
 }
 
 export interface CreateCommunityRequest {

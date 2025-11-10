@@ -2,20 +2,17 @@ import { DatePipe, NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
-  computed,
   DestroyRef,
   ElementRef,
   HostListener,
   inject,
   input,
-  OnChanges,
   OnInit,
   signal,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Post, PostDropdownItems } from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
@@ -23,11 +20,7 @@ import { CommunityService } from '@core/services/community.service';
 import { MessageService } from '@core/services/message.service';
 import { ModalService } from '@core/services/modal.service';
 import { PostService } from '@core/services/post.service';
-import { UserService } from '@core/services/user.service';
 import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
-import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropdown-item.component';
-import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
-import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 import { handleHttpError } from '@shared/utils/utils';

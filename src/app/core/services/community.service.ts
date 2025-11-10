@@ -2,7 +2,11 @@ import { inject, Injectable, signal } from '@angular/core';
 import { UserService } from './user.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@env/environment';
-import { CreateCommunityRequest, Communities } from '@core/models/interface/community';
+import {
+  CreateCommunityRequest,
+  Communities,
+  CommunityFilterType,
+} from '@core/models/interface/community';
 import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import { OperationResult } from '@core/models/interface/operations';
 
@@ -17,11 +21,15 @@ export class CommunityService {
   #userCommunitiesLoading = signal<boolean>(false);
   #isSubmitting = signal<boolean>(false);
   #isLeavingSignal = signal<boolean>(false);
+  #communityFilter = signal<CommunityFilterType>('All');
+  #activeCommunityFilterBtn = signal<CommunityFilterType>('All');
 
-  user = this.userService.user;
   env = environment;
+  user = this.userService.user;
   userCommunities = this.#userCommunities.asReadonly();
   userCommunitiesLoading = this.#userCommunitiesLoading.asReadonly();
+  communityFilter = this.#communityFilter.asReadonly();
+  activeCommunityFilterBtn = this.#activeCommunityFilterBtn.asReadonly();
   isSubmitting = this.#isSubmitting.asReadonly();
 
   loadUserCommunities(): Observable<Communities[]> {
@@ -95,7 +103,17 @@ export class CommunityService {
       );
   }
 
+  setCommunityFilter(filter: CommunityFilterType) {
+    this.#communityFilter.set(filter);
+  }
+
+  setActiveCommunityFilter(filter: CommunityFilterType) {
+    this.#activeCommunityFilterBtn.set(filter);
+  }
+
   resetCommunityServiceData(): void {
     this.#userCommunities.set([]);
+    this.#communityFilter.set('All');
+    this.#activeCommunityFilterBtn.set('All');
   }
 }
