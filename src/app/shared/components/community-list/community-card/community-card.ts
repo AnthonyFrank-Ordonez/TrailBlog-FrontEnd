@@ -47,4 +47,38 @@ export class CommunityCard {
         },
       });
   }
+
+  toggleFavorite() {
+    if (this.isFavorite) {
+      this.handleUnfavoriteCommunity();
+    } else {
+      this.handleFavoriteCommunity();
+    }
+  }
+
+  handleFavoriteCommunity() {
+    this.communityService
+      .favoriteCommunity(this.community().id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
+  }
+
+  handleUnfavoriteCommunity() {
+    this.communityService
+      .unfavoriteCommunity(this.community().id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
+  }
+
+  get isFavorite(): boolean {
+    return this.community().isFavorite;
+  }
 }

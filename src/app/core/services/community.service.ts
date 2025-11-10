@@ -14,8 +14,10 @@ import { OperationResult } from '@core/models/interface/operations';
   providedIn: 'root',
 })
 export class CommunityService {
+  env = environment;
   private http = inject(HttpClient);
   private userService = inject(UserService);
+  private readonly apiUrl = `${this.env.apiRoot}/community`;
 
   #userCommunities = signal<Communities[]>([]);
   #userCommunitiesLoading = signal<boolean>(false);
@@ -24,7 +26,6 @@ export class CommunityService {
   #communityFilter = signal<CommunityFilterType>('All');
   #activeCommunityFilterBtn = signal<CommunityFilterType>('All');
 
-  env = environment;
   user = this.userService.user;
   userCommunities = this.#userCommunities.asReadonly();
   userCommunitiesLoading = this.#userCommunitiesLoading.asReadonly();
@@ -35,7 +36,7 @@ export class CommunityService {
   loadUserCommunities(): Observable<Communities[]> {
     this.#userCommunitiesLoading.set(true);
 
-    return this.http.get<Communities[]>(`${this.env.apiRoot}/community/user`).pipe(
+    return this.http.get<Communities[]>(`${this.apiUrl}/user`).pipe(
       tap((response) => {
         console.log('fetching user communities...');
 
@@ -51,7 +52,7 @@ export class CommunityService {
   createCommunity(communityFormData: CreateCommunityRequest): Observable<Communities> {
     this.#isSubmitting.set(true);
 
-    return this.http.post<Communities>(`${this.env.apiRoot}/community`, communityFormData).pipe(
+    return this.http.post<Communities>(this.apiUrl, communityFormData).pipe(
       tap((data) => {
         console.log('Creating community. Please wait...');
 
@@ -69,38 +70,68 @@ export class CommunityService {
   leaveCommunity(communityId: string | undefined): Observable<OperationResult> {
     this.#isLeavingSignal.set(true);
 
-    return this.http
-      .post<OperationResult>(`${this.env.apiRoot}/community/${communityId}/leave`, null)
-      .pipe(
-        tap(() => {
-          console.log('Leaving community...');
+    return this.http.post<OperationResult>(`${this.apiUrl}/${communityId}/leave`, null).pipe(
+      tap(() => {
+        console.log('Leaving community...');
 
-          this.#userCommunities.update((communities) => {
-            return communities.filter((community) => community.id !== communityId);
-          });
-        }),
-        catchError((error) => {
-          return throwError(() => error);
-        }),
+        this.#userCommunities.update((communities) => {
+          return communities.filter((community) => community.id !== communityId);
+        });
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
 
-        finalize(() => {
-          this.#isLeavingSignal.set(false);
-        }),
-      );
+      finalize(() => {
+        this.#isLeavingSignal.set(false);
+      }),
+    );
   }
 
   joinCommunity(communityId: string): Observable<Communities> {
-    return this.http
-      .post<Communities>(`${this.env.apiRoot}/community/${communityId}/join`, null)
-      .pipe(
-        tap((community) => {
-          console.log('Joining community...');
-          this.#userCommunities.update((communities) => [...communities, community]);
-        }),
-        catchError((error) => {
-          return throwError(() => error);
-        }),
-      );
+    return this.http.post<Communities>(`${this.apiUrl}/${communityId}/join`, null).pipe(
+      tap((community) => {
+        console.log('Joining community...');
+        this.#userCommunities.update((communities) => [...communities, community]);
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  favoriteCommunity(communityId: string): Observable<Communities> {
+    return this.http.post<Communities>(`${this.apiUrl}/${communityId}/favorite`, null).pipe(
+      tap((updatedCommunity) => {
+        console.log('Favorite Community');
+
+        this.#userCommunities.update((communities) =>
+          communities.map((community) =>
+            community.id === updatedCommunity.id ? { ...updatedCommunity } : community,
+          ),
+        );
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  unfavoriteCommunity(communityId: string): Observable<Communities> {
+    return this.http.post<Communities>(`${this.apiUrl}/${communityId}/unfavorite`, null).pipe(
+      tap((updatedCommunity) => {
+        console.log('Unfavorite Community');
+
+        this.#userCommunities.update((communities) =>
+          communities.map((community) =>
+            community.id === updatedCommunity.id ? { ...updatedCommunity } : community,
+          ),
+        );
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+    );
   }
 
   setCommunityFilter(filter: CommunityFilterType) {
