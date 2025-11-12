@@ -20,12 +20,14 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddCommentRequest } from '@core/models/interface/comments';
+import { PostDropdownItems } from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
 import { PostService } from '@core/services/post.service';
 import { UserService } from '@core/services/user.service';
 import { ZardDividerComponent } from '@shared/components/divider/divider.component';
+import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
 import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropdown-item.component';
 import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
 import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
@@ -41,6 +43,7 @@ import { debounceTime, Subject, switchMap, tap } from 'rxjs';
     NgOptimizedImage,
     InitialsPipe,
     TimeagoPipe,
+    DropdownMenu,
     ReactiveFormsModule,
     ZardDropdownMenuContentComponent,
     ZardDropdownMenuItemComponent,
@@ -55,6 +58,8 @@ export class PostDetail implements OnInit {
   @ViewChild('commentFormContainer') commentFormContainer!: ElementRef;
   @ViewChild('toggleCommentBtn') toggleCommentBtn!: ElementRef;
   @ViewChild('commentArea') commentArea!: ElementRef;
+  @ViewChild('menuContainer') menuContainer!: ElementRef;
+  @ViewChild('shareContainer') shareContainer!: ElementRef;
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -66,7 +71,80 @@ export class PostDetail implements OnInit {
   private userService = inject(UserService);
   private reaction$ = new Subject<ReactionRequest>();
 
+  readonly menuItems: PostDropdownItems[] = [
+    {
+      label: 'Save',
+      iconClass: 'icon-tabler-bookmark',
+      svgPath: ['M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z'],
+      ownerOnly: false,
+      forAuthenticated: true,
+      action: (event?: MouseEvent) => {},
+    },
+    {
+      label: 'Hide',
+      iconClass: 'icon-tabler-eye-off',
+      svgPath: [
+        'M10.585 10.587a2 2 0 0 0 2.829 2.828',
+        'M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87',
+        'M3 3l18 18',
+      ],
+      ownerOnly: false,
+      forAuthenticated: true,
+      action: (event?: MouseEvent) => {},
+    },
+    {
+      label: 'Report',
+      iconClass: 'icon-tabler-message-report',
+      svgPath: [
+        'M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z',
+        'M12 8v3',
+        'M12 14v.01',
+      ],
+      ownerOnly: false,
+      forAuthenticated: false,
+      action: (event?: MouseEvent) => {},
+    },
+    {
+      label: 'Delete',
+      iconClass: 'icon-tabler-trash',
+      svgPath: [
+        'M4 7l16 0',
+        'M10 11l0 6',
+        'M14 11l0 6',
+        'M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12',
+        'M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3',
+      ],
+      ownerOnly: true,
+      forAuthenticated: true,
+      action: (event?: MouseEvent) => {},
+    },
+  ];
+
+  readonly shareItems: PostDropdownItems[] = [
+    {
+      label: 'Copy',
+      iconClass: 'icon-tabler-clipboard',
+      svgPath: [
+        'M17.997 4.17a3 3 0 0 1 2.003 2.83v12a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 2.003 -2.83a4 4 0 0 0 3.997 3.83h4a4 4 0 0 0 3.98 -3.597zm-3.997 -2.17a2 2 0 1 1 0 4h-4a2 2 0 1 1 0 -4z',
+      ],
+      ownerOnly: false,
+      forAuthenticated: false,
+      action: (event?: MouseEvent) => this.handleCopy(event),
+    },
+    {
+      label: 'Embed',
+      iconClass: 'icon-tabler-file-code-2',
+      svgPath: [
+        'M12 2l.117 .007a1 1 0 0 1 .876 .876l.007 .117v4l.005 .15a2 2 0 0 0 1.838 1.844l.157 .006h4l.117 .007a1 1 0 0 1 .876 .876l.007 .117v9a3 3 0 0 1 -2.824 2.995l-.176 .005h-10a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-14a3 3 0 0 1 2.824 -2.995l.176 -.005zm-2 9h-1a1 1 0 0 0 -1 1v5a1 1 0 0 0 1 1h1a1 1 0 0 0 1 -1l-.007 -.117a1 1 0 0 0 -.876 -.876l-.117 -.007v-3a1 1 0 0 0 0 -2m5 0h-1a1 1 0 0 0 0 2v3a1 1 0 0 0 0 2h1a1 1 0 0 0 1 -1v-5a1 1 0 0 0 -1 -1m-.001 -8.001l4.001 4.001h-4z',
+      ],
+      ownerOnly: false,
+      forAuthenticated: false,
+      action: (event?: MouseEvent) => {},
+    },
+  ];
+
   post = this.postService.postDetail;
+  activeDropdown = this.postService.activeDropdown;
   isPostLoading = this.postService.isPostLoading;
   isCommentSelected = signal<boolean>(false);
   isAuthenticated = this.authService.isAuthenticated;
@@ -125,6 +203,24 @@ export class PostDetail implements OnInit {
     this.showReactionModal.set(true);
   }
 
+  toggleMenuItems(): void {
+    if (this.isPostMenuOpen) {
+      this.postService.closeDropdown();
+      return;
+    }
+
+    this.postService.updateActiveDropdown('menu', this.post().id);
+  }
+
+  toggleShareItems(): void {
+    if (this.isShareModalOpen) {
+      this.postService.closeDropdown();
+      return;
+    }
+
+    this.postService.updateActiveDropdown('share', this.post().id);
+  }
+
   selectReaction(reactionId: number): void {
     const reactionData = {
       reactionId: reactionId,
@@ -142,6 +238,7 @@ export class PostDetail implements OnInit {
   }
 
   toggleBack(): void {
+    this.postService.closeDropdown();
     this.router.navigate(['/']);
   }
 
@@ -161,13 +258,21 @@ export class PostDetail implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
-    if (!this.reactionContainer || !this.commentFormContainer || !this.toggleCommentBtn) {
+    if (
+      !this.reactionContainer ||
+      !this.commentFormContainer ||
+      !this.toggleCommentBtn ||
+      !this.menuContainer ||
+      !this.shareContainer
+    ) {
       return;
     }
 
     const clickedInside = this.reactionContainer.nativeElement.contains(event.target);
     const insideCommentForm = this.commentFormContainer.nativeElement.contains(event.target);
     const clickToggleBtn = this.toggleCommentBtn.nativeElement.contains(event.target);
+    const insideMenuModal = this.menuContainer.nativeElement.contains(event.target);
+    const insideShareModal = this.shareContainer.nativeElement.contains(event.target);
 
     if (this.showReactionModal() && !clickedInside) {
       this.closeReactModal();
@@ -175,6 +280,14 @@ export class PostDetail implements OnInit {
 
     if (this.isCommentSelected() && !insideCommentForm && !clickToggleBtn) {
       this.isCommentSelected.set(false);
+    }
+
+    if (this.isPostMenuOpen && !insideMenuModal) {
+      this.postService.closeDropdown();
+    }
+
+    if (this.isShareModalOpen && !insideShareModal) {
+      this.postService.closeDropdown();
     }
   }
 
@@ -184,6 +297,14 @@ export class PostDetail implements OnInit {
 
   getReactionById(id: number): ReactionList | undefined {
     return this.reactionList.find((r) => r.id === id);
+  }
+
+  async handleCopy(event?: MouseEvent) {
+    event?.stopPropagation();
+    const url = `${window.location.origin}/post/${this.post().slug}`;
+
+    await this.postService.copyPostLink(url);
+    this.postService.closeDropdown();
   }
 
   onCommentSubmit() {
@@ -219,5 +340,20 @@ export class PostDetail implements OnInit {
     this.commentForm.reset();
 
     this.isCommentSelected.set(false);
+  }
+
+  get isPostMenuOpen() {
+    const active = this.activeDropdown();
+    return active.type === 'menu' && active.postId === this.post().id;
+  }
+
+  get isPostReactModalOpen() {
+    const active = this.activeDropdown();
+    return active.type === 'reaction' && active.postId === this.post().id;
+  }
+
+  get isShareModalOpen() {
+    const active = this.activeDropdown();
+    return active.type === 'share' && active.postId === this.post().id;
   }
 }

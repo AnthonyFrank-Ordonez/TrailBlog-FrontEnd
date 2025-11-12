@@ -307,11 +307,11 @@ export class PostCard implements OnInit {
     const insideMenuModal = this.menuContainer.nativeElement.contains(event.target);
     const insideShareModal = this.shareContainer.nativeElement.contains(event.target);
 
-    if (this.isPostMenuOpen && !insideReactModal) {
+    if (this.isPostReactModalOpen && !insideReactModal) {
       this.postService.closeDropdown();
     }
 
-    if (this.isPostReactModalOpen && !insideMenuModal) {
+    if (this.isPostMenuOpen && !insideMenuModal) {
       this.postService.closeDropdown();
     }
 
