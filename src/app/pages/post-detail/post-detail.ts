@@ -368,7 +368,9 @@ export class PostDetail implements OnInit {
 
   async handleCopy(event?: MouseEvent) {
     event?.stopPropagation();
-    const url = `${window.location.origin}/post/${this.post().slug}`;
+
+    const endodedSlug = encodeURIComponent(this.post().slug);
+    const url = `${window.location.origin}/post/${endodedSlug}`;
 
     await this.postService.copyPostLink(url);
     this.postService.closeDropdown();

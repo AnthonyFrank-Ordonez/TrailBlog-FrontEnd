@@ -156,8 +156,9 @@ export class PostService {
 
   loadPostDetail(slug: string): Observable<Post> {
     this.#isPostLoadingSignal.set(true);
+    const encodedSlug = encodeURIComponent(slug);
 
-    return this.http.get<Post>(`${this.apiUrl}/slug/${encodeURIComponent(slug)}`).pipe(
+    return this.http.get<Post>(`${this.apiUrl}/slug/${encodedSlug}`).pipe(
       tap((response) => {
         console.log('Fetching post detail..');
 

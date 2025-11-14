@@ -297,7 +297,9 @@ export class PostCard implements OnInit {
 
   async handleCopy(event?: MouseEvent) {
     event?.stopPropagation();
-    const url = `${window.location.origin}/post/${this.post().slug}`;
+
+    const encodedSlug = encodeURIComponent(this.post().slug);
+    const url = `${window.location.origin}/post/${encodedSlug}`;
 
     await this.postService.copyPostLink(url);
     this.postService.closeDropdown();
