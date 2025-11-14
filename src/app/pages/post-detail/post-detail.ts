@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
   DestroyRef,
+  effect,
   ElementRef,
   HostListener,
   inject,
@@ -181,8 +182,10 @@ export class PostDetail implements OnInit {
   activeDropdown = this.postService.activeDropdown;
   isPostLoading = this.postService.isPostLoading;
   isAuthenticated = this.authService.isAuthenticated;
+  token = this.authService.token;
   isCommentSelected = signal<boolean>(false);
   showReactionModal = signal<boolean>(false);
+  private slug = signal<string | null>(null);
 
   commentForm: FormGroup = this.createForm();
 
@@ -194,13 +197,21 @@ export class PostDetail implements OnInit {
     { id: 5, type: '🚀', value: 'rocketReact' },
   ];
 
+  constructor() {
+    effect(() => {
+      const token = this.token();
+      const currentSlug = this.slug();
+
+      if (currentSlug) {
+        this.fetchPost(currentSlug);
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const slug = params.get('slug');
-
-      if (slug) {
-        this.fetchPost(slug);
-      }
+      this.slug.set(slug);
     });
 
     this.reaction$
