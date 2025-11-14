@@ -5,6 +5,7 @@ export interface Comment {
   commentedAt: Date;
   lastUpdatedAt: Date;
   isDeleted: boolean;
+  isOwner: boolean;
   userId: string | null;
   postId: string | null;
 }

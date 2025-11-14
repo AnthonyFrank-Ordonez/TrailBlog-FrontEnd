@@ -49,7 +49,7 @@ export class PostService {
   #totalCountSignal = signal<number>(0);
   #sessionIdSignal = signal<string>('');
   #postMenuModalIdSignal = signal<string | null>(null);
-  #activeDropdown = signal<PostDropdown>({ type: null, postId: null });
+  #activeDropdown = signal<PostDropdown>({ type: null, id: null });
 
   posts = this.#postSignal.asReadonly();
   mostPopularPosts = this.#mostPopularPostsSignal.asReadonly();
@@ -274,12 +274,12 @@ export class PostService {
     );
   }
 
-  updateActiveDropdown(type: DropdownType, postId: string) {
-    this.#activeDropdown.set({ type: type, postId: postId });
+  updateActiveDropdown(type: DropdownType, id: string) {
+    this.#activeDropdown.set({ type: type, id: id });
   }
 
   closeDropdown() {
-    this.#activeDropdown.set({ type: null, postId: null });
+    this.#activeDropdown.set({ type: null, id: null });
   }
 
   resetPostServiceData(): void {

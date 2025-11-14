@@ -59,5 +59,5 @@ export interface PostDropdownItems {
 
 export interface PostDropdown {
   type: DropdownType | null;
-  postId: string | null;
+  id: string | null;
 }

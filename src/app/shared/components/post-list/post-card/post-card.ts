@@ -334,16 +334,16 @@ export class PostCard implements OnInit {
 
   get isPostMenuOpen() {
     const active = this.activeDropdown();
-    return active.type === 'menu' && active.postId === this.post().id;
+    return active.type === 'menu' && active.id === this.post().id;
   }
 
   get isPostReactModalOpen() {
     const active = this.activeDropdown();
-    return active.type === 'reaction' && active.postId === this.post().id;
+    return active.type === 'reaction' && active.id === this.post().id;
   }
 
   get isShareModalOpen() {
     const active = this.activeDropdown();
-    return active.type === 'share' && active.postId === this.post().id;
+    return active.type === 'share' && active.id === this.post().id;
   }
 }
