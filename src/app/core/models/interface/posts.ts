@@ -54,6 +54,7 @@ export interface PostDropdownItems {
   svgPath: Array<string>;
   ownerOnly: boolean;
   forAuthenticated: boolean;
+  hideForOwner?: boolean;
   action: (event?: MouseEvent) => void;
 }
 

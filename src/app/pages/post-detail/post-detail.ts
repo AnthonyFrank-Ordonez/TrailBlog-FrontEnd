@@ -77,6 +77,7 @@ export class PostDetail implements OnInit {
       svgPath: ['M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z'],
       ownerOnly: false,
       forAuthenticated: true,
+      hideForOwner: false,
       action: (event?: MouseEvent) => {},
     },
     {
@@ -89,6 +90,7 @@ export class PostDetail implements OnInit {
       ],
       ownerOnly: false,
       forAuthenticated: true,
+      hideForOwner: false,
       action: (event?: MouseEvent) => {},
     },
     {
@@ -101,6 +103,7 @@ export class PostDetail implements OnInit {
       ],
       ownerOnly: false,
       forAuthenticated: false,
+      hideForOwner: true,
       action: (event?: MouseEvent) => {},
     },
     {
@@ -115,6 +118,7 @@ export class PostDetail implements OnInit {
       ],
       ownerOnly: true,
       forAuthenticated: true,
+      hideForOwner: false,
       action: (event?: MouseEvent) => {},
     },
   ];
@@ -144,26 +148,6 @@ export class PostDetail implements OnInit {
 
   readonly commentMenuItems: PostDropdownItems[] = [
     {
-      label: 'Save',
-      iconClass: 'icon-tabler-bookmark',
-      svgPath: ['M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z'],
-      ownerOnly: false,
-      forAuthenticated: true,
-      action: (event?: MouseEvent) => {},
-    },
-    {
-      label: 'Hide',
-      iconClass: 'icon-tabler-eye-off',
-      svgPath: [
-        'M10.585 10.587a2 2 0 0 0 2.829 2.828',
-        'M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87',
-        'M3 3l18 18',
-      ],
-      ownerOnly: false,
-      forAuthenticated: true,
-      action: (event?: MouseEvent) => {},
-    },
-    {
       label: 'Report',
       iconClass: 'icon-tabler-message-report',
       svgPath: [
@@ -173,6 +157,7 @@ export class PostDetail implements OnInit {
       ],
       ownerOnly: false,
       forAuthenticated: false,
+      hideForOwner: true,
       action: (event?: MouseEvent) => {},
     },
     {
@@ -187,6 +172,7 @@ export class PostDetail implements OnInit {
       ],
       ownerOnly: true,
       forAuthenticated: true,
+      hideForOwner: false,
       action: (event?: MouseEvent) => {},
     },
   ];
@@ -194,8 +180,8 @@ export class PostDetail implements OnInit {
   post = this.postService.postDetail;
   activeDropdown = this.postService.activeDropdown;
   isPostLoading = this.postService.isPostLoading;
-  isCommentSelected = signal<boolean>(false);
   isAuthenticated = this.authService.isAuthenticated;
+  isCommentSelected = signal<boolean>(false);
   showReactionModal = signal<boolean>(false);
 
   commentForm: FormGroup = this.createForm();

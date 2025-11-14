@@ -19,10 +19,23 @@ export class DropdownMenu {
   isAuthenticated = this.authService.isAuthenticated;
 
   get filteredMenuItems() {
-    return this.dropdownItems().filter(
-      (item) =>
-        (!item.ownerOnly && !item.forAuthenticated) ||
-        (this.isAuthenticated() && (!item.ownerOnly || this.isOwner())),
-    );
+    return this.dropdownItems().filter((item) => {
+      const isOwner = this.isOwner();
+      const isAuth = this.isAuthenticated();
+
+      if (item.hideForOwner && isOwner) {
+        return false;
+      }
+
+      if (item.ownerOnly) {
+        return isOwner;
+      }
+
+      if (item.forAuthenticated) {
+        return isAuth;
+      }
+
+      return true;
+    });
   }
 }

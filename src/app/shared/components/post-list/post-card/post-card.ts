@@ -70,6 +70,7 @@ export class PostCard implements OnInit {
       svgPath: ['M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z'],
       ownerOnly: false,
       forAuthenticated: true,
+      hideForOwner: false,
       action: (event?: MouseEvent) => this.handleSave(event),
     },
     {
@@ -82,6 +83,7 @@ export class PostCard implements OnInit {
       ],
       ownerOnly: false,
       forAuthenticated: true,
+      hideForOwner: false,
       action: (event?: MouseEvent) => this.handleSave(event),
     },
     {
@@ -94,6 +96,7 @@ export class PostCard implements OnInit {
       ],
       ownerOnly: false,
       forAuthenticated: false,
+      hideForOwner: true,
       action: (event?: MouseEvent) => this.handleSave(event),
     },
     {
@@ -108,6 +111,7 @@ export class PostCard implements OnInit {
       ],
       ownerOnly: true,
       forAuthenticated: true,
+      hideForOwner: false,
       action: (event?: MouseEvent) => this.handleSave(event),
     },
   ];
