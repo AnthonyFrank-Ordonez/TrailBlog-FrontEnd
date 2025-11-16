@@ -8,6 +8,7 @@ import {
   inject,
   input,
   OnInit,
+  output,
   signal,
   ViewChild,
 } from '@angular/core';
@@ -44,12 +45,15 @@ export class PostCard implements OnInit {
   private messageService = inject(MessageService);
   private modalService = inject(ModalService);
   private authService = inject(AuthService);
-
   private reaction$ = new Subject<ReactionRequest>();
+
+  post = input.required<Post>();
+  isUserJoined = input(false);
+  isPostMenuOpen = input(false);
+  postMenu = output<string>();
 
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
-  post = input.required<Post>();
   showReactionModal = signal<boolean>(false);
   modalConfig = this.modalService.modalConfig;
   postMenuModalId = this.postService.postMenuModalId;
@@ -158,7 +162,7 @@ export class PostCard implements OnInit {
   toggleJoin(event?: MouseEvent): void {
     event?.stopPropagation();
 
-    if (this.isJoined) {
+    if (this.isUserJoined()) {
       this.postService.closeDropdown();
 
       this.modalService.openModal({
@@ -229,10 +233,16 @@ export class PostCard implements OnInit {
     this.postService.updateActiveDropdown('reaction', this.post().id);
   }
 
+  handleMenuItems(event: MouseEvent) {
+    event?.stopPropagation();
+
+    this.postMenu.emit(this.post().id);
+  }
+
   toggleMenuItems(event?: MouseEvent): void {
     event?.stopPropagation();
 
-    if (this.isPostMenuOpen) {
+    if (this.isPostMenuOpen()) {
       this.postService.closeDropdown();
       return;
     }
@@ -317,7 +327,7 @@ export class PostCard implements OnInit {
       this.postService.closeDropdown();
     }
 
-    if (this.isPostMenuOpen && !insideMenuModal) {
+    if (this.isPostMenuOpen() && !insideMenuModal) {
       this.postService.closeDropdown();
     }
 
@@ -332,15 +342,6 @@ export class PostCard implements OnInit {
 
   getReactionById(id: number): ReactionList | undefined {
     return this.reactionList.find((r) => r.id === id);
-  }
-
-  get isJoined(): boolean {
-    return this.userCommunities().some((uc) => uc.id === this.post().communityId);
-  }
-
-  get isPostMenuOpen() {
-    const active = this.activeDropdown();
-    return active.type === 'menu' && active.id === this.post().id;
   }
 
   get isPostReactModalOpen() {

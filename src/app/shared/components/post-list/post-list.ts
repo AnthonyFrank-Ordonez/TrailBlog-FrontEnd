@@ -6,6 +6,7 @@ import {
   HostListener,
   inject,
   input,
+  linkedSignal,
   OnInit,
   Signal,
   signal,
@@ -23,6 +24,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
 import { Post, PostLoadingStrategy } from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
+import { CommunityService } from '@core/services/community.service';
 
 @Component({
   selector: 'app-post-list',
@@ -35,18 +37,23 @@ export class PostList {
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
   private currentRouteService = inject(CurrentRouteService);
+  private communityService = inject(CommunityService);
   private destroyRef = inject(DestroyRef);
-  private router = inject(Router);
 
   posts = input.required<Post[]>();
 
   currentPath = this.currentRouteService.currentPath;
   isAuthenticated = this.authService.isAuthenticated;
   token = this.authService.token;
-
+  userCommunities = this.communityService.userCommunities;
   isPostLoading = this.postService.isPostLoading;
+  activeDropdown = this.postService.activeDropdown;
   skeletonArray = Array(5).fill(0);
   hasMore = this.postService.hasMore;
+
+  userCommunityIds = linkedSignal(() => {
+    return new Set(this.userCommunities().map((uc) => uc.id));
+  });
 
   constructor() {
     effect(() => {
@@ -56,6 +63,33 @@ export class PostList {
         this.loadPosts();
       });
     });
+  }
+
+  openPostMenu(postId: string) {
+    if (this.isPostMenuOpen(postId)) {
+      this.postService.closeDropdown();
+    }
+
+    this.postService.updateActiveDropdown('menu', postId);
+  }
+
+  isUserInCommunity(communityId: string): boolean {
+    return this.userCommunityIds().has(communityId);
+  }
+
+  isPostMenuOpen(postId: string): boolean {
+    const active = this.activeDropdown();
+    return active.type === 'menu' && active.id === postId;
+  }
+
+  isPostReactModalOpen(postId: string): boolean {
+    const active = this.activeDropdown();
+    return active.type === 'reaction' && active.id === postId;
+  }
+
+  isPostShareModalOpen(postId: string): boolean {
+    const active = this.activeDropdown();
+    return active.type === 'share' && active.id === postId;
   }
 
   @HostListener('window:scroll')

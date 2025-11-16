@@ -21,19 +21,19 @@
         class="text-xs px-3 py-1 rounded-full cursor-pointer transition-colors duration-200"
         (click)="toggleJoin($event)"
         [ngClass]="
-          isJoined
+          isUserJoined()
             ? 'text-gray-500 bg-transparent border border-gray-500 hover:bg-white/5'
             : 'bg-secondary text-white hover:bg-secondary/70'
         "
       >
-        {{ isJoined ? 'Joined' : 'Join' }}
+        {{ isUserJoined() ? 'Joined' : 'Join' }}
       </button>
 
       <!-- Three Dots -->
       <div class="relative" #menuContainer>
         <button
           class="text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
-          (click)="toggleMenuItems($event)"
+          (click)="handleMenuItems($event)"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +49,7 @@
           </svg>
         </button>
 
-        @if (isPostMenuOpen) {
+        @if (isPostMenuOpen()) {
           <app-dropdown-menu
             animate.enter="dropdown-fade-in"
             animate.leave="dropdown-fade-out"

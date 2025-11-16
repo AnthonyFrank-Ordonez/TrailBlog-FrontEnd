@@ -1,5 +1,10 @@
 @for (post of posts(); track post.id) {
-  <app-post-card [post]="post" />
+  <app-post-card
+    [post]="post"
+    [isUserJoined]="isUserInCommunity(post.communityId)"
+    [isPostMenuOpen]="isPostMenuOpen(post.id)"
+    (postMenu)="openPostMenu(post.id)"
+  />
   <z-divider zSpacing="sm" class="bg-white/30 mb-2.5"></z-divider>
 }
 
@@ -37,7 +42,7 @@
 }
 
 @if (!isPostLoading() && !hasMore() && posts().length > 0) {
-  <div class="text-center py-8 text-gray-400">🎉 You've reached the end!</div>
+  <div class="text-center py-8 text-gray-400">You've reached the end!</div>
 }
 
 @if (posts().length === 0 && !isPostLoading()) {
