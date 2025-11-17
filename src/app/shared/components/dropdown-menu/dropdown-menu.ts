@@ -16,6 +16,7 @@ export class DropdownMenu {
   isOwner = input<boolean>(false);
   styles = input<string>();
   dropdownWidth = input<string>('w-32');
+  modalType = input<string>('');
   isAuthenticated = this.authService.isAuthenticated;
 
   get filteredMenuItems() {

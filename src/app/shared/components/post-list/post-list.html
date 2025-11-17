@@ -3,7 +3,9 @@
     [post]="post"
     [isUserJoined]="isUserInCommunity(post.communityId)"
     [isPostMenuOpen]="isPostMenuOpen(post.id)"
+    [isPostReactModalOpen]="isPostReactModalOpen(post.id)"
     (postMenu)="openPostMenu(post.id)"
+    (reactModal)="openReactModal(post.id)"
   />
   <z-divider zSpacing="sm" class="bg-white/30 mb-2.5"></z-divider>
 }

@@ -68,9 +68,20 @@ export class PostList {
   openPostMenu(postId: string) {
     if (this.isPostMenuOpen(postId)) {
       this.postService.closeDropdown();
+      return;
     }
 
     this.postService.updateActiveDropdown('menu', postId);
+  }
+
+  openReactModal(postId: string) {
+    console.log('here');
+    if (this.isPostReactModalOpen(postId)) {
+      this.postService.closeDropdown();
+      return;
+    }
+
+    this.postService.updateActiveDropdown('reaction', postId);
   }
 
   isUserInCommunity(communityId: string): boolean {
@@ -109,6 +120,23 @@ export class PostList {
             handleHttpError(error, this.messageService);
           },
         });
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent): void {
+    const modal = this.postService.activeDropdown();
+
+    if (modal.type === null) return;
+
+    const target = event.target as HTMLElement;
+
+    const insideModal = target.closest('[data-modal-type]');
+    const isButton = target.closest('.action-btn, .post-actions button');
+
+    if (!insideModal && !isButton) {
+      console.log('Clicked Outside!');
+      this.postService.closeDropdown();
     }
   }
 

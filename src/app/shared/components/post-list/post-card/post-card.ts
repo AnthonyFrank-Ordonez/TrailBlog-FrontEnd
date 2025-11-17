@@ -50,7 +50,9 @@ export class PostCard implements OnInit {
   post = input.required<Post>();
   isUserJoined = input(false);
   isPostMenuOpen = input(false);
+  isPostReactModalOpen = input(false);
   postMenu = output<string>();
+  reactModal = output<string>();
 
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
@@ -159,6 +161,18 @@ export class PostCard implements OnInit {
       });
   }
 
+  handleMenuItems(event: MouseEvent) {
+    event?.stopPropagation();
+
+    this.postMenu.emit(this.post().id);
+  }
+
+  handleReactModal(event: MouseEvent) {
+    event.stopPropagation();
+
+    this.reactModal.emit(this.post().id);
+  }
+
   toggleJoin(event?: MouseEvent): void {
     event?.stopPropagation();
 
@@ -225,18 +239,12 @@ export class PostCard implements OnInit {
   toggleReactionModal(event?: MouseEvent): void {
     event?.stopPropagation();
 
-    if (this.isPostReactModalOpen) {
+    if (this.isPostReactModalOpen()) {
       this.postService.closeDropdown();
       return;
     }
 
     this.postService.updateActiveDropdown('reaction', this.post().id);
-  }
-
-  handleMenuItems(event: MouseEvent) {
-    event?.stopPropagation();
-
-    this.postMenu.emit(this.post().id);
   }
 
   toggleMenuItems(event?: MouseEvent): void {
@@ -323,13 +331,13 @@ export class PostCard implements OnInit {
     const insideMenuModal = this.menuContainer.nativeElement.contains(event.target);
     const insideShareModal = this.shareContainer.nativeElement.contains(event.target);
 
-    if (this.isPostReactModalOpen && !insideReactModal) {
-      this.postService.closeDropdown();
-    }
+    // if (this.isPostReactModalOpen && !insideReactModal) {
+    //   this.postService.closeDropdown();
+    // }
 
-    if (this.isPostMenuOpen() && !insideMenuModal) {
-      this.postService.closeDropdown();
-    }
+    // if (this.isPostMenuOpen() && !insideMenuModal) {
+    //   this.postService.closeDropdown();
+    // }
 
     if (this.isShareModalOpen && !insideShareModal) {
       this.postService.closeDropdown();
@@ -344,10 +352,10 @@ export class PostCard implements OnInit {
     return this.reactionList.find((r) => r.id === id);
   }
 
-  get isPostReactModalOpen() {
-    const active = this.activeDropdown();
-    return active.type === 'reaction' && active.id === this.post().id;
-  }
+  // get isPostReactModalOpen() {
+  //   const active = this.activeDropdown();
+  //   return active.type === 'reaction' && active.id === this.post().id;
+  // }
 
   get isShareModalOpen() {
     const active = this.activeDropdown();

@@ -1,6 +1,7 @@
 <div
   class="absolute flex flex-col z-50 bg-black border border-white/30 p-0.5 rounded-md"
   [ngClass]="styles()"
+  [attr.data-modal-type]="modalType()"
 >
   @for (item of filteredMenuItems; track item.label) {
     <button
