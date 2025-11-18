@@ -372,8 +372,8 @@ export class PostDetail implements OnInit {
     const endodedSlug = encodeURIComponent(this.post().slug);
     const url = `${window.location.origin}/post/${endodedSlug}`;
 
-    await this.postService.copyPostLink(url);
-    this.postService.closeDropdown();
+    // await this.postService.copyPostLink(url);
+    // this.postService.closeDropdown();
   }
 
   onCommentSubmit() {
