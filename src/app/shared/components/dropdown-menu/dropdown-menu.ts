@@ -1,6 +1,6 @@
 import { NgClass } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
-import { Post, PostDropdownItems } from '@core/models/interface/posts';
+import { Component, inject, input, output } from '@angular/core';
+import { ActionClickEvent, PostAction, PostDropdownItems } from '@core/models/interface/posts';
 import { AuthService } from '@core/services/auth.service';
 
 @Component({
@@ -17,7 +17,16 @@ export class DropdownMenu {
   styles = input<string>();
   dropdownWidth = input<string>('w-32');
   modalType = input<string>('');
+  itemClicked = output<ActionClickEvent>();
   isAuthenticated = this.authService.isAuthenticated;
+
+  handleItemClick(item: PostDropdownItems, event: MouseEvent) {
+    event?.stopPropagation();
+    this.itemClicked.emit({
+      action: item.action,
+      event: event,
+    });
+  }
 
   get filteredMenuItems() {
     return this.dropdownItems().filter((item) => {

@@ -180,8 +180,9 @@
           animate.enter="dropdown-fade-in"
           animate.leave="dropdown-fade-out"
           styles="w-32 mt-1 left-0"
-          [dropdownItems]="shareItems()"
           modalType="share"
+          [dropdownItems]="shareItems()"
+          (itemClicked)="handleShareItemClick($event)"
         />
       }
     </div>

@@ -14,7 +14,13 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { Post, PostDropdownItems } from '@core/models/interface/posts';
+import {
+  ActionClickEvent,
+  Post,
+  PostAction,
+  PostActionPayload,
+  PostDropdownItems,
+} from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { CommunityService } from '@core/services/community.service';
@@ -58,6 +64,8 @@ export class PostCard implements OnInit {
   postMenu = output<string>();
   reactModal = output<string>();
   shareModal = output<string>();
+  copyAction = output<string>();
+  shareAction = output<PostActionPayload>();
 
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
@@ -98,6 +106,21 @@ export class PostCard implements OnInit {
     event.stopPropagation();
 
     this.shareModal.emit(this.post().id);
+  }
+
+  handleCopyAction(event: MouseEvent) {
+    event.stopPropagation();
+
+    this.copyAction.emit(this.post().slug);
+  }
+
+  handleShareItemClick(data: ActionClickEvent) {
+    data.event.stopPropagation();
+
+    this.shareAction.emit({
+      action: data.action,
+      post: this.post(),
+    });
   }
 
   toggleJoin(event?: MouseEvent): void {
@@ -205,16 +228,6 @@ export class PostCard implements OnInit {
 
   handleRedirection(path: string): void {
     this.router.navigate([path]);
-  }
-
-  async handleCopy(event?: MouseEvent) {
-    event?.stopPropagation();
-
-    const encodedSlug = encodeURIComponent(this.post().slug);
-    const url = `${window.location.origin}/post/${encodedSlug}`;
-
-    await this.postService.copyPostLink(url);
-    this.postService.closeDropdown();
   }
 
   hasReaction(reactionId: number): boolean {

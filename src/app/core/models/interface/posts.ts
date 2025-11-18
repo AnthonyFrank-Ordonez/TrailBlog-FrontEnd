@@ -7,6 +7,8 @@ export type PostLoadingStrategy = 'regular' | 'popular';
 
 export type DropdownType = 'menu' | 'share' | 'reaction';
 
+export type PostAction = 'share' | 'copy' | 'embed' | 'save' | 'hide' | 'report' | 'delete';
+
 export interface Post {
   id: string;
   title: string;
@@ -55,10 +57,20 @@ export interface PostDropdownItems {
   ownerOnly: boolean;
   forAuthenticated: boolean;
   hideForOwner?: boolean;
-  action: (event?: MouseEvent) => void;
+  action: PostAction;
 }
 
 export interface PostDropdown {
   type: DropdownType | null;
   id: string | null;
+}
+
+export interface PostActionPayload {
+  action: PostAction;
+  post: Post;
+}
+
+export interface ActionClickEvent {
+  action: PostAction;
+  event: MouseEvent;
 }

@@ -79,7 +79,7 @@ export class PostDetail implements OnInit {
       ownerOnly: false,
       forAuthenticated: true,
       hideForOwner: false,
-      action: (event?: MouseEvent) => {},
+      action: 'save',
     },
     {
       label: 'Hide',
@@ -92,7 +92,7 @@ export class PostDetail implements OnInit {
       ownerOnly: false,
       forAuthenticated: true,
       hideForOwner: false,
-      action: (event?: MouseEvent) => {},
+      action: 'hide',
     },
     {
       label: 'Report',
@@ -105,7 +105,7 @@ export class PostDetail implements OnInit {
       ownerOnly: false,
       forAuthenticated: false,
       hideForOwner: true,
-      action: (event?: MouseEvent) => {},
+      action: 'report',
     },
     {
       label: 'Delete',
@@ -120,7 +120,7 @@ export class PostDetail implements OnInit {
       ownerOnly: true,
       forAuthenticated: true,
       hideForOwner: false,
-      action: (event?: MouseEvent) => {},
+      action: 'delete',
     },
   ];
 
@@ -133,7 +133,7 @@ export class PostDetail implements OnInit {
       ],
       ownerOnly: false,
       forAuthenticated: false,
-      action: (event?: MouseEvent) => this.handleCopy(event),
+      action: 'copy',
     },
     {
       label: 'Embed',
@@ -143,7 +143,7 @@ export class PostDetail implements OnInit {
       ],
       ownerOnly: false,
       forAuthenticated: false,
-      action: (event?: MouseEvent) => {},
+      action: 'embed',
     },
   ];
 
@@ -159,7 +159,7 @@ export class PostDetail implements OnInit {
       ownerOnly: false,
       forAuthenticated: false,
       hideForOwner: true,
-      action: (event?: MouseEvent) => {},
+      action: 'report',
     },
     {
       label: 'Delete',
@@ -174,7 +174,7 @@ export class PostDetail implements OnInit {
       ownerOnly: true,
       forAuthenticated: true,
       hideForOwner: false,
-      action: (event?: MouseEvent) => {},
+      action: 'delete',
     },
   ];
 

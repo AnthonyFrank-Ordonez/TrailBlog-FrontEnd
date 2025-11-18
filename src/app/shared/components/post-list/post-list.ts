@@ -22,7 +22,13 @@ import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
-import { Post, PostDropdownItems, PostLoadingStrategy } from '@core/models/interface/posts';
+import {
+  Post,
+  PostAction,
+  PostActionPayload,
+  PostDropdownItems,
+  PostLoadingStrategy,
+} from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
 import { ReactionList } from '@core/models/interface/reactions';
@@ -72,7 +78,7 @@ export class PostList {
       ownerOnly: false,
       forAuthenticated: true,
       hideForOwner: false,
-      action: (event?: MouseEvent) => this.handleSave(event),
+      action: 'save',
     },
     {
       label: 'Hide',
@@ -85,7 +91,7 @@ export class PostList {
       ownerOnly: false,
       forAuthenticated: true,
       hideForOwner: false,
-      action: (event?: MouseEvent) => this.handleSave(event),
+      action: 'hide',
     },
     {
       label: 'Report',
@@ -98,7 +104,7 @@ export class PostList {
       ownerOnly: false,
       forAuthenticated: false,
       hideForOwner: true,
-      action: (event?: MouseEvent) => this.handleSave(event),
+      action: 'report',
     },
     {
       label: 'Delete',
@@ -113,7 +119,7 @@ export class PostList {
       ownerOnly: true,
       forAuthenticated: true,
       hideForOwner: false,
-      action: (event?: MouseEvent) => this.handleSave(event),
+      action: 'delete',
     },
   ];
 
@@ -126,7 +132,7 @@ export class PostList {
       ],
       ownerOnly: false,
       forAuthenticated: false,
-      action: (event?: MouseEvent) => this.handleSave(event),
+      action: 'copy',
     },
     {
       label: 'Embed',
@@ -136,7 +142,7 @@ export class PostList {
       ],
       ownerOnly: false,
       forAuthenticated: false,
-      action: (event?: MouseEvent) => this.handleSave(event),
+      action: 'embed',
     },
   ];
 
@@ -196,18 +202,14 @@ export class PostList {
     return active.type === 'share' && active.id === postId;
   }
 
+  async handleShareAction(data: PostActionPayload) {
+    await this.postService.handlePostShareAction(data.action, data.post);
+  }
+
   handleSave(event?: MouseEvent): void {
     event?.stopPropagation();
 
     console.info('Save button click');
-  }
-
-  async handleCopy(slug: string) {
-    const encodedSlug = encodeURIComponent(slug);
-    const url = `${window.location.origin}/post/${encodedSlug}`;
-
-    await this.postService.copyPostLink(url);
-    this.postService.closeDropdown();
   }
 
   @HostListener('window:scroll')

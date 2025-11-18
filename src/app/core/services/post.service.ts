@@ -4,6 +4,7 @@ import {
   CreatePostRequest,
   DropdownType,
   Post,
+  PostAction,
   PostDropdown,
   PostLoadingStrategy,
   PostStrategyConfig,
@@ -74,6 +75,11 @@ export class PostService {
       useSessionId: false,
     },
   };
+
+  private readonly shareActionHandlers = new Map<PostAction, (post: Post) => Promise<void> | void>([
+    ['copy', (post) => this.copyPostLink(post)],
+    ['embed', (post) => this.copyPostLink(post)],
+  ]);
 
   loadInitialPosts(strategy: PostLoadingStrategy = 'regular') {
     this.#postSignal.set([]);
@@ -287,7 +293,29 @@ export class PostService {
     this.#recentViewedPostsSignal.set([]);
   }
 
-  copyPostLink(url: string): Promise<void> {
-    return navigator.clipboard.writeText(url);
+  async handlePostShareAction(action: PostAction, post: Post): Promise<void> {
+    const handler = this.shareActionHandlers.get(action);
+
+    if (handler) {
+      await handler(post);
+      this.closeDropdown();
+    } else {
+      console.warn(`Unknown share action: ${action}`);
+    }
+  }
+
+  private async copyPostLink(post: Post): Promise<void> {
+    const url = this.buildPostUrl(post.slug);
+
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch (error) {
+      console.error('Copy Failed: ', error);
+      throw error;
+    }
+  }
+
+  private buildPostUrl(slug: string): string {
+    return `${window.location.origin}/post/${encodeURIComponent(slug)}`;
   }
 }
