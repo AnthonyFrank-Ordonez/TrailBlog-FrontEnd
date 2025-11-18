@@ -75,13 +75,21 @@ export class PostList {
   }
 
   openReactModal(postId: string) {
-    console.log('here');
     if (this.isPostReactModalOpen(postId)) {
       this.postService.closeDropdown();
       return;
     }
 
     this.postService.updateActiveDropdown('reaction', postId);
+  }
+
+  openShareModal(postId: string) {
+    if (this.isPostShareModalOpen(postId)) {
+      this.postService.closeDropdown();
+      return;
+    }
+
+    this.postService.updateActiveDropdown('share', postId);
   }
 
   isUserInCommunity(communityId: string): boolean {

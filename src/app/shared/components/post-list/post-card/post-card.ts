@@ -48,11 +48,13 @@ export class PostCard implements OnInit {
   private reaction$ = new Subject<ReactionRequest>();
 
   post = input.required<Post>();
-  isUserJoined = input(false);
-  isPostMenuOpen = input(false);
-  isPostReactModalOpen = input(false);
+  isUserJoined = input<boolean>(false);
+  isPostMenuOpen = input<boolean>(false);
+  isPostReactModalOpen = input<boolean>(false);
+  isPostShareModalOpen = input<boolean>(false);
   postMenu = output<string>();
   reactModal = output<string>();
+  shareModal = output<string>();
 
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
@@ -173,6 +175,12 @@ export class PostCard implements OnInit {
     this.reactModal.emit(this.post().id);
   }
 
+  handleShareModal(event: MouseEvent) {
+    event.stopPropagation();
+
+    this.shareModal.emit(this.post().id);
+  }
+
   toggleJoin(event?: MouseEvent): void {
     event?.stopPropagation();
 
@@ -236,39 +244,6 @@ export class PostCard implements OnInit {
       });
   }
 
-  toggleReactionModal(event?: MouseEvent): void {
-    event?.stopPropagation();
-
-    if (this.isPostReactModalOpen()) {
-      this.postService.closeDropdown();
-      return;
-    }
-
-    this.postService.updateActiveDropdown('reaction', this.post().id);
-  }
-
-  toggleMenuItems(event?: MouseEvent): void {
-    event?.stopPropagation();
-
-    if (this.isPostMenuOpen()) {
-      this.postService.closeDropdown();
-      return;
-    }
-
-    this.postService.updateActiveDropdown('menu', this.post().id);
-  }
-
-  toggleShareItems(event?: MouseEvent): void {
-    event?.stopPropagation();
-
-    if (this.isShareModalOpen) {
-      this.postService.closeDropdown();
-      return;
-    }
-
-    this.postService.updateActiveDropdown('share', this.post().id);
-  }
-
   selectReaction(reactionId: number, event?: MouseEvent): void {
     event?.stopPropagation();
 
@@ -323,42 +298,11 @@ export class PostCard implements OnInit {
     this.postService.closeDropdown();
   }
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent) {
-    if (!this.reactionContainer || !this.menuContainer || !this.shareContainer) return;
-
-    const insideReactModal = this.reactionContainer.nativeElement.contains(event.target);
-    const insideMenuModal = this.menuContainer.nativeElement.contains(event.target);
-    const insideShareModal = this.shareContainer.nativeElement.contains(event.target);
-
-    // if (this.isPostReactModalOpen && !insideReactModal) {
-    //   this.postService.closeDropdown();
-    // }
-
-    // if (this.isPostMenuOpen() && !insideMenuModal) {
-    //   this.postService.closeDropdown();
-    // }
-
-    if (this.isShareModalOpen && !insideShareModal) {
-      this.postService.closeDropdown();
-    }
-  }
-
   hasReaction(reactionId: number): boolean {
     return this.post().userReactionsIds.includes(reactionId);
   }
 
   getReactionById(id: number): ReactionList | undefined {
     return this.reactionList.find((r) => r.id === id);
-  }
-
-  // get isPostReactModalOpen() {
-  //   const active = this.activeDropdown();
-  //   return active.type === 'reaction' && active.id === this.post().id;
-  // }
-
-  get isShareModalOpen() {
-    const active = this.activeDropdown();
-    return active.type === 'share' && active.id === this.post().id;
   }
 }

@@ -4,8 +4,10 @@
     [isUserJoined]="isUserInCommunity(post.communityId)"
     [isPostMenuOpen]="isPostMenuOpen(post.id)"
     [isPostReactModalOpen]="isPostReactModalOpen(post.id)"
+    [isPostShareModalOpen]="isPostShareModalOpen(post.id)"
     (postMenu)="openPostMenu(post.id)"
     (reactModal)="openReactModal(post.id)"
+    (shareModal)="openShareModal(post.id)"
   />
   <z-divider zSpacing="sm" class="bg-white/30 mb-2.5"></z-divider>
 }
