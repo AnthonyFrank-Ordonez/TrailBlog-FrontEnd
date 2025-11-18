@@ -5,9 +5,12 @@
     [isPostMenuOpen]="isPostMenuOpen(post.id)"
     [isPostReactModalOpen]="isPostReactModalOpen(post.id)"
     [isPostShareModalOpen]="isPostShareModalOpen(post.id)"
-    (postMenu)="openPostMenu(post.id)"
-    (reactModal)="openReactModal(post.id)"
-    (shareModal)="openShareModal(post.id)"
+    [reactionList]="reactionList"
+    [menuItems]="menuItems"
+    [shareItems]="shareItems"
+    (postMenu)="openPostMenu($event)"
+    (reactModal)="openReactModal($event)"
+    (shareModal)="openShareModal($event)"
   />
   <z-divider zSpacing="sm" class="bg-white/30 mb-2.5"></z-divider>
 }
