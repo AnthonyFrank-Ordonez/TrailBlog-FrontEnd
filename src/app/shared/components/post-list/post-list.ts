@@ -21,7 +21,7 @@ import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter, map, startWith } from 'rxjs';
+import { debounceTime, filter, map, startWith, Subject, switchMap } from 'rxjs';
 import {
   Post,
   PostAction,
@@ -31,7 +31,8 @@ import {
 } from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
-import { ReactionList } from '@core/models/interface/reactions';
+import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
+import { ModalService } from '@core/services/modal.service';
 
 @Component({
   selector: 'app-post-list',
@@ -39,15 +40,17 @@ import { ReactionList } from '@core/models/interface/reactions';
   templateUrl: './post-list.html',
   styleUrl: './post-list.css',
 })
-export class PostList {
+export class PostList implements OnInit {
   private postService = inject(PostService);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
   private currentRouteService = inject(CurrentRouteService);
   private communityService = inject(CommunityService);
+  private modalService = inject(ModalService);
   private destroyRef = inject(DestroyRef);
 
   posts = input.required<Post[]>();
+  private reaction$ = new Subject<ReactionRequest>();
 
   currentPath = this.currentRouteService.currentPath;
   isAuthenticated = this.authService.isAuthenticated;
@@ -156,31 +159,32 @@ export class PostList {
     });
   }
 
-  openPostMenu(postId: string) {
-    if (this.isPostMenuOpen(postId)) {
-      this.postService.closeDropdown();
-      return;
-    }
+  ngOnInit(): void {
+    this.reaction$
+      .pipe(
+        debounceTime(600),
+        takeUntilDestroyed(this.destroyRef),
+        switchMap((reactionData: ReactionRequest) =>
+          this.postService.toggleReactions(reactionData),
+        ),
+      )
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
+  }
 
-    this.postService.updateActiveDropdown('menu', postId);
+  openPostMenu(postId: string) {
+    this.postService.toggleDropdown('menu', postId);
   }
 
   openReactModal(postId: string) {
-    if (this.isPostReactModalOpen(postId)) {
-      this.postService.closeDropdown();
-      return;
-    }
-
-    this.postService.updateActiveDropdown('reaction', postId);
+    this.postService.toggleDropdown('reaction', postId);
   }
 
   openShareModal(postId: string) {
-    if (this.isPostShareModalOpen(postId)) {
-      this.postService.closeDropdown();
-      return;
-    }
-
-    this.postService.updateActiveDropdown('share', postId);
+    this.postService.toggleDropdown('share', postId);
   }
 
   isUserInCommunity(communityId: string): boolean {
@@ -188,18 +192,15 @@ export class PostList {
   }
 
   isPostMenuOpen(postId: string): boolean {
-    const active = this.activeDropdown();
-    return active.type === 'menu' && active.id === postId;
+    return this.postService.isDropDownOpen('menu', postId);
   }
 
   isPostReactModalOpen(postId: string): boolean {
-    const active = this.activeDropdown();
-    return active.type === 'reaction' && active.id === postId;
+    return this.postService.isDropDownOpen('reaction', postId);
   }
 
   isPostShareModalOpen(postId: string): boolean {
-    const active = this.activeDropdown();
-    return active.type === 'share' && active.id === postId;
+    return this.postService.isDropDownOpen('share', postId);
   }
 
   async handleShareAction(data: PostActionPayload) {
@@ -210,6 +211,32 @@ export class PostList {
     event?.stopPropagation();
 
     console.info('Save button click');
+  }
+
+  handlePostDetail(slug: string) {
+    this.postService.togglePostDetail(slug);
+  }
+
+  handleSelectReaction(data: ReactionRequest) {
+    if (!this.isAuthenticated()) {
+      this.modalService.openModal({
+        type: 'error',
+        title: 'Oops, Something wen’t wrong',
+        description: 'Unable to process your request',
+        content: 'error-modal',
+        subcontent:
+          'You need to login first before you can use this react button for post, The login button will redirect you to the login page',
+        confirmBtnText: 'Login',
+
+        cancelBtnText: 'Cancel',
+        onConfirm: () => this.currentRouteService.handleRedirection('/login'),
+      });
+      this.postService.closeDropdown();
+      return;
+    } else {
+      this.reaction$.next(data);
+      this.postService.closeDropdown();
+    }
   }
 
   @HostListener('window:scroll')

@@ -66,6 +66,8 @@ export class PostCard implements OnInit {
   shareModal = output<string>();
   copyAction = output<string>();
   shareAction = output<PostActionPayload>();
+  postDetailAction = output<string>();
+  selectReactionAction = output<ReactionRequest>();
 
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
@@ -80,7 +82,7 @@ export class PostCard implements OnInit {
         debounceTime(600),
         takeUntilDestroyed(this.destroyRef),
         switchMap((reactionData: ReactionRequest) =>
-          this.postService.toggleReactions(this.post().id, reactionData),
+          this.postService.toggleReactions(reactionData),
         ),
       )
       .subscribe({
@@ -108,12 +110,6 @@ export class PostCard implements OnInit {
     this.shareModal.emit(this.post().id);
   }
 
-  handleCopyAction(event: MouseEvent) {
-    event.stopPropagation();
-
-    this.copyAction.emit(this.post().slug);
-  }
-
   handleShareItemClick(data: ActionClickEvent) {
     data.event.stopPropagation();
 
@@ -123,6 +119,24 @@ export class PostCard implements OnInit {
     });
   }
 
+  handlePostDetailNavigate(event: MouseEvent) {
+    event.stopPropagation();
+
+    this.postDetailAction.emit(this.post().slug);
+  }
+
+  handleSelectReactionAction(reactionId: number, event: MouseEvent) {
+    event.stopPropagation();
+
+    const reactionRequest: ReactionRequest = {
+      post: this.post(),
+      data: { reactionId },
+    };
+
+    this.selectReactionAction.emit(reactionRequest);
+  }
+
+  // this part need refactoring
   toggleJoin(event?: MouseEvent): void {
     event?.stopPropagation();
 
@@ -155,7 +169,7 @@ export class PostCard implements OnInit {
           confirmBtnText: 'Login',
 
           cancelBtnText: 'Cancel',
-          onConfirm: () => this.handleRedirection('login'),
+          // onConfirm: () => this.handleRedirection('login'),
         });
         return;
       }
@@ -185,50 +199,7 @@ export class PostCard implements OnInit {
         },
       });
   }
-
-  selectReaction(reactionId: number, event?: MouseEvent): void {
-    event?.stopPropagation();
-
-    if (!this.isAuthenticated()) {
-      this.modalService.openModal({
-        type: 'error',
-        title: 'Oops, Something wen’t wrong',
-        description: 'Unable to process your request',
-        content: 'error-modal',
-        subcontent:
-          'You need to login first before you can use this react button for post, The login button will redirect you to the login page',
-        confirmBtnText: 'Login',
-
-        cancelBtnText: 'Cancel',
-        onConfirm: () => this.handleRedirection('/login'),
-      });
-      this.postService.closeDropdown();
-      return;
-    }
-
-    const reactionData = {
-      reactionId: reactionId,
-    };
-
-    this.reaction$.next(reactionData);
-
-    this.postService.closeDropdown();
-  }
-
-  togglePostDetail(slug: string) {
-    this.postService.closeDropdown();
-    this.router.navigate(['/post', slug]);
-  }
-
-  handleSave(event?: MouseEvent): void {
-    event?.stopPropagation();
-
-    console.info('Save button click');
-  }
-
-  handleRedirection(path: string): void {
-    this.router.navigate([path]);
-  }
+  //
 
   hasReaction(reactionId: number): boolean {
     return this.post().userReactionsIds.includes(reactionId);

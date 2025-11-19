@@ -26,6 +26,7 @@ import { environment } from '@env/environment';
 import { PageResult } from '@core/models/interface/page-result';
 import { ReactionRequest } from '@core/models/interface/reactions';
 import { AddCommentRequest, Comment } from '@core/models/interface/comments';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +34,7 @@ import { AddCommentRequest, Comment } from '@core/models/interface/comments';
 export class PostService {
   env = environment;
   private http = inject(HttpClient);
+  private router = inject(Router);
   private readonly apiUrl = `${this.env.apiRoot}/post`;
 
   #postSignal = signal<Post[]>([]);
@@ -256,8 +258,13 @@ export class PostService {
     );
   }
 
-  toggleReactions(postId: string, reactionData: ReactionRequest): Observable<Post> {
-    return this.http.post<Post>(`${this.apiUrl}/${postId}/reaction`, reactionData).pipe(
+  updateActiveDropdown(type: DropdownType, id: string) {
+    this.#activeDropdown.set({ type: type, id: id });
+  }
+
+  toggleReactions(reactionData: ReactionRequest): Observable<Post> {
+    const { post, data } = reactionData;
+    return this.http.post<Post>(`${this.apiUrl}/${post.id}/reaction`, data).pipe(
       tap((updatedPost) => {
         console.log('Reacting to the post...');
 
@@ -281,8 +288,22 @@ export class PostService {
     );
   }
 
-  updateActiveDropdown(type: DropdownType, id: string) {
-    this.#activeDropdown.set({ type: type, id: id });
+  toggleDropdown(type: DropdownType, id: string) {
+    if (this.isDropDownOpen(type, id)) {
+      this.closeDropdown();
+    } else {
+      this.updateActiveDropdown(type, id);
+    }
+  }
+
+  togglePostDetail(slug: string): void {
+    this.closeDropdown();
+    this.router.navigate(['/post', slug]);
+  }
+
+  isDropDownOpen(type: DropdownType, id: string): boolean {
+    const active = this.#activeDropdown();
+    return active.type === type && active.id === id;
   }
 
   closeDropdown() {

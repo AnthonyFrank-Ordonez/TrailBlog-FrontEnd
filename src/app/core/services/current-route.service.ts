@@ -1,6 +1,6 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
 
 @Injectable({
@@ -17,4 +17,9 @@ export class CurrentRouteService {
     ),
     { initialValue: this.router.url },
   );
+
+  handleRedirection(path: string, extras?: NavigationExtras) {
+    const command = Array.isArray(path) ? path : [path];
+    this.router.navigate(command, extras);
+  }
 }

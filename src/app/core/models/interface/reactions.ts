@@ -1,4 +1,11 @@
+import { Post } from './posts';
+
 export interface ReactionRequest {
+  post: Post;
+  data: ReactionData;
+}
+
+export interface ReactionData {
   reactionId: number;
 }
 
