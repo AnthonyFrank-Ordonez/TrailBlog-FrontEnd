@@ -219,7 +219,7 @@ export class PostDetail implements OnInit {
         debounceTime(600),
         takeUntilDestroyed(this.destroyRef),
         switchMap((reactionData: ReactionRequest) =>
-          this.postService.toggleReactions(this.post().id, reactionData),
+          this.postService.toggleReactions(reactionData),
         ),
       )
       .subscribe({
@@ -284,7 +284,10 @@ export class PostDetail implements OnInit {
 
   selectReaction(reactionId: number): void {
     const reactionData = {
-      reactionId: reactionId,
+      post: this.post(),
+      data: {
+        reactionId: reactionId,
+      },
     };
 
     this.reaction$.next(reactionData);
