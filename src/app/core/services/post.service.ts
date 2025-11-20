@@ -12,21 +12,28 @@ import {
 } from '@core/models/interface/posts';
 import {
   catchError,
+  debounceTime,
   EMPTY,
   finalize,
   firstValueFrom,
   Observable,
   of,
   single,
+  Subject,
+  switchMap,
   tap,
   throwError,
 } from 'rxjs';
 import { handleHttpError, POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
 import { PageResult } from '@core/models/interface/page-result';
-import { ReactionRequest } from '@core/models/interface/reactions';
+import { ReactionData, ReactionRequest } from '@core/models/interface/reactions';
 import { AddCommentRequest, Comment } from '@core/models/interface/comments';
 import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
+import { ModalService } from './modal.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MessageService } from './message.service';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +42,9 @@ export class PostService {
   env = environment;
   private http = inject(HttpClient);
   private router = inject(Router);
+  private authService = inject(AuthService);
+  private modalService = inject(ModalService);
+  private messageService = inject(MessageService);
   private readonly apiUrl = `${this.env.apiRoot}/post`;
 
   #postSignal = signal<Post[]>([]);
@@ -53,6 +63,7 @@ export class PostService {
   #sessionIdSignal = signal<string>('');
   #postMenuModalIdSignal = signal<string | null>(null);
   #activeDropdown = signal<PostDropdown>({ type: null, id: null });
+  reaction$ = new Subject<ReactionRequest>();
 
   posts = this.#postSignal.asReadonly();
   mostPopularPosts = this.#mostPopularPostsSignal.asReadonly();
@@ -256,6 +267,17 @@ export class PostService {
         this.#isSubmittingSignal.set(false);
       }),
     );
+  }
+
+  selectReaction(data: ReactionRequest) {
+    this.closeDropdown();
+
+    if (!this.authService.isAuthenticated()) {
+      this.modalService.showAuthRequiredModal();
+      return;
+    }
+
+    this.reaction$.next(data);
   }
 
   updateActiveDropdown(type: DropdownType, id: string) {

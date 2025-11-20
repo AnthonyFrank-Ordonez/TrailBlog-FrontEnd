@@ -39,7 +39,7 @@ import { debounceTime, Subject, switchMap } from 'rxjs';
   templateUrl: './post-card.html',
   styleUrl: './post-card.css',
 })
-export class PostCard implements OnInit {
+export class PostCard {
   @ViewChild('reactionContainer') reactionContainer!: ElementRef;
   @ViewChild('menuContainer') menuContainer!: ElementRef;
   @ViewChild('shareContainer') shareContainer!: ElementRef;
@@ -67,7 +67,6 @@ export class PostCard implements OnInit {
   copyAction = output<string>();
   shareAction = output<PostActionPayload>();
   postDetailAction = output<string>();
-  selectReactionAction = output<ReactionRequest>();
 
   isAuthenticated = this.authService.isAuthenticated;
   userCommunities = this.communityService.userCommunities;
@@ -75,22 +74,6 @@ export class PostCard implements OnInit {
   modalConfig = this.modalService.modalConfig;
   postMenuModalId = this.postService.postMenuModalId;
   activeDropdown = this.postService.activeDropdown;
-
-  ngOnInit(): void {
-    this.reaction$
-      .pipe(
-        debounceTime(600),
-        takeUntilDestroyed(this.destroyRef),
-        switchMap((reactionData: ReactionRequest) =>
-          this.postService.toggleReactions(reactionData),
-        ),
-      )
-      .subscribe({
-        error: (error: HttpErrorResponse) => {
-          handleHttpError(error, this.messageService);
-        },
-      });
-  }
 
   handleMenuItems(event: MouseEvent) {
     event?.stopPropagation();
@@ -133,7 +116,7 @@ export class PostCard implements OnInit {
       data: { reactionId },
     };
 
-    this.selectReactionAction.emit(reactionRequest);
+    this.postService.selectReaction(reactionRequest);
   }
 
   // this part need refactoring

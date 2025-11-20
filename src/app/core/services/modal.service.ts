@@ -1,10 +1,12 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { ModalConfig, ModalData } from '@core/models/interface/modal';
+import { CurrentRouteService } from './current-route.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ModalService {
+  private currentRouteService = inject(CurrentRouteService);
   private readonly DEFAULT_CONFIG: ModalConfig = {
     type: 'generic',
     title: '',
@@ -51,5 +53,20 @@ export class ModalService {
 
   cancel() {
     this.closeModal();
+  }
+
+  showAuthRequiredModal() {
+    this.openModal({
+      type: 'error',
+      title: 'Oops, Something wen’t wrong',
+      description: 'Unable to process your request',
+      content: 'error-modal',
+      subcontent:
+        'You need to login first before you can use this react button for post, The login button will redirect you to the login page',
+      confirmBtnText: 'Login',
+
+      cancelBtnText: 'Cancel',
+      onConfirm: () => this.currentRouteService.handleRedirection('/login'),
+    });
   }
 }

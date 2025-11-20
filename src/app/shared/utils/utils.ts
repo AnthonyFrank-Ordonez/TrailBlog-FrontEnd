@@ -1,7 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ApiError } from '@core/models/interface/api-error';
 import { PostLoadingStrategy } from '@core/models/interface/posts';
+import { ReactionRequest } from '@core/models/interface/reactions';
 import { MessageService } from '@core/services/message.service';
+import { PostService } from '@core/services/post.service';
+import { debounceTime, switchMap } from 'rxjs';
 
 export const POST_PLACEHOLDER = {
   id: '',
@@ -59,4 +64,22 @@ export function getActiveTabFromPath(path: string): string {
   if (path.startsWith('/post/')) return 'post-detail';
 
   return 'home';
+}
+
+export function setupReactionSubject(
+  postService: PostService,
+  messageService: MessageService,
+  destroyRef: DestroyRef,
+) {
+  postService.reaction$
+    .pipe(
+      debounceTime(300),
+      takeUntilDestroyed(destroyRef),
+      switchMap((reactionData: ReactionRequest) => postService.toggleReactions(reactionData)),
+    )
+    .subscribe({
+      error: (error: HttpErrorResponse) => {
+        handleHttpError(error, messageService);
+      },
+    });
 }

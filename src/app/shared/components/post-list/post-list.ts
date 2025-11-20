@@ -1,6 +1,5 @@
 import {
   Component,
-  computed,
   DestroyRef,
   effect,
   HostListener,
@@ -8,31 +7,20 @@ import {
   input,
   linkedSignal,
   OnInit,
-  Signal,
-  signal,
   untracked,
 } from '@angular/core';
 import { PostCard } from './post-card/post-card';
 import { PostService } from '@core/services/post.service';
 import { ZardDividerComponent } from '@shared/components/divider/divider.component';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { getStrategyFromPath, handleHttpError } from '@shared/utils/utils';
+import { getStrategyFromPath, handleHttpError, setupReactionSubject } from '@shared/utils/utils';
 import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NavigationEnd, Router } from '@angular/router';
-import { debounceTime, filter, map, startWith, Subject, switchMap } from 'rxjs';
-import {
-  Post,
-  PostAction,
-  PostActionPayload,
-  PostDropdownItems,
-  PostLoadingStrategy,
-} from '@core/models/interface/posts';
+import { Post, PostActionPayload, PostDropdownItems } from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
-import { ModalService } from '@core/services/modal.service';
 
 @Component({
   selector: 'app-post-list',
@@ -46,11 +34,9 @@ export class PostList implements OnInit {
   private authService = inject(AuthService);
   private currentRouteService = inject(CurrentRouteService);
   private communityService = inject(CommunityService);
-  private modalService = inject(ModalService);
   private destroyRef = inject(DestroyRef);
 
   posts = input.required<Post[]>();
-  private reaction$ = new Subject<ReactionRequest>();
 
   currentPath = this.currentRouteService.currentPath;
   isAuthenticated = this.authService.isAuthenticated;
@@ -160,19 +146,7 @@ export class PostList implements OnInit {
   }
 
   ngOnInit(): void {
-    this.reaction$
-      .pipe(
-        debounceTime(600),
-        takeUntilDestroyed(this.destroyRef),
-        switchMap((reactionData: ReactionRequest) =>
-          this.postService.toggleReactions(reactionData),
-        ),
-      )
-      .subscribe({
-        error: (error: HttpErrorResponse) => {
-          handleHttpError(error, this.messageService);
-        },
-      });
+    setupReactionSubject(this.postService, this.messageService, this.destroyRef);
   }
 
   openPostMenu(postId: string) {
@@ -215,28 +189,6 @@ export class PostList implements OnInit {
 
   handlePostDetail(slug: string) {
     this.postService.togglePostDetail(slug);
-  }
-
-  handleSelectReaction(data: ReactionRequest) {
-    if (!this.isAuthenticated()) {
-      this.modalService.openModal({
-        type: 'error',
-        title: 'Oops, Something wen’t wrong',
-        description: 'Unable to process your request',
-        content: 'error-modal',
-        subcontent:
-          'You need to login first before you can use this react button for post, The login button will redirect you to the login page',
-        confirmBtnText: 'Login',
-
-        cancelBtnText: 'Cancel',
-        onConfirm: () => this.currentRouteService.handleRedirection('/login'),
-      });
-      this.postService.closeDropdown();
-      return;
-    } else {
-      this.reaction$.next(data);
-      this.postService.closeDropdown();
-    }
   }
 
   @HostListener('window:scroll')
