@@ -1,23 +1,19 @@
-import { DatePipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
   DestroyRef,
   ElementRef,
-  HostListener,
   inject,
   input,
-  OnInit,
   output,
   signal,
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 import {
   ActionClickEvent,
   Post,
-  PostAction,
   PostActionPayload,
   PostDropdownItems,
 } from '@core/models/interface/posts';
@@ -31,7 +27,6 @@ import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 import { handleHttpError } from '@shared/utils/utils';
-import { debounceTime, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-post-card',
@@ -44,14 +39,12 @@ export class PostCard {
   @ViewChild('menuContainer') menuContainer!: ElementRef;
   @ViewChild('shareContainer') shareContainer!: ElementRef;
 
-  private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   private postService = inject(PostService);
   private communityService = inject(CommunityService);
   private messageService = inject(MessageService);
   private modalService = inject(ModalService);
   private authService = inject(AuthService);
-  private reaction$ = new Subject<ReactionRequest>();
 
   post = input.required<Post>();
   reactionList = input<ReactionList[]>([]);

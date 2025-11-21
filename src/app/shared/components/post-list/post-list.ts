@@ -12,7 +12,7 @@ import {
 import { PostCard } from './post-card/post-card';
 import { PostService } from '@core/services/post.service';
 import { ZardDividerComponent } from '@shared/components/divider/divider.component';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { getStrategyFromPath, handleHttpError, setupReactionSubject } from '@shared/utils/utils';
 import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
@@ -20,7 +20,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Post, PostActionPayload, PostDropdownItems } from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
-import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
+import { ReactionList } from '@core/models/interface/reactions';
 
 @Component({
   selector: 'app-post-list',

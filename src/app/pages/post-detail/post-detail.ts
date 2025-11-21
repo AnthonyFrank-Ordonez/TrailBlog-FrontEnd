@@ -1,7 +1,6 @@
 import { NgClass, NgOptimizedImage } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
-  afterNextRender,
   Component,
   DestroyRef,
   effect,
@@ -9,10 +8,8 @@ import {
   HostListener,
   inject,
   OnInit,
-  QueryList,
   signal,
   ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
