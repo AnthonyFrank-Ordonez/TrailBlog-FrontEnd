@@ -1,6 +1,7 @@
 import { NgClass, NgOptimizedImage } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
+  afterNextRender,
   Component,
   DestroyRef,
   effect,
@@ -43,10 +44,7 @@ import { handleHttpError, setupReactionSubject } from '@shared/utils/utils';
   styleUrl: './post-detail.css',
 })
 export class PostDetail implements OnInit {
-  @ViewChild('commentFormContainer') commentFormContainer!: ElementRef;
-  @ViewChild('toggleCommentBtn') toggleCommentBtn!: ElementRef;
   @ViewChild('commentArea') commentArea!: ElementRef;
-  @ViewChildren('commentMenuContainers') commentMenuContainers!: QueryList<ElementRef>;
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -256,9 +254,7 @@ export class PostDetail implements OnInit {
     this.postService.closeDropdown();
 
     setTimeout(() => {
-      if (this.commentArea) {
-        this.commentArea.nativeElement.focus();
-      }
+      this.commentArea.nativeElement.focus();
     }, 0);
   }
 
@@ -283,22 +279,13 @@ export class PostDetail implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
-    const modal = this.postService.activeDropdown();
-    if (
-      !this.commentFormContainer ||
-      !this.toggleCommentBtn ||
-      !this.commentMenuContainers ||
-      modal.type === null
-    ) {
-      return;
-    }
-
     const target = event.target as HTMLElement;
 
     const insideModal = target.closest('[data-modal-type]');
     const isButton = target.closest('.action-btn, button');
-    const insideCommentForm = this.commentFormContainer.nativeElement.contains(event.target);
-    const clickToggleBtn = this.toggleCommentBtn.nativeElement.contains(event.target);
+    const insideCommentForm = target.closest('.comment-form');
+    const clickToggleBtn = target.closest('.comment-action-btn');
+    const clickedAnyCommentContainer = target.closest('comment-menu-container');
 
     if (this.isCommentSelected() && !insideCommentForm && !clickToggleBtn) {
       this.isCommentSelected.set(false);
@@ -309,11 +296,7 @@ export class PostDetail implements OnInit {
     }
 
     if (this.getActiveCommentMenuId()) {
-      const clickAnyCommentContainer = this.commentMenuContainers.some((container) =>
-        container.nativeElement.contains(event.target),
-      );
-
-      if (!clickAnyCommentContainer) {
+      if (!clickedAnyCommentContainer) {
         this.postService.closeDropdown();
       }
     }

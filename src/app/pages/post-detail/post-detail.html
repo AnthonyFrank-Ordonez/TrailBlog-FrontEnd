@@ -240,7 +240,7 @@
           <button
             #toggleCommentBtn
             (click)="showCommentSection()"
-            class="text-left px-5 py-2 text-gray-600 font-light border border-white/20 rounded-xl cursor-text hover:bg-gray-500/10 focus:outline-none focus:ring-1 focus:ring-gray-500 transition-colors duration-200"
+            class="comment-action-btn text-left px-5 py-2 text-gray-600 font-light border border-white/20 rounded-xl cursor-text hover:bg-gray-500/10 focus:outline-none focus:ring-1 focus:ring-gray-500 transition-colors duration-200"
             [class.hidden]="isCommentSelected()"
             aria-label="commentBtn"
           >
@@ -250,7 +250,7 @@
           <form
             [formGroup]="commentForm"
             #commentFormContainer
-            class="border border-white/20 rounded-xl p-3"
+            class="comment-form border border-white/20 rounded-xl p-3"
             [class.hidden]="!isCommentSelected()"
             (ngSubmit)="onCommentSubmit()"
           >
@@ -336,7 +336,7 @@
                 </div>
 
                 <!-- Three dots (comment) -->
-                <div class="relative" #commentMenuContainers>
+                <div class="comment-menu-container relative" #commentMenuContainers>
                   <button
                     (click)="toggleCommentMenu($event, comment.id)"
                     class="text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
