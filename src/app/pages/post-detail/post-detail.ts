@@ -14,30 +14,19 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-  ɵInternalFormsSharedModule,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddCommentRequest } from '@core/models/interface/comments';
-import { PostDropdownItems } from '@core/models/interface/posts';
+import { ActionClickEvent, PostDropdownItems } from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
 import { PostService } from '@core/services/post.service';
-import { UserService } from '@core/services/user.service';
 import { ZardDividerComponent } from '@shared/components/divider/divider.component';
 import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
-import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropdown-item.component';
-import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
-import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
-import { handleHttpError } from '@shared/utils/utils';
-import { debounceTime, retry, Subject, switchMap, tap } from 'rxjs';
+import { handleHttpError, setupReactionSubject } from '@shared/utils/utils';
 
 @Component({
   selector: 'app-post-detail',
@@ -54,12 +43,9 @@ import { debounceTime, retry, Subject, switchMap, tap } from 'rxjs';
   styleUrl: './post-detail.css',
 })
 export class PostDetail implements OnInit {
-  @ViewChild('reactionContainer') reactionContainer!: ElementRef;
   @ViewChild('commentFormContainer') commentFormContainer!: ElementRef;
   @ViewChild('toggleCommentBtn') toggleCommentBtn!: ElementRef;
   @ViewChild('commentArea') commentArea!: ElementRef;
-  @ViewChild('menuContainer') menuContainer!: ElementRef;
-  @ViewChild('shareContainer') shareContainer!: ElementRef;
   @ViewChildren('commentMenuContainers') commentMenuContainers!: QueryList<ElementRef>;
 
   private route = inject(ActivatedRoute);
@@ -69,7 +55,6 @@ export class PostDetail implements OnInit {
   private postService = inject(PostService);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
-  private reaction$ = new Subject<ReactionRequest>();
 
   readonly menuItems: PostDropdownItems[] = [
     {
@@ -184,7 +169,6 @@ export class PostDetail implements OnInit {
   isAuthenticated = this.authService.isAuthenticated;
   token = this.authService.token;
   isCommentSelected = signal<boolean>(false);
-  showReactionModal = signal<boolean>(false);
   private slug = signal<string | null>(null);
 
   commentForm: FormGroup = this.createForm();
@@ -214,19 +198,7 @@ export class PostDetail implements OnInit {
       this.slug.set(slug);
     });
 
-    this.reaction$
-      .pipe(
-        debounceTime(600),
-        takeUntilDestroyed(this.destroyRef),
-        switchMap((reactionData: ReactionRequest) =>
-          this.postService.toggleReactions(reactionData),
-        ),
-      )
-      .subscribe({
-        error: (error: HttpErrorResponse) => {
-          handleHttpError(error, this.messageService);
-        },
-      });
+    setupReactionSubject(this.postService, this.messageService, this.destroyRef);
   }
 
   fetchPost(slug: string) {
@@ -240,30 +212,28 @@ export class PostDetail implements OnInit {
       });
   }
 
-  toggleReactionModal(): void {
-    if (this.showReactionModal()) {
-      this.closeReactModal();
-    }
-
-    this.showReactionModal.set(true);
+  openPostMenu(): void {
+    this.postService.toggleDropdown('menu', this.post().id);
   }
 
-  toggleMenuItems(): void {
-    if (this.isPostMenuOpen) {
-      this.postService.closeDropdown();
-      return;
-    }
-
-    this.postService.updateActiveDropdown('menu', this.post().id);
+  openReactModal(): void {
+    this.postService.toggleDropdown('reaction', this.post().id);
   }
 
-  toggleShareItems(): void {
-    if (this.isShareModalOpen) {
-      this.postService.closeDropdown();
-      return;
-    }
+  openShareModal(): void {
+    this.postService.toggleDropdown('share', this.post().id);
+  }
 
-    this.postService.updateActiveDropdown('share', this.post().id);
+  isPostMenuOpen(): boolean {
+    return this.postService.isDropDownOpen('menu', this.post().id);
+  }
+
+  isPostReactModalOpen(): boolean {
+    return this.postService.isDropDownOpen('reaction', this.post().id);
+  }
+
+  isPostShareModalOpen(): boolean {
+    return this.postService.isDropDownOpen('share', this.post().id);
   }
 
   toggleBack(): void {
@@ -274,35 +244,16 @@ export class PostDetail implements OnInit {
   toggleCommentMenu(event: MouseEvent, id: string) {
     event.stopPropagation();
 
-    if (this.activeCommentMenuId === id) {
+    if (this.getActiveCommentMenuId() === id) {
       this.postService.closeDropdown();
       return;
     }
 
     this.postService.updateActiveDropdown('menu', id);
   }
-
-  selectReaction(reactionId: number): void {
-    const reactionData = {
-      post: this.post(),
-      data: {
-        reactionId: reactionId,
-      },
-    };
-
-    this.reaction$.next(reactionData);
-
-    this.closeReactModal();
-  }
-
-  closeReactModal(): void {
-    setTimeout(() => {
-      this.showReactionModal.set(false);
-    }, 200);
-  }
-
   showCommentSection(): void {
     this.isCommentSelected.set(true);
+    this.postService.closeDropdown();
 
     setTimeout(() => {
       if (this.commentArea) {
@@ -311,46 +262,53 @@ export class PostDetail implements OnInit {
     }, 0);
   }
 
+  selectReaction(reactionId: number): void {
+    const reactionRequest: ReactionRequest = {
+      post: this.post(),
+      data: {
+        reactionId: reactionId,
+      },
+    };
+
+    this.postService.selectReaction(reactionRequest);
+  }
+
   cancelCommentSection() {
     this.isCommentSelected.set(false);
   }
 
+  async handleShareActions(data: ActionClickEvent) {
+    await this.postService.handlePostShareAction(data.action, this.post());
+  }
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
+    const modal = this.postService.activeDropdown();
     if (
-      !this.reactionContainer ||
       !this.commentFormContainer ||
       !this.toggleCommentBtn ||
-      !this.menuContainer ||
-      !this.shareContainer ||
-      !this.commentMenuContainers
+      !this.commentMenuContainers ||
+      modal.type === null
     ) {
       return;
     }
 
-    const clickedInside = this.reactionContainer.nativeElement.contains(event.target);
+    const target = event.target as HTMLElement;
+
+    const insideModal = target.closest('[data-modal-type]');
+    const isButton = target.closest('.action-btn, button');
     const insideCommentForm = this.commentFormContainer.nativeElement.contains(event.target);
     const clickToggleBtn = this.toggleCommentBtn.nativeElement.contains(event.target);
-    const insideMenuModal = this.menuContainer.nativeElement.contains(event.target);
-    const insideShareModal = this.shareContainer.nativeElement.contains(event.target);
-
-    if (this.showReactionModal() && !clickedInside) {
-      this.closeReactModal();
-    }
 
     if (this.isCommentSelected() && !insideCommentForm && !clickToggleBtn) {
       this.isCommentSelected.set(false);
     }
 
-    if (this.isPostMenuOpen && !insideMenuModal) {
+    if (!insideModal && !isButton) {
       this.postService.closeDropdown();
     }
 
-    if (this.isShareModalOpen && !insideShareModal) {
-      this.postService.closeDropdown();
-    }
-
-    if (this.activeCommentMenuId) {
+    if (this.getActiveCommentMenuId()) {
       const clickAnyCommentContainer = this.commentMenuContainers.some((container) =>
         container.nativeElement.contains(event.target),
       );
@@ -369,14 +327,15 @@ export class PostDetail implements OnInit {
     return this.reactionList.find((r) => r.id === id);
   }
 
-  async handleCopy(event?: MouseEvent) {
-    event?.stopPropagation();
-
-    const endodedSlug = encodeURIComponent(this.post().slug);
-    const url = `${window.location.origin}/post/${endodedSlug}`;
-
-    // await this.postService.copyPostLink(url);
-    // this.postService.closeDropdown();
+  getActiveCommentMenuId(): string | null {
+    const active = this.activeDropdown();
+    if (
+      active.type === 'menu' &&
+      this.post().comments?.some((comment) => comment.id === active.id)
+    ) {
+      return active.id;
+    }
+    return null;
   }
 
   onCommentSubmit() {
@@ -412,31 +371,5 @@ export class PostDetail implements OnInit {
     this.commentForm.reset();
 
     this.isCommentSelected.set(false);
-  }
-
-  get isPostMenuOpen() {
-    const active = this.activeDropdown();
-    return active.type === 'menu' && active.id === this.post().id;
-  }
-
-  get isPostReactModalOpen() {
-    const active = this.activeDropdown();
-    return active.type === 'reaction' && active.id === this.post().id;
-  }
-
-  get isShareModalOpen() {
-    const active = this.activeDropdown();
-    return active.type === 'share' && active.id === this.post().id;
-  }
-
-  get activeCommentMenuId() {
-    const active = this.activeDropdown();
-    if (
-      active.type === 'menu' &&
-      this.post().comments?.some((comment) => comment.id === active.id)
-    ) {
-      return active.id;
-    }
-    return null;
   }
 }

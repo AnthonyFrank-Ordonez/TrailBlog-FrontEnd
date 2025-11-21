@@ -65,8 +65,8 @@
       <!-- Three dots -->
       <div class="relative" #menuContainer>
         <button
-          (click)="toggleMenuItems()"
-          class="text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
+          (click)="openPostMenu()"
+          class="action-btn text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -82,13 +82,14 @@
           </svg>
         </button>
 
-        @if (isPostMenuOpen) {
+        @if (isPostMenuOpen()) {
           <app-dropdown-menu
             animate.enter="dropdown-fade-in"
             animate.leave="dropdown-fade-out"
             styles="w-32 right-0"
             [isOwner]="post().isOwner"
             [dropdownItems]="menuItems"
+            modalType="menu"
           />
         }
       </div>
@@ -136,8 +137,8 @@
           <!-- React Button -->
           <div class="relative" #reactionContainer>
             <button
-              (click)="toggleReactionModal()"
-              class="flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+              (click)="openReactModal()"
+              class="action-btn flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -157,11 +158,12 @@
             </button>
 
             <!-- Reaction Modal -->
-            @if (showReactionModal()) {
+            @if (isPostReactModalOpen()) {
               <div
                 animate.enter="dropdown-fade-in"
                 animate.leave="dropdown-fade-out"
                 class="absolute flex items-center mt-2 left-0 space-x-2 bg-black border border-white/30 rounded-full px-3 py-2 z-50"
+                data-modal-type="react"
               >
                 @for (reaction of reactionList; track reaction.id) {
                   <button
@@ -199,8 +201,8 @@
           <!-- Share button -->
           <div class="relative" #shareContainer>
             <button
-              (click)="toggleShareItems()"
-              class="flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+              (click)="openShareModal()"
+              class="action-btn flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -219,12 +221,14 @@
               <span>Share</span>
             </button>
 
-            @if (isShareModalOpen) {
+            @if (isPostShareModalOpen()) {
               <app-dropdown-menu
                 animate.enter="dropdown-fade-in"
                 animate.leave="dropdown-fade-out"
                 styles="w-32 mt-1 left-0"
                 [dropdownItems]="shareItems"
+                modalType="share"
+                (itemClicked)="handleShareActions($event)"
               />
             }
           </div>
@@ -351,7 +355,7 @@
                     </svg>
                   </button>
 
-                  @if (activeCommentMenuId === comment.id) {
+                  @if (getActiveCommentMenuId() === comment.id) {
                     <app-dropdown-menu
                       animate.enter="dropdown-fade-in"
                       animate.leave="dropdown-fade-out"

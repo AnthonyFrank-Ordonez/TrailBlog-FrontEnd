@@ -220,7 +220,7 @@ export class PostList implements OnInit {
     const target = event.target as HTMLElement;
 
     const insideModal = target.closest('[data-modal-type]');
-    const isButton = target.closest('.action-btn, .post-actions button');
+    const isButton = target.closest('.action-btn, button');
 
     if (!insideModal && !isButton) {
       console.log('Clicked Outside!');
