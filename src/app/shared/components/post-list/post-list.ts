@@ -44,20 +44,13 @@ export class PostList implements OnInit {
   userCommunities = this.communityService.userCommunities;
   isPostLoading = this.postService.isPostLoading;
   activeDropdown = this.postService.activeDropdown;
+  reactionList = this.postService.getReactionList();
   skeletonArray = Array(5).fill(0);
   hasMore = this.postService.hasMore;
 
   userCommunityIds = linkedSignal(() => {
     return new Set(this.userCommunities().map((uc) => uc.id));
   });
-
-  readonly reactionList: ReactionList[] = [
-    { id: 1, type: '😂', value: 'laughReact' },
-    { id: 2, type: '🥲', value: 'sadReact' },
-    { id: 3, type: '😡', value: 'angryReact' },
-    { id: 4, type: '😍', value: 'loveReact' },
-    { id: 5, type: '🚀', value: 'rocketReact' },
-  ];
 
   readonly menuItems: PostDropdownItems[] = [
     {

@@ -10,29 +10,15 @@ import {
   PostStrategyConfig,
   RecentViewedPost,
 } from '@core/models/interface/posts';
-import {
-  catchError,
-  debounceTime,
-  EMPTY,
-  finalize,
-  firstValueFrom,
-  Observable,
-  of,
-  single,
-  Subject,
-  switchMap,
-  tap,
-  throwError,
-} from 'rxjs';
+import { catchError, EMPTY, finalize, Observable, Subject, tap, throwError } from 'rxjs';
 import { handleHttpError, POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
 import { PageResult } from '@core/models/interface/page-result';
-import { ReactionData, ReactionRequest } from '@core/models/interface/reactions';
+import { ReactionData, ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AddCommentRequest, Comment } from '@core/models/interface/comments';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { ModalService } from './modal.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MessageService } from './message.service';
 
 @Injectable({
@@ -44,7 +30,6 @@ export class PostService {
   private router = inject(Router);
   private authService = inject(AuthService);
   private modalService = inject(ModalService);
-  private messageService = inject(MessageService);
   private readonly apiUrl = `${this.env.apiRoot}/post`;
 
   #postSignal = signal<Post[]>([]);
@@ -93,6 +78,18 @@ export class PostService {
     ['copy', (post) => this.copyPostLink(post)],
     ['embed', (post) => this.copyPostLink(post)],
   ]);
+
+  private readonly reactionList = signal<ReactionList[]>([
+    { id: 1, type: '😂', value: 'laughReact' },
+    { id: 2, type: '🥲', value: 'sadReact' },
+    { id: 3, type: '😡', value: 'angryReact' },
+    { id: 4, type: '😍', value: 'loveReact' },
+    { id: 5, type: '🚀', value: 'rocketReact' },
+  ]);
+
+  private reactionListMap = computed(
+    () => new Map(this.reactionList().map((reaction) => [reaction.id, reaction])),
+  );
 
   loadInitialPosts(strategy: PostLoadingStrategy = 'regular') {
     this.#postSignal.set([]);
@@ -205,6 +202,14 @@ export class PostService {
         this.#isRecentPostsLoadingSignal.set(false);
       }),
     );
+  }
+
+  getReactionList() {
+    return this.reactionList();
+  }
+
+  getReactionById(id: number): ReactionList | undefined {
+    return this.reactionListMap().get(id);
   }
 
   createPost(postData: CreatePostRequest) {
@@ -326,6 +331,10 @@ export class PostService {
   isDropDownOpen(type: DropdownType, id: string): boolean {
     const active = this.#activeDropdown();
     return active.type === type && active.id === id;
+  }
+
+  hasReaction(userReactionsIds: number[], reactionId: number): boolean {
+    return userReactionsIds.includes(reactionId);
   }
 
   closeDropdown() {

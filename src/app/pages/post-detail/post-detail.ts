@@ -300,11 +300,11 @@ export class PostDetail implements OnInit {
   }
 
   hasReaction(reactionId: number): boolean {
-    return this.post().userReactionsIds.includes(reactionId);
+    return this.postService.hasReaction(this.post().userReactionsIds, reactionId);
   }
 
   getReactionById(id: number): ReactionList | undefined {
-    return this.reactionList.find((r) => r.id === id);
+    return this.postService.getReactionById(id);
   }
 
   getActiveCommentMenuId(): string | null {
