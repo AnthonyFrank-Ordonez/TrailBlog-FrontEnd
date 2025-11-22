@@ -25,6 +25,7 @@ export class RecentViewedPost {
 
   recentViewedPosts = this.postService.recentViewedPosts;
   isAuthenticated = this.authService.isAuthenticated;
+  isRecentLoading = this.postService.isRecentPostsLoading;
 
   skeletonArray = Array(10).fill(0);
 
