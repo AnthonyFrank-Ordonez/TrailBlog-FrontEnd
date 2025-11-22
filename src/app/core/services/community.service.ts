@@ -1,4 +1,4 @@
-import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { DestroyRef, inject, Injectable, linkedSignal, signal } from '@angular/core';
 import { UserService } from './user.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@env/environment';
@@ -41,6 +41,10 @@ export class CommunityService {
   communityFilter = this.#communityFilter.asReadonly();
   activeCommunityFilterBtn = this.#activeCommunityFilterBtn.asReadonly();
   isSubmitting = this.#isSubmitting.asReadonly();
+
+  userCommunitiesIds = linkedSignal(
+    () => new Set<string>(this.#userCommunities().map((uc) => uc.id)),
+  );
 
   loadUserCommunities(): Observable<Communities[]> {
     this.#userCommunitiesLoading.set(true);
@@ -151,14 +155,14 @@ export class CommunityService {
     this.#activeCommunityFilterBtn.set(filter);
   }
 
-  toggleCommunityMembership(
-    communityId: string,
-    isJoined: boolean,
-    isAuthenticated: boolean,
-  ): void {
+  isUserInCommunity(communityId: string) {
+    return this.userCommunitiesIds().has(communityId);
+  }
+
+  toggleCommunityMembership(communityId: string, isAuthenticated: boolean): void {
     this.postService.closeDropdown();
 
-    if (isJoined) {
+    if (this.isUserInCommunity(communityId)) {
       this.modalService.openModal({
         type: 'community',
         title: 'Leave Community',

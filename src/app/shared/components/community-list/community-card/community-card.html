@@ -22,7 +22,7 @@
     <!-- Favorite and Leave -->
     <div class="text-white flex items-center space-x-3">
       <button (click)="toggleFavorite()" class="cursor-pointer text-gray-500">
-        @if (isFavorite) {
+        @if (isFavorite()) {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

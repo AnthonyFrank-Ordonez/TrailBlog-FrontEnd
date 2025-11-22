@@ -48,10 +48,6 @@ export class PostList implements OnInit {
   skeletonArray = Array(5).fill(0);
   hasMore = this.postService.hasMore;
 
-  userCommunityIds = linkedSignal(() => {
-    return new Set(this.userCommunities().map((uc) => uc.id));
-  });
-
   readonly menuItems: PostDropdownItems[] = [
     {
       label: 'Save',
@@ -155,7 +151,7 @@ export class PostList implements OnInit {
   }
 
   isUserInCommunity(communityId: string): boolean {
-    return this.userCommunityIds().has(communityId);
+    return this.communityService.isUserInCommunity(communityId);
   }
 
   isPostMenuOpen(postId: string): boolean {
@@ -185,11 +181,7 @@ export class PostList implements OnInit {
   }
 
   handleToggleJoin(communityId: string) {
-    this.communityService.toggleCommunityMembership(
-      communityId,
-      this.userCommunityIds().has(communityId),
-      this.isAuthenticated(),
-    );
+    this.communityService.toggleCommunityMembership(communityId, this.isAuthenticated());
   }
 
   @HostListener('window:scroll')

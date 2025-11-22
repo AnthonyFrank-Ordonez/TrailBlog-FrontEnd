@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, input } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Communities } from '@core/models/interface/community';
 import { CommunityService } from '@core/services/community.service';
@@ -21,64 +21,15 @@ export class CommunityCard {
   private destroyRef = inject(DestroyRef);
 
   community = input.required<Communities>();
+  isFavorite = input<boolean>(false);
+  toggleFavoriteAction = output<string>();
+  leaveCommunityAction = output<string>();
 
   onLeaveCommunity(): void {
-    this.modalService.openModal({
-      type: 'community',
-      title: 'Leave Community',
-      description: 'Are you sure you want to leave this community?',
-      content: 'confirmation-modal',
-      subcontent:
-        ' Once you leave, you’ll no longer be a member or receive updates from this community. You can rejoin anytime.',
-      data: { communityId: this.community().id },
-      confirmBtnText: 'Leave Community',
-      cancelBtnText: 'Cancel',
-      onConfirm: (communityId) => this.leaveCommunity(communityId),
-    });
-  }
-
-  leaveCommunity(communityId: string): void {
-    this.communityService
-      .leaveCommunity(communityId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        error: (error: HttpErrorResponse) => {
-          handleHttpError(error, this.messageService);
-        },
-      });
+    this.leaveCommunityAction.emit(this.community().id);
   }
 
   toggleFavorite() {
-    if (this.isFavorite) {
-      this.handleUnfavoriteCommunity();
-    } else {
-      this.handleFavoriteCommunity();
-    }
-  }
-
-  handleFavoriteCommunity() {
-    this.communityService
-      .favoriteCommunity(this.community().id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        error: (error: HttpErrorResponse) => {
-          handleHttpError(error, this.messageService);
-        },
-      });
-  }
-
-  handleUnfavoriteCommunity() {
-    this.communityService
-      .unfavoriteCommunity(this.community().id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        error: (error: HttpErrorResponse) => {
-          handleHttpError(error, this.messageService);
-        },
-      });
-  }
-
-  get isFavorite(): boolean {
-    return this.community().isFavorite;
+    this.toggleFavoriteAction.emit(this.community().id);
   }
 }

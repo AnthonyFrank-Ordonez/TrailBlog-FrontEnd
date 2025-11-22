@@ -21,6 +21,11 @@
   }
 } @else {
   @for (community of filteredUserCommunities(); track community.id) {
-    <app-community-card [community]="community" />
+    <app-community-card
+      [community]="community"
+      [isFavorite]="isCommunityFavorite(community.id)"
+      (toggleFavoriteAction)="handleCommunityFavorite($event)"
+      (leaveCommunityAction)="handleLeaveCommunity($event)"
+    />
   }
 }
