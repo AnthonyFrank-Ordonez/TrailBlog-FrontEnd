@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { UserService } from './user.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@env/environment';
@@ -9,6 +9,11 @@ import {
 } from '@core/models/interface/community';
 import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import { OperationResult } from '@core/models/interface/operations';
+import { PostService } from './post.service';
+import { ModalService } from './modal.service';
+import { MessageService } from './message.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { handleHttpError } from '@shared/utils/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +22,10 @@ export class CommunityService {
   env = environment;
   private http = inject(HttpClient);
   private userService = inject(UserService);
+  private postService = inject(PostService);
+  private modalService = inject(ModalService);
+  private messageService = inject(MessageService);
+  private destroyRef = inject(DestroyRef);
   private readonly apiUrl = `${this.env.apiRoot}/community`;
 
   #userCommunities = signal<Communities[]>([]);
@@ -140,6 +149,55 @@ export class CommunityService {
 
   setActiveCommunityFilter(filter: CommunityFilterType) {
     this.#activeCommunityFilterBtn.set(filter);
+  }
+
+  toggleCommunityMembership(
+    communityId: string,
+    isJoined: boolean,
+    isAuthenticated: boolean,
+  ): void {
+    this.postService.closeDropdown();
+
+    if (isJoined) {
+      this.modalService.openModal({
+        type: 'community',
+        title: 'Leave Community',
+        description: 'Are you sure you want to leave this community?',
+        content: 'confirmation-modal',
+        subcontent:
+          " Once you leave, you'll no longer be a member or receive updates from this community. You can rejoin anytime.",
+        confirmBtnText: 'Leave Community',
+        cancelBtnText: 'Cancel',
+        data: { communityId },
+        onConfirm: (id) => this.handleLeaveCommunity(id),
+      });
+    } else {
+      if (!isAuthenticated) {
+        this.modalService.showAuthRequiredModal();
+      } else {
+        this.handleJoinCommunity(communityId);
+      }
+    }
+  }
+
+  private handleJoinCommunity(communityId: string): void {
+    this.joinCommunity(communityId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
+  }
+
+  private handleLeaveCommunity(communityId: string): void {
+    this.leaveCommunity(communityId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
   }
 
   resetCommunityServiceData(): void {

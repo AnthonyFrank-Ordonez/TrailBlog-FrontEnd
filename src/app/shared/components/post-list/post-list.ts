@@ -184,6 +184,14 @@ export class PostList implements OnInit {
     this.postService.togglePostDetail(slug);
   }
 
+  handleToggleJoin(communityId: string) {
+    this.communityService.toggleCommunityMembership(
+      communityId,
+      this.userCommunityIds().has(communityId),
+      this.isAuthenticated(),
+    );
+  }
+
   @HostListener('window:scroll')
   onScroll(): void {
     const scrollPosition = window.pageYOffset + window.innerHeight;
