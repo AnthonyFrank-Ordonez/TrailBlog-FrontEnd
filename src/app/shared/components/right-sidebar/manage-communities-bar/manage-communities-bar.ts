@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommunityFilterType } from '@core/models/interface/community';
 import { CommunityService } from '@core/services/community.service';
 

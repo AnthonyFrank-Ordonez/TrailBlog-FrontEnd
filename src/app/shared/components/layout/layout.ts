@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from '../header/header';
 import { SideNavigation } from '../side-navigation/side-navigation';
@@ -7,12 +7,6 @@ import { Modal } from '../modal/modal';
 import { ModalService } from '@core/services/modal.service';
 import { CommunityForm } from '../community-form/community-form';
 import { ConfirmationModal } from '../confirmation-modal/confirmation-modal';
-import { MessageService } from '@core/services/message.service';
-import { CommunityService } from '@core/services/community.service';
-import { tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { HttpErrorResponse } from '@angular/common/http';
-import { handleHttpError } from '@shared/utils/utils';
 import { ErrorModal } from '../error-modal/error-modal';
 
 @Component({

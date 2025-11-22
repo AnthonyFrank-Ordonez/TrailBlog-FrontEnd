@@ -20,7 +20,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Post, PostActionPayload, PostDropdownItems } from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
-import { ReactionList } from '@core/models/interface/reactions';
 
 @Component({
   selector: 'app-post-list',

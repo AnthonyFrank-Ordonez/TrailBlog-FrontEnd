@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, inject, OnDestroy, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, OnDestroy } from '@angular/core';
 import { ZardTooltipModule } from '../tooltip/tooltip';
 import { ZardDropdownDirective } from '../dropdown/dropdown-trigger.directive';
 import { ZardDropdownMenuContentComponent } from '../dropdown/dropdown-menu-content.component';

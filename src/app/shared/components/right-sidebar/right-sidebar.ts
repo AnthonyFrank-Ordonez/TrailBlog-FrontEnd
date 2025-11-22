@@ -1,8 +1,5 @@
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RecentViewedPost } from './recent-viewed-post/recent-viewed-post';
-import { NavigationEnd, Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, startWith, tap } from 'rxjs';
 import { ManageCommunitiesBar } from './manage-communities-bar/manage-communities-bar';
 import { AuthService } from '@core/services/auth.service';
 import { RightSidebarConfig } from '@core/models/interface/pages';

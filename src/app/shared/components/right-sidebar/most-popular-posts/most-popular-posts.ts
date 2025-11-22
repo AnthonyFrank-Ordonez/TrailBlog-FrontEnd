@@ -8,7 +8,6 @@ import { ZardDividerComponent } from '@shared/components/divider/divider.compone
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 import { handleHttpError } from '@shared/utils/utils';
-import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-most-popular-posts',

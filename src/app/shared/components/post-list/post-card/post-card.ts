@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, input, output, ViewChild } from '@angular/core';
 import {
   ActionClickEvent,
   Post,

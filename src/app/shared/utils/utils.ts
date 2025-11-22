@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { DestroyRef, inject } from '@angular/core';
+import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ApiError } from '@core/models/interface/api-error';
 import { PostLoadingStrategy } from '@core/models/interface/posts';

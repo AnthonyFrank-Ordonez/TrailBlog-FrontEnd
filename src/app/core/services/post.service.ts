@@ -11,15 +11,14 @@ import {
   RecentViewedPost,
 } from '@core/models/interface/posts';
 import { catchError, EMPTY, finalize, Observable, Subject, tap, throwError } from 'rxjs';
-import { handleHttpError, POST_PLACEHOLDER } from '@shared/utils/utils';
+import { POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
 import { PageResult } from '@core/models/interface/page-result';
-import { ReactionData, ReactionList, ReactionRequest } from '@core/models/interface/reactions';
+import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AddCommentRequest, Comment } from '@core/models/interface/comments';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { ModalService } from './modal.service';
-import { MessageService } from './message.service';
 
 @Injectable({
   providedIn: 'root',

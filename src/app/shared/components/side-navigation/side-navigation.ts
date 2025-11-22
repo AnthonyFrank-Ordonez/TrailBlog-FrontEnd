@@ -1,8 +1,8 @@
 import { ViewportScroller } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, DestroyRef, effect, inject, Signal, signal } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { Component, computed, DestroyRef, effect, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { CommunityService } from '@core/services/community.service';
 import { CurrentRouteService } from '@core/services/current-route.service';
@@ -13,7 +13,6 @@ import { UserSettingsService } from '@core/services/user-settings.service';
 import { UserService } from '@core/services/user.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { getStrategyFromPath, handleHttpError } from '@shared/utils/utils';
-import { filter, map, startWith, tap } from 'rxjs';
 
 @Component({
   selector: 'app-side-navigation',

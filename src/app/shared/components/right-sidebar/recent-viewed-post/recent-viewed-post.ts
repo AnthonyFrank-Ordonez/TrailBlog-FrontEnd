@@ -1,12 +1,10 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
 import { PostService } from '@core/services/post.service';
-import { UserService } from '@core/services/user.service';
 import { ZardDividerComponent } from '@shared/components/divider/divider.component';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
@@ -22,12 +20,10 @@ export class RecentViewedPost {
   private readonly router = inject(Router);
   private readonly postService = inject(PostService);
   private readonly messageService = inject(MessageService);
-  private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
 
   recentViewedPosts = this.postService.recentViewedPosts;
-  isRecentLoading = this.postService.isRecentPostsLoading;
   isAuthenticated = this.authService.isAuthenticated;
 
   skeletonArray = Array(10).fill(0);
