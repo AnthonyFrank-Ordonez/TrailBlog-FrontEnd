@@ -1,6 +1,6 @@
 import { ToastPosition, ToastTheme } from '@ngxpert/hot-toast';
 
-export interface Messages {}
+export type MessagesType = 'information' | 'error' | 'warning' | 'success';
 
 export interface MessagesOptions {
   dismissible: boolean;

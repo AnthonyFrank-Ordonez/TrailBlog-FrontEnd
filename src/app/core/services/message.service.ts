@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HotToastService } from '@ngxpert/hot-toast';
-import { MessagesOptions } from '@core/models/interface/messages';
+import { MessagesOptions, MessagesType } from '@core/models/interface/messages';
 
 @Injectable({
   providedIn: 'root',
@@ -15,34 +15,44 @@ export class MessageService {
     position: 'top-right',
   };
 
-  showMessage(type: string = 'information', message: string = 'An Error Occured'): void {
-    switch (type) {
-      case 'information':
-        this.toast.info(message, {
-          ...this.baseOpt,
-        });
-        break;
+  private readonly showMessageMap = new Map<MessagesType, (message: string) => void>([
+    ['information', (message: string) => this.showInfoMessage(message)],
+    ['error', (message: string) => this.showErrorMessage(message)],
+    ['warning', (message: string) => this.showWarningMessage(message)],
+    ['success', (message: string) => this.showSuccessMessage(message)],
+  ]);
 
-      case 'error':
-        this.toast.error(message, {
-          ...this.baseOpt,
-        });
-        break;
+  showMessage(type: MessagesType = 'information', message: string = 'An Error Occured'): void {
+    const handler = this.showMessageMap.get(type);
 
-      case 'warning':
-        this.toast.warning(message, {
-          ...this.baseOpt,
-        });
-        break;
-
-      case 'success':
-        this.toast.success(message, {
-          ...this.baseOpt,
-        });
-        break;
-
-      default:
-        break;
+    if (handler) {
+      handler(message);
+    } else {
+      console.error(`Invalid message type: ${type}`);
     }
+  }
+
+  private showInfoMessage(message: string) {
+    this.toast.info(message, {
+      ...this.baseOpt,
+    });
+  }
+
+  private showErrorMessage(message: string) {
+    this.toast.error(message, {
+      ...this.baseOpt,
+    });
+  }
+
+  private showWarningMessage(message: string) {
+    this.toast.warning(message, {
+      ...this.baseOpt,
+    });
+  }
+
+  private showSuccessMessage(message: string) {
+    this.toast.success(message, {
+      ...this.baseOpt,
+    });
   }
 }
