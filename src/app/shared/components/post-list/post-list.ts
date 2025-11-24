@@ -165,6 +165,23 @@ export class PostList implements OnInit {
     return this.postService.isDropDownOpen('share', postId);
   }
 
+  handlePostMenuAction(data: PostActionPayload) {
+    const handler = this.postService.menuActionHandlers.get(data.action);
+
+    if (handler) {
+      handler(data.post)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.messageService.showMessage('success', 'Post deleted successfully');
+          },
+          error: (error) => {
+            handleHttpError(error, this.messageService);
+          },
+        });
+    }
+  }
+
   async handleShareAction(data: PostActionPayload) {
     await this.postService.handlePostShareAction(data.action, data.post);
   }

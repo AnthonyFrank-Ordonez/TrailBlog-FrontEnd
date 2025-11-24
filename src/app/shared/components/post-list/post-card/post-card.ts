@@ -40,6 +40,7 @@ export class PostCard {
   shareModal = output<string>();
   copyAction = output<string>();
   shareAction = output<PostActionPayload>();
+  menuAction = output<PostActionPayload>();
   postDetailAction = output<string>();
   toggleJoinAction = output<string>();
 
@@ -68,6 +69,15 @@ export class PostCard {
     data.event.stopPropagation();
 
     this.shareAction.emit({
+      action: data.action,
+      post: this.post(),
+    });
+  }
+
+  handleMenuItemClick(data: ActionClickEvent) {
+    data.event.stopPropagation();
+
+    this.menuAction.emit({
       action: data.action,
       post: this.post(),
     });

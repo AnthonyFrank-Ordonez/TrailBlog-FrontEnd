@@ -35,6 +35,12 @@ export class MessageService {
         });
         break;
 
+      case 'success':
+        this.toast.success(message, {
+          ...this.baseOpt,
+        });
+        break;
+
       default:
         break;
     }

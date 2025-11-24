@@ -19,6 +19,7 @@ import { AddCommentRequest, Comment } from '@core/models/interface/comments';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { ModalService } from './modal.service';
+import { OperationResult } from '@core/models/interface/operations';
 
 @Injectable({
   providedIn: 'root',
@@ -89,6 +90,10 @@ export class PostService {
   private reactionListMap = computed(
     () => new Map(this.reactionList().map((reaction) => [reaction.id, reaction])),
   );
+
+  readonly menuActionHandlers = new Map<PostAction, (post: Post) => Observable<OperationResult>>([
+    ['delete', (post) => this.deletePost(post)],
+  ]);
 
   loadInitialPosts(strategy: PostLoadingStrategy = 'regular') {
     this.#postSignal.set([]);
@@ -229,6 +234,20 @@ export class PostService {
     );
   }
 
+  deletePost(post: Post) {
+    return this.http.delete<OperationResult>(`${this.apiUrl}/${post.id}`).pipe(
+      tap(() => {
+        console.log('Deleting post...');
+
+        this.#postSignal.update((posts) => posts.filter((p) => p.id !== post.id));
+        this.#recentViewedPostsSignal.update((rp) => rp.filter((p) => p.postId !== post.id));
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+    );
+  }
+
   addPostComment(commentData: AddCommentRequest): Observable<Comment> {
     this.#isSubmittingSignal.set(true);
 
@@ -354,7 +373,6 @@ export class PostService {
       console.warn(`Unknown share action: ${action}`);
     }
   }
-
   private async copyPostLink(post: Post): Promise<void> {
     const url = this.buildPostUrl(post.slug);
 
