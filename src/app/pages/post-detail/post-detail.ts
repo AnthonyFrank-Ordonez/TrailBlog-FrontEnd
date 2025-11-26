@@ -51,59 +51,6 @@ export class PostDetail implements OnInit {
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
 
-  readonly menuItems: PostDropdownItems[] = [
-    {
-      label: 'Save',
-      iconClass: 'icon-tabler-bookmark',
-      svgPath: ['M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z'],
-      ownerOnly: false,
-      forAuthenticated: true,
-      hideForOwner: false,
-      action: 'save',
-    },
-    {
-      label: 'Hide',
-      iconClass: 'icon-tabler-eye-off',
-      svgPath: [
-        'M10.585 10.587a2 2 0 0 0 2.829 2.828',
-        'M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87',
-        'M3 3l18 18',
-      ],
-      ownerOnly: false,
-      forAuthenticated: true,
-      hideForOwner: false,
-      action: 'hide',
-    },
-    {
-      label: 'Report',
-      iconClass: 'icon-tabler-message-report',
-      svgPath: [
-        'M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z',
-        'M12 8v3',
-        'M12 14v.01',
-      ],
-      ownerOnly: false,
-      forAuthenticated: false,
-      hideForOwner: true,
-      action: 'report',
-    },
-    {
-      label: 'Delete',
-      iconClass: 'icon-tabler-trash',
-      svgPath: [
-        'M4 7l16 0',
-        'M10 11l0 6',
-        'M14 11l0 6',
-        'M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12',
-        'M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3',
-      ],
-      ownerOnly: true,
-      forAuthenticated: true,
-      hideForOwner: false,
-      action: 'delete',
-    },
-  ];
-
   readonly shareItems: PostDropdownItems[] = [
     {
       label: 'Copy',
@@ -114,6 +61,7 @@ export class PostDetail implements OnInit {
       ownerOnly: false,
       forAuthenticated: false,
       action: 'copy',
+      fill: false,
     },
     {
       label: 'Embed',
@@ -124,6 +72,7 @@ export class PostDetail implements OnInit {
       ownerOnly: false,
       forAuthenticated: false,
       action: 'embed',
+      fill: false,
     },
   ];
 
@@ -140,6 +89,7 @@ export class PostDetail implements OnInit {
       forAuthenticated: false,
       hideForOwner: true,
       action: 'report',
+      fill: false,
     },
     {
       label: 'Delete',
@@ -155,6 +105,7 @@ export class PostDetail implements OnInit {
       forAuthenticated: true,
       hideForOwner: false,
       action: 'delete',
+      fill: false,
     },
   ];
 
@@ -268,6 +219,10 @@ export class PostDetail implements OnInit {
 
   cancelCommentSection() {
     this.isCommentSelected.set(false);
+  }
+
+  handleGetPostMenuItems(): PostDropdownItems[] {
+    return this.postService.getMenuItems(this.post());
   }
 
   async handleShareActions(data: ActionClickEvent) {

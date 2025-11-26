@@ -6,7 +6,7 @@
     [isPostReactModalOpen]="isPostReactModalOpen(post.id)"
     [isPostShareModalOpen]="isPostShareModalOpen(post.id)"
     [reactionList]="reactionList"
-    [menuItems]="menuItems"
+    [menuItems]="handleGetPostMenuItems(post)"
     [shareItems]="shareItems"
     (postMenu)="openPostMenu($event)"
     (reactModal)="openReactModal($event)"

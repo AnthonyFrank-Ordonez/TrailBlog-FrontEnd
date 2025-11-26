@@ -88,7 +88,7 @@
             animate.leave="dropdown-fade-out"
             styles="w-32 right-0"
             [isOwner]="post().isOwner"
-            [dropdownItems]="menuItems"
+            [dropdownItems]="handleGetPostMenuItems()"
             modalType="menu"
           />
         }

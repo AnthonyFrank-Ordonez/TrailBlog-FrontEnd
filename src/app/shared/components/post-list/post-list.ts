@@ -17,7 +17,12 @@ import { getStrategyFromPath, handleHttpError, setupReactionSubject } from '@sha
 import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Post, PostActionPayload, PostDropdownItems } from '@core/models/interface/posts';
+import {
+  Post,
+  PostAction,
+  PostActionPayload,
+  PostDropdownItems,
+} from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
 
@@ -56,6 +61,7 @@ export class PostList implements OnInit {
       forAuthenticated: true,
       hideForOwner: false,
       action: 'save',
+      fill: false,
     },
     {
       label: 'Hide',
@@ -69,6 +75,7 @@ export class PostList implements OnInit {
       forAuthenticated: true,
       hideForOwner: false,
       action: 'hide',
+      fill: false,
     },
     {
       label: 'Report',
@@ -82,6 +89,7 @@ export class PostList implements OnInit {
       forAuthenticated: false,
       hideForOwner: true,
       action: 'report',
+      fill: false,
     },
     {
       label: 'Delete',
@@ -97,6 +105,7 @@ export class PostList implements OnInit {
       forAuthenticated: true,
       hideForOwner: false,
       action: 'delete',
+      fill: false,
     },
   ];
 
@@ -110,6 +119,7 @@ export class PostList implements OnInit {
       ownerOnly: false,
       forAuthenticated: false,
       action: 'copy',
+      fill: false,
     },
     {
       label: 'Embed',
@@ -120,8 +130,16 @@ export class PostList implements OnInit {
       ownerOnly: false,
       forAuthenticated: false,
       action: 'embed',
+      fill: false,
     },
   ];
+
+  private readonly successMessages = new Map<PostAction, string>([
+    ['save', 'Post saved successfully!'],
+    ['delete', 'Post deleted successfully!'],
+    ['hide', 'Post hidden successfully!'],
+    ['report', 'Post reported successfully!'],
+  ]);
 
   constructor() {
     effect(() => {
@@ -173,13 +191,18 @@ export class PostList implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
-            this.messageService.showMessage('success', 'Post deleted successfully');
+            const message = this.successMessages.get(data.action);
+            this.messageService.showMessage('success', message);
           },
           error: (error) => {
             handleHttpError(error, this.messageService);
           },
         });
     }
+  }
+
+  handleGetPostMenuItems(post: Post): PostDropdownItems[] {
+    return this.postService.getMenuItems(post);
   }
 
   async handleShareAction(data: PostActionPayload) {

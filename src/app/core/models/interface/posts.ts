@@ -7,7 +7,15 @@ export type PostLoadingStrategy = 'regular' | 'popular';
 
 export type DropdownType = 'menu' | 'share' | 'reaction';
 
-export type PostAction = 'share' | 'copy' | 'embed' | 'save' | 'hide' | 'report' | 'delete';
+export type PostAction =
+  | 'share'
+  | 'copy'
+  | 'embed'
+  | 'save'
+  | 'unsave'
+  | 'hide'
+  | 'report'
+  | 'delete';
 
 export interface Post {
   id: string;
@@ -20,6 +28,7 @@ export interface Post {
   communityName: string;
   communityId: string;
   isOwner: boolean;
+  isSaved: boolean;
   totalComment: number;
   comments?: Comment[] | null;
   reactions: ReactionSummary[];
@@ -58,6 +67,7 @@ export interface PostDropdownItems {
   forAuthenticated: boolean;
   hideForOwner?: boolean;
   action: PostAction;
+  fill: boolean;
 }
 
 export interface PostDropdown {

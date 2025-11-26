@@ -6,6 +6,7 @@ import {
   Post,
   PostAction,
   PostDropdown,
+  PostDropdownItems,
   PostLoadingStrategy,
   PostStrategyConfig,
   RecentViewedPost,
@@ -91,8 +92,12 @@ export class PostService {
     () => new Map(this.reactionList().map((reaction) => [reaction.id, reaction])),
   );
 
-  readonly menuActionHandlers = new Map<PostAction, (post: Post) => Observable<OperationResult>>([
+  readonly menuActionHandlers = new Map<
+    PostAction,
+    (post: Post) => Observable<OperationResult | Post>
+  >([
     ['delete', (post) => this.deletePost(post)],
+    ['save', (post) => this.savePost(post)],
   ]);
 
   loadInitialPosts(strategy: PostLoadingStrategy = 'regular') {
@@ -216,7 +221,72 @@ export class PostService {
     return this.reactionListMap().get(id);
   }
 
-  createPost(postData: CreatePostRequest) {
+  getMenuItems(post: Post): PostDropdownItems[] {
+    var isSaved = post.isSaved;
+
+    return [
+      {
+        label: isSaved ? 'Unsave' : 'Save',
+        iconClass: isSaved ? 'icon-tabler-bookmark-filled' : 'icon-tabler-bookmark',
+        svgPath: isSaved
+          ? [
+              'M14 2a5 5 0 0 1 5 5v14a1 1 0 0 1 -1.555 .832l-5.445 -3.63l-5.444 3.63a1 1 0 0 1 -1.55 -.72l-.006 -.112v-14a5 5 0 0 1 5 -5h4z',
+            ]
+          : ['M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z'],
+        ownerOnly: false,
+        forAuthenticated: true,
+        hideForOwner: false,
+        action: isSaved ? 'unsave' : 'save',
+        fill: isSaved ? true : false,
+      },
+      {
+        label: 'Hide',
+        iconClass: 'icon-tabler-eye-off',
+        svgPath: [
+          'M10.585 10.587a2 2 0 0 0 2.829 2.828',
+          'M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87',
+          'M3 3l18 18',
+        ],
+        ownerOnly: false,
+        forAuthenticated: true,
+        hideForOwner: false,
+        action: 'hide',
+        fill: false,
+      },
+      {
+        label: 'Report',
+        iconClass: 'icon-tabler-message-report',
+        svgPath: [
+          'M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z',
+          'M12 8v3',
+          'M12 14v.01',
+        ],
+        ownerOnly: false,
+        forAuthenticated: false,
+        hideForOwner: true,
+        action: 'report',
+        fill: false,
+      },
+      {
+        label: 'Delete',
+        iconClass: 'icon-tabler-trash',
+        svgPath: [
+          'M4 7l16 0',
+          'M10 11l0 6',
+          'M14 11l0 6',
+          'M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12',
+          'M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3',
+        ],
+        ownerOnly: true,
+        forAuthenticated: true,
+        hideForOwner: false,
+        action: 'delete',
+        fill: false,
+      },
+    ];
+  }
+
+  createPost(postData: CreatePostRequest): Observable<Post> {
     this.#isSubmittingSignal.set(true);
 
     return this.http.post<Post>(this.apiUrl, postData).pipe(
@@ -234,7 +304,20 @@ export class PostService {
     );
   }
 
-  deletePost(post: Post) {
+  savePost(post: Post): Observable<Post> {
+    this.closeDropdown();
+
+    return this.http.post<Post>(`${this.apiUrl}/${post.id}/saved`, null).pipe(
+      tap((post) => {
+        console.log('saving post...');
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  deletePost(post: Post): Observable<OperationResult> {
     return this.http.delete<OperationResult>(`${this.apiUrl}/${post.id}`).pipe(
       tap(() => {
         console.log('Deleting post...');
@@ -292,7 +375,7 @@ export class PostService {
     );
   }
 
-  selectReaction(data: ReactionRequest) {
+  selectReaction(data: ReactionRequest): void {
     this.closeDropdown();
 
     if (!this.authService.isAuthenticated()) {
@@ -333,7 +416,7 @@ export class PostService {
     );
   }
 
-  toggleDropdown(type: DropdownType, id: string) {
+  toggleDropdown(type: DropdownType, id: string): void {
     if (this.isDropDownOpen(type, id)) {
       this.closeDropdown();
     } else {
@@ -355,7 +438,7 @@ export class PostService {
     return userReactionsIds.includes(reactionId);
   }
 
-  closeDropdown() {
+  closeDropdown(): void {
     this.#activeDropdown.set({ type: null, id: null });
   }
 
