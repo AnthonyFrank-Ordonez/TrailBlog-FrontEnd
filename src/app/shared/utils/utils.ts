@@ -29,6 +29,7 @@ export const POST_PLACEHOLDER = {
 
 export const SUCCESS_MESSAGES = new Map<PostAction, string>([
   ['save', 'Post saved successfully!'],
+  ['unsave', 'Post unsaved successfully!'],
   ['delete', 'Post deleted successfully!'],
   ['hide', 'Post hidden successfully!'],
   ['report', 'Post reported successfully!'],

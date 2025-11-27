@@ -98,6 +98,7 @@ export class PostService {
   >([
     ['delete', (post) => this.deletePost(post)],
     ['save', (post, type) => this.savePost(post, type)],
+    ['unsave', (post, type) => this.unsavePost(post, type)],
   ]);
 
   loadInitialPosts(strategy: PostLoadingStrategy = 'regular') {
@@ -312,11 +313,32 @@ export class PostService {
         console.log('saving post...');
 
         this.#postSignal.update((posts) =>
-          posts.map((post) => (post.id === updatedPost.id ? { ...post, ...updatedPost } : post)),
+          posts.map((p) => (p.id === updatedPost.id ? { ...p, ...updatedPost } : p)),
         );
 
         if (type === 'detail') {
-          this.#postDetailSignal.update((post) => ({ ...post, ...updatedPost }));
+          this.#postDetailSignal.update((p) => ({ ...p, ...updatedPost }));
+        }
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  unsavePost(post: Post, type?: string): Observable<OperationResult> {
+    this.closeDropdown();
+
+    return this.http.delete<OperationResult>(`${this.apiUrl}/${post.id}/saved`).pipe(
+      tap(() => {
+        console.log('unsaving posts');
+
+        this.#postSignal.update((posts) =>
+          posts.map((p) => (p.id === post.id ? { ...p, isSaved: false } : p)),
+        );
+
+        if (type === 'detail') {
+          this.#postDetailSignal.update((p) => ({ ...p, isSaved: false }));
         }
       }),
       catchError((error) => {
