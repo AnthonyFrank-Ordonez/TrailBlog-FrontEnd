@@ -308,19 +308,20 @@ export class PostService {
   savePost(post: Post, type?: string): Observable<Post> {
     this.closeDropdown();
 
+    const previousSavedState = post.isSaved;
+    const optimisticPost = { ...post, isSaved: true };
+
+    this.updatePostsWithOptimisticData(post.id, optimisticPost);
+
     return this.http.post<Post>(`${this.apiUrl}/${post.id}/saved`, null).pipe(
       tap((updatedPost) => {
-        console.log('saving post...');
-
-        this.#postSignal.update((posts) =>
-          posts.map((p) => (p.id === updatedPost.id ? { ...p, ...updatedPost } : p)),
-        );
-
-        if (type === 'detail') {
-          this.#postDetailSignal.update((p) => ({ ...p, ...updatedPost }));
-        }
+        console.log('Post saved successfully');
+        this.updatePostsWithOptimisticData(post.id, updatedPost);
       }),
       catchError((error) => {
+        console.error('Save post failed, rolling back', error);
+        const rollbackPost = { ...post, isSaved: previousSavedState };
+        this.updatePostsWithOptimisticData(post.id, rollbackPost);
         return throwError(() => error);
       }),
     );
@@ -329,19 +330,19 @@ export class PostService {
   unsavePost(post: Post, type?: string): Observable<OperationResult> {
     this.closeDropdown();
 
+    const previousSavedState = post.isSaved;
+    const optimisticPost = { ...post, isSaved: false };
+
+    this.updatePostsWithOptimisticData(post.id, optimisticPost);
+
     return this.http.delete<OperationResult>(`${this.apiUrl}/${post.id}/saved`).pipe(
       tap(() => {
-        console.log('unsaving posts');
-
-        this.#postSignal.update((posts) =>
-          posts.map((p) => (p.id === post.id ? { ...p, isSaved: false } : p)),
-        );
-
-        if (type === 'detail') {
-          this.#postDetailSignal.update((p) => ({ ...p, isSaved: false }));
-        }
+        console.log('Post unsaved successfully');
       }),
       catchError((error) => {
+        console.error('Unsave post failed, rolling back', error);
+        const rollbackPost = { ...post, isSaved: previousSavedState };
+        this.updatePostsWithOptimisticData(post.id, rollbackPost);
         return throwError(() => error);
       }),
     );
@@ -422,28 +423,84 @@ export class PostService {
 
   toggleReactions(reactionData: ReactionRequest): Observable<Post> {
     const { post, data } = reactionData;
+    const reactionId = data.reactionId;
+
+    const previousPost: Post = {
+      ...post,
+      reactions: [...post.reactions],
+      userReactionsIds: [...post.userReactionsIds],
+    };
+
+    const optimisticPost = this.applyOptimisticReaction(post, reactionId);
+    this.updatePostsWithOptimisticData(post.id, optimisticPost);
+
     return this.http.post<Post>(`${this.apiUrl}/${post.id}/reaction`, data).pipe(
       tap((updatedPost) => {
-        console.log('Reacting to the post...');
-
-        this.#postSignal.update((posts) =>
-          posts.map((post) => (post.id === updatedPost.id ? { ...post, ...updatedPost } : post)),
-        );
-
-        this.#postDetailSignal.update((currentPost) => {
-          if (!currentPost) return currentPost;
-
-          if (currentPost.id === updatedPost.id) {
-            return { ...currentPost, ...updatedPost };
-          }
-
-          return currentPost;
-        });
+        console.log('Post reaction updated successfully');
+        this.updatePostsWithOptimisticData(post.id, updatedPost);
       }),
       catchError((error) => {
+        console.error('Post reaction failed,rolling back to previous state', error);
+        this.updatePostsWithOptimisticData(post.id, previousPost);
         return throwError(() => error);
       }),
     );
+  }
+
+  private applyOptimisticReaction(post: Post, reactionId: number): Post {
+    const isRemoving = post.userReactionsIds.includes(reactionId);
+
+    const reactionsMap = new Map(post.reactions.map((r) => [r.reactionId, r.count]));
+
+    let updatedUserReactionIds: number[];
+    let updatedTotalReactions: number;
+
+    if (isRemoving) {
+      updatedUserReactionIds = post.userReactionsIds.filter((id) => id !== reactionId);
+      updatedTotalReactions = post.totalReactions - 1;
+      const currentCount = reactionsMap.get(reactionId);
+
+      if (currentCount !== undefined) {
+        if (currentCount <= 1) {
+          reactionsMap.delete(reactionId);
+        } else {
+          reactionsMap.set(reactionId, currentCount - 1);
+        }
+      }
+    } else {
+      updatedUserReactionIds = [...post.userReactionsIds, reactionId];
+      updatedTotalReactions = post.totalReactions + 1;
+      const currentCount = reactionsMap.get(reactionId);
+
+      if (currentCount !== undefined) {
+        reactionsMap.set(reactionId, currentCount + 1);
+      } else {
+        reactionsMap.set(reactionId, 1);
+      }
+    }
+
+    const updatedReactions = Array.from(reactionsMap.entries()).map(([reactionId, count]) => ({
+      reactionId,
+      count,
+    }));
+
+    return {
+      ...post,
+      reactions: updatedReactions,
+      userReactionsIds: updatedUserReactionIds,
+      totalReactions: updatedTotalReactions,
+    };
+  }
+
+  private updatePostsWithOptimisticData(postId: string, updatedPost: Post): void {
+    this.#postSignal.update((posts) => posts.map((p) => (p.id === postId ? updatedPost : p)));
+
+    this.#postDetailSignal.update((currentPost) => {
+      if (currentPost?.id === postId) {
+        return updatedPost;
+      }
+      return currentPost;
+    });
   }
 
   toggleDropdown(type: DropdownType, id: string): void {
@@ -486,6 +543,7 @@ export class PostService {
       console.warn(`Unknown share action: ${action}`);
     }
   }
+
   private async copyPostLink(post: Post): Promise<void> {
     const url = this.buildPostUrl(post.slug);
 
