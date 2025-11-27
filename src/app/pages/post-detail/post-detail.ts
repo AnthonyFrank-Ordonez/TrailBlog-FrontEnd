@@ -15,7 +15,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddCommentRequest } from '@core/models/interface/comments';
-import { ActionClickEvent, PostDropdownItems } from '@core/models/interface/posts';
+import {
+  ActionClickEvent,
+  PostActionPayload,
+  PostDropdownItems,
+} from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
@@ -24,7 +28,8 @@ import { ZardDividerComponent } from '@shared/components/divider/divider.compone
 import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
-import { handleHttpError, setupReactionSubject } from '@shared/utils/utils';
+import { handleHttpError, setupReactionSubject, SUCCESS_MESSAGES } from '@shared/utils/utils';
+import { catchError } from 'rxjs';
 
 @Component({
   selector: 'app-post-detail',
@@ -223,6 +228,24 @@ export class PostDetail implements OnInit {
 
   handleGetPostMenuItems(): PostDropdownItems[] {
     return this.postService.getMenuItems(this.post());
+  }
+
+  handlePostMenuActions(data: ActionClickEvent) {
+    const handler = this.postService.menuActionHandlers.get(data.action);
+
+    if (handler) {
+      handler(this.post(), 'detail')
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            const message = SUCCESS_MESSAGES.get(data.action);
+            this.messageService.showMessage('success', message);
+          },
+          error: (error: HttpErrorResponse) => {
+            handleHttpError(error, this.messageService);
+          },
+        });
+    }
   }
 
   async handleShareActions(data: ActionClickEvent) {

@@ -13,7 +13,12 @@ import { PostCard } from './post-card/post-card';
 import { PostService } from '@core/services/post.service';
 import { ZardDividerComponent } from '@shared/components/divider/divider.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { getStrategyFromPath, handleHttpError, setupReactionSubject } from '@shared/utils/utils';
+import {
+  getStrategyFromPath,
+  handleHttpError,
+  setupReactionSubject,
+  SUCCESS_MESSAGES,
+} from '@shared/utils/utils';
 import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -134,13 +139,6 @@ export class PostList implements OnInit {
     },
   ];
 
-  private readonly successMessages = new Map<PostAction, string>([
-    ['save', 'Post saved successfully!'],
-    ['delete', 'Post deleted successfully!'],
-    ['hide', 'Post hidden successfully!'],
-    ['report', 'Post reported successfully!'],
-  ]);
-
   constructor() {
     effect(() => {
       const token = this.token();
@@ -191,7 +189,7 @@ export class PostList implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
-            const message = this.successMessages.get(data.action);
+            const message = SUCCESS_MESSAGES.get(data.action);
             this.messageService.showMessage('success', message);
           },
           error: (error) => {

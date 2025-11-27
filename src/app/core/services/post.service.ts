@@ -94,10 +94,10 @@ export class PostService {
 
   readonly menuActionHandlers = new Map<
     PostAction,
-    (post: Post) => Observable<OperationResult | Post>
+    (post: Post, type?: string) => Observable<OperationResult | Post>
   >([
     ['delete', (post) => this.deletePost(post)],
-    ['save', (post) => this.savePost(post)],
+    ['save', (post, type) => this.savePost(post, type)],
   ]);
 
   loadInitialPosts(strategy: PostLoadingStrategy = 'regular') {
@@ -304,7 +304,7 @@ export class PostService {
     );
   }
 
-  savePost(post: Post): Observable<Post> {
+  savePost(post: Post, type?: string): Observable<Post> {
     this.closeDropdown();
 
     return this.http.post<Post>(`${this.apiUrl}/${post.id}/saved`, null).pipe(
@@ -314,6 +314,10 @@ export class PostService {
         this.#postSignal.update((posts) =>
           posts.map((post) => (post.id === updatedPost.id ? { ...post, ...updatedPost } : post)),
         );
+
+        if (type === 'detail') {
+          this.#postDetailSignal.update((post) => ({ ...post, ...updatedPost }));
+        }
       }),
       catchError((error) => {
         return throwError(() => error);

@@ -90,6 +90,7 @@
             [isOwner]="post().isOwner"
             [dropdownItems]="handleGetPostMenuItems()"
             modalType="menu"
+            (itemClicked)="handlePostMenuActions($event)"
           />
         }
       </div>
