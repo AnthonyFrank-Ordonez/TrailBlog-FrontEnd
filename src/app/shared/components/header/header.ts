@@ -1,5 +1,4 @@
 import { Component, DestroyRef, HostListener, inject, OnDestroy } from '@angular/core';
-import { ZardTooltipModule } from '../tooltip/tooltip';
 import { ZardDropdownDirective } from '../dropdown/dropdown-trigger.directive';
 import { ZardDropdownMenuContentComponent } from '../dropdown/dropdown-menu-content.component';
 import { ZardDropdownMenuLabelComponent } from '../dropdown/dropdown-label.component';
@@ -16,11 +15,11 @@ import { UserService } from '@core/services/user.service';
 import { tap } from 'rxjs';
 import { PostService } from '@core/services/post.service';
 import { CommunityService } from '@core/services/community.service';
+import { Tooltip } from '../tooltip/tooltip';
 
 @Component({
   selector: 'app-header',
   imports: [
-    ZardTooltipModule,
     ZardDropdownDirective,
     ZardDropdownMenuContentComponent,
     ZardDropdownMenuLabelComponent,
@@ -28,6 +27,7 @@ import { CommunityService } from '@core/services/community.service';
     ZardDividerComponent,
     RouterLink,
     InitialsPipe,
+    Tooltip,
   ],
   templateUrl: './header.html',
   styleUrl: './header.css',

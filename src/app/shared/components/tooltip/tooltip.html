@@ -1,0 +1,15 @@
+<div class="relative inline-block group">
+  <ng-content></ng-content>
+
+  <div
+    class="absolute left-1/2 -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+    [ngClass]="baseTooltipClass()"
+  >
+    <div
+      class="bg-white text-black text-sm rounded py-2 px-3 whitespace-nowrap"
+      [ngClass]="toolTipClass()"
+    >
+      {{ toolTipText() }}
+    </div>
+  </div>
+</div>
