@@ -17,10 +17,10 @@ import { environment } from '@env/environment';
 import { PageResult } from '@core/models/interface/page-result';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AddCommentRequest, Comment } from '@core/models/interface/comments';
-import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { ModalService } from './modal.service';
 import { OperationResult } from '@core/models/interface/operations';
+import { CurrentRouteService } from './current-route.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,9 +28,9 @@ import { OperationResult } from '@core/models/interface/operations';
 export class PostService {
   env = environment;
   private http = inject(HttpClient);
-  private router = inject(Router);
   private authService = inject(AuthService);
   private modalService = inject(ModalService);
+  private currentRouteService = inject(CurrentRouteService);
   private readonly apiUrl = `${this.env.apiRoot}/post`;
 
   #postSignal = signal<Post[]>([]);
@@ -96,7 +96,7 @@ export class PostService {
     PostAction,
     (post: Post, type?: string) => Observable<OperationResult | Post>
   >([
-    ['delete', (post) => this.deletePost(post)],
+    ['delete', (post, type) => this.deletePost(post, type)],
     ['save', (post, type) => this.savePost(post, type)],
     ['unsave', (post, type) => this.unsavePost(post, type)],
   ]);
@@ -327,41 +327,6 @@ export class PostService {
     );
   }
 
-  unsavePost(post: Post, type?: string): Observable<OperationResult> {
-    this.closeDropdown();
-
-    const previousSavedState = post.isSaved;
-    const optimisticPost = { ...post, isSaved: false };
-
-    this.updatePostsWithOptimisticData(post.id, optimisticPost);
-
-    return this.http.delete<OperationResult>(`${this.apiUrl}/${post.id}/saved`).pipe(
-      tap(() => {
-        console.log('Post unsaved successfully');
-      }),
-      catchError((error) => {
-        console.error('Unsave post failed, rolling back', error);
-        const rollbackPost = { ...post, isSaved: previousSavedState };
-        this.updatePostsWithOptimisticData(post.id, rollbackPost);
-        return throwError(() => error);
-      }),
-    );
-  }
-
-  deletePost(post: Post): Observable<OperationResult> {
-    return this.http.delete<OperationResult>(`${this.apiUrl}/${post.id}`).pipe(
-      tap(() => {
-        console.log('Deleting post...');
-
-        this.#postSignal.update((posts) => posts.filter((p) => p.id !== post.id));
-        this.#recentViewedPostsSignal.update((rp) => rp.filter((p) => p.postId !== post.id));
-      }),
-      catchError((error) => {
-        return throwError(() => error);
-      }),
-    );
-  }
-
   addPostComment(commentData: AddCommentRequest): Observable<Comment> {
     this.#isSubmittingSignal.set(true);
 
@@ -406,6 +371,60 @@ export class PostService {
     );
   }
 
+  unsavePost(post: Post, type?: string): Observable<OperationResult> {
+    this.closeDropdown();
+
+    const previousSavedState = post.isSaved;
+    const optimisticPost = { ...post, isSaved: false };
+
+    this.updatePostsWithOptimisticData(post.id, optimisticPost);
+
+    return this.http.delete<OperationResult>(`${this.apiUrl}/${post.id}/saved`).pipe(
+      tap(() => {
+        console.log('Post unsaved successfully');
+      }),
+      catchError((error) => {
+        console.error('Unsave post failed, rolling back', error);
+        const rollbackPost = { ...post, isSaved: previousSavedState };
+        this.updatePostsWithOptimisticData(post.id, rollbackPost);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  deletePost(post: Post, type?: string): Observable<OperationResult> {
+    return this.http.delete<OperationResult>(`${this.apiUrl}/${post.id}`).pipe(
+      tap(() => {
+        console.log('Deleting post...');
+
+        this.#postSignal.update((posts) => posts.filter((p) => p.id !== post.id));
+        this.#recentViewedPostsSignal.update((rp) => rp.filter((p) => p.postId !== post.id));
+
+        if (type === 'detail') {
+          this.currentRouteService.handleRedirection('/');
+        }
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  clearRecentViewedPosts(): Observable<OperationResult> {
+    const previousPosts = this.#recentViewedPostsSignal();
+    this.#recentViewedPostsSignal.set([]);
+
+    return this.http.delete<OperationResult>(`${this.apiUrl}/recent-viewed-posts`).pipe(
+      tap(() => {
+        console.log('Succesfully cleared recent viewed posts');
+      }),
+      catchError((error) => {
+        this.#recentViewedPostsSignal.set(previousPosts);
+        return throwError(() => error);
+      }),
+    );
+  }
+
   selectReaction(data: ReactionRequest): void {
     this.closeDropdown();
 
@@ -445,6 +464,62 @@ export class PostService {
         return throwError(() => error);
       }),
     );
+  }
+
+  toggleDropdown(type: DropdownType, id: string): void {
+    if (this.isDropDownOpen(type, id)) {
+      this.closeDropdown();
+    } else {
+      this.updateActiveDropdown(type, id);
+    }
+  }
+
+  togglePostDetail(slug: string): void {
+    this.closeDropdown();
+    this.currentRouteService.handleRedirection(['/post', slug]);
+  }
+
+  isDropDownOpen(type: DropdownType, id: string): boolean {
+    const active = this.#activeDropdown();
+    return active.type === type && active.id === id;
+  }
+
+  hasReaction(userReactionsIds: number[], reactionId: number): boolean {
+    return userReactionsIds.includes(reactionId);
+  }
+
+  closeDropdown(): void {
+    this.#activeDropdown.set({ type: null, id: null });
+  }
+
+  resetPostServiceData(): void {
+    this.#recentViewedPostsSignal.set([]);
+  }
+
+  async handlePostShareAction(action: PostAction, post: Post): Promise<void> {
+    const handler = this.shareActionHandlers.get(action);
+
+    if (handler) {
+      await handler(post);
+      this.closeDropdown();
+    } else {
+      console.warn(`Unknown share action: ${action}`);
+    }
+  }
+
+  private async copyPostLink(post: Post): Promise<void> {
+    const url = this.buildPostUrl(post.slug);
+
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch (error) {
+      console.error('Copy Failed: ', error);
+      throw error;
+    }
+  }
+
+  private buildPostUrl(slug: string): string {
+    return `${window.location.origin}/post/${encodeURIComponent(slug)}`;
   }
 
   private applyOptimisticReaction(post: Post, reactionId: number): Post {
@@ -501,61 +576,5 @@ export class PostService {
       }
       return currentPost;
     });
-  }
-
-  toggleDropdown(type: DropdownType, id: string): void {
-    if (this.isDropDownOpen(type, id)) {
-      this.closeDropdown();
-    } else {
-      this.updateActiveDropdown(type, id);
-    }
-  }
-
-  togglePostDetail(slug: string): void {
-    this.closeDropdown();
-    this.router.navigate(['/post', slug]);
-  }
-
-  isDropDownOpen(type: DropdownType, id: string): boolean {
-    const active = this.#activeDropdown();
-    return active.type === type && active.id === id;
-  }
-
-  hasReaction(userReactionsIds: number[], reactionId: number): boolean {
-    return userReactionsIds.includes(reactionId);
-  }
-
-  closeDropdown(): void {
-    this.#activeDropdown.set({ type: null, id: null });
-  }
-
-  resetPostServiceData(): void {
-    this.#recentViewedPostsSignal.set([]);
-  }
-
-  async handlePostShareAction(action: PostAction, post: Post): Promise<void> {
-    const handler = this.shareActionHandlers.get(action);
-
-    if (handler) {
-      await handler(post);
-      this.closeDropdown();
-    } else {
-      console.warn(`Unknown share action: ${action}`);
-    }
-  }
-
-  private async copyPostLink(post: Post): Promise<void> {
-    const url = this.buildPostUrl(post.slug);
-
-    try {
-      await navigator.clipboard.writeText(url);
-    } catch (error) {
-      console.error('Copy Failed: ', error);
-      throw error;
-    }
-  }
-
-  private buildPostUrl(slug: string): string {
-    return `${window.location.origin}/post/${encodeURIComponent(slug)}`;
   }
 }

@@ -43,6 +43,20 @@ export class RecentViewedPost {
     this.router.navigate(['/post', slug]);
   }
 
+  handleClearRecentViewedPost() {
+    this.postService
+      .clearRecentViewedPosts()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.messageService.showMessage('success', 'Recent viewed posts cleared successfully');
+        },
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
+  }
+
   private loadRecentViewedPosts() {
     this.postService
       .loadRecentViewedPosts()

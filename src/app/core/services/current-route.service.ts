@@ -18,7 +18,7 @@ export class CurrentRouteService {
     { initialValue: this.router.url },
   );
 
-  handleRedirection(path: string, extras?: NavigationExtras) {
+  handleRedirection(path: string | string[], extras?: NavigationExtras) {
     const command = Array.isArray(path) ? path : [path];
     this.router.navigate(command, extras);
   }
