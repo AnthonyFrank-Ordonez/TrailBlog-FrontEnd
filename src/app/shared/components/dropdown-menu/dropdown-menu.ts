@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import {
   CommentAction,
   CommentActionClickEvent,
@@ -26,12 +26,28 @@ export class DropdownMenu {
   commentItemClicked = output<CommentActionClickEvent>();
   isAuthenticated = this.authService.isAuthenticated;
 
-  private readonly COMMENT_ACTIONS = new Set<CommentAction>([
-    'initial-delete',
-    'delete',
-    'remove',
-    'report',
-  ]);
+  private readonly COMMENT_ACTIONS = new Set<CommentAction>(['initial-delete', 'remove', 'report']);
+
+  filteredMenuItems = computed(() => {
+    return this.dropdownItems().filter((item) => {
+      const isOwner = this.isOwner();
+      const isAuth = this.isAuthenticated();
+
+      if (item.hideForOwner && isOwner) {
+        return false;
+      }
+
+      if (item.ownerOnly) {
+        return isOwner;
+      }
+
+      if (item.forAuthenticated) {
+        return isAuth;
+      }
+
+      return true;
+    });
+  });
 
   onItemClick(item: PostDropdownItems | CommentDropdownItems, event: MouseEvent) {
     event?.stopPropagation();
@@ -56,27 +72,6 @@ export class DropdownMenu {
     this.commentItemClicked.emit({
       action: item.action,
       event: event,
-    });
-  }
-
-  get filteredMenuItems() {
-    return this.dropdownItems().filter((item) => {
-      const isOwner = this.isOwner();
-      const isAuth = this.isAuthenticated();
-
-      if (item.hideForOwner && isOwner) {
-        return false;
-      }
-
-      if (item.ownerOnly) {
-        return isOwner;
-      }
-
-      if (item.forAuthenticated) {
-        return isAuth;
-      }
-
-      return true;
     });
   }
 

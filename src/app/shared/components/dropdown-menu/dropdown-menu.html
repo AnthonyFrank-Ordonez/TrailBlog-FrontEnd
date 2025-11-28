@@ -3,7 +3,7 @@
   [ngClass]="styles()"
   [attr.data-modal-type]="modalType()"
 >
-  @for (item of filteredMenuItems; track item.label) {
+  @for (item of filteredMenuItems(); track item.label) {
     <button
       class="text-white flex gap-1 text-left cursor-pointer hover:bg-white/20 duration-300 transition-colors w-full rounded-md px-2 py-1.5"
       (click)="onItemClick(item, $event)"
