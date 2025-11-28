@@ -323,13 +323,19 @@
               <!-- User Comment Detail -->
               <div class="flex justify-between">
                 <div class="flex items-center space-x-2">
-                  <div class="w-7 h-7 bg-secondary rounded-full flex items-center justify-center">
-                    <span class="text-white text-sm font-bold">{{
+                  <div
+                    class="w-7 h-7 rounded-full flex items-center justify-center"
+                    [ngClass]="comment.isDeleted ? 'bg-gray-500/50' : 'bg-secondary'"
+                  >
+                    <span class="text-white text-sm font-bold" [class.hidden]="comment.isDeleted">{{
                       comment.username | initials
                     }}</span>
                   </div>
 
-                  <p class="text-white font-medium text-sm tracking-wider">
+                  <p
+                    class="font-medium text-sm tracking-wider"
+                    [ngClass]="comment.isDeleted ? 'text-gray-500' : 'text-white'"
+                  >
                     {{ comment.username }}
                   </p>
 
@@ -337,7 +343,11 @@
                 </div>
 
                 <!-- Three dots (comment) -->
-                <div class="comment-menu-container relative" #commentMenuContainers>
+                <div
+                  class="comment-menu-container relative"
+                  [class.hidden]="comment.isDeleted && !isAdmin()"
+                  #commentMenuContainers
+                >
                   <button
                     (click)="toggleCommentMenu($event, comment.id)"
                     class="text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
@@ -363,6 +373,7 @@
                       styles="w-32 right-0"
                       [isOwner]="comment.isOwner"
                       [dropdownItems]="commentMenuItems"
+                      (commentItemClicked)="handleCommentMenuActions($event, comment)"
                     />
                   }
                 </div>
@@ -370,7 +381,9 @@
 
               <!-- Content -->
               <div class="pl-9 mb-5">
-                <div class="text-[15px]">{{ comment.content }}</div>
+                <div class="text-[15px]" [ngClass]="comment.isDeleted ? 'text-gray-500/50' : ''">
+                  {{ comment.content }}
+                </div>
               </div>
             }
           </div>

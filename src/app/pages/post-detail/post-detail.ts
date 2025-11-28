@@ -14,16 +14,18 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AddCommentRequest } from '@core/models/interface/comments';
 import {
-  ActionClickEvent,
-  PostActionPayload,
-  PostDropdownItems,
-} from '@core/models/interface/posts';
+  AddCommentRequest,
+  Comment,
+  CommentActionClickEvent,
+  CommentDropdownItems,
+} from '@core/models/interface/comments';
+import { ActionClickEvent, PostDropdownItems } from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
 import { PostService } from '@core/services/post.service';
+import { UserService } from '@core/services/user.service';
 import { ZardDividerComponent } from '@shared/components/divider/divider.component';
 import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
@@ -55,6 +57,7 @@ export class PostDetail implements OnInit {
   private postService = inject(PostService);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
+  private userService = inject(UserService);
 
   readonly shareItems: PostDropdownItems[] = [
     {
@@ -81,7 +84,7 @@ export class PostDetail implements OnInit {
     },
   ];
 
-  readonly commentMenuItems: PostDropdownItems[] = [
+  readonly commentMenuItems: CommentDropdownItems[] = [
     {
       label: 'Report',
       iconClass: 'icon-tabler-message-report',
@@ -109,7 +112,7 @@ export class PostDetail implements OnInit {
       ownerOnly: true,
       forAuthenticated: true,
       hideForOwner: false,
-      action: 'delete',
+      action: 'initial-delete',
       fill: false,
     },
   ];
@@ -120,6 +123,7 @@ export class PostDetail implements OnInit {
   isAuthenticated = this.authService.isAuthenticated;
   token = this.authService.token;
   isCommentSelected = signal<boolean>(false);
+  isAdmin = this.userService.isAdmin;
   private slug = signal<string | null>(null);
 
   commentForm: FormGroup = this.createForm();
@@ -231,7 +235,7 @@ export class PostDetail implements OnInit {
   }
 
   handlePostMenuActions(data: ActionClickEvent) {
-    const handler = this.postService.menuActionHandlers.get(data.action);
+    const handler = this.postService.postMenuActionHandlers.get(data.action);
 
     if (handler) {
       handler(this.post(), 'detail')
@@ -245,6 +249,26 @@ export class PostDetail implements OnInit {
             handleHttpError(error, this.messageService);
           },
         });
+    }
+  }
+
+  handleCommentMenuActions(data: CommentActionClickEvent, comment: Comment) {
+    const handler = this.postService.commentMenuActionHandlers.get(data.action);
+
+    if (handler) {
+      handler(comment)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            const message = SUCCESS_MESSAGES.get(data.action);
+            this.messageService.showMessage('success', message);
+          },
+          error: (error: HttpErrorResponse) => {
+            handleHttpError(error, this.messageService);
+          },
+        });
+    } else {
+      console.log('No handler found for action:', data.action);
     }
   }
 

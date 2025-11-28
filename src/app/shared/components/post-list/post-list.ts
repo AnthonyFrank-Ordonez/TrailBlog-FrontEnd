@@ -182,7 +182,7 @@ export class PostList implements OnInit {
   }
 
   handlePostMenuAction(data: PostActionPayload) {
-    const handler = this.postService.menuActionHandlers.get(data.action);
+    const handler = this.postService.postMenuActionHandlers.get(data.action);
 
     if (handler) {
       handler(data.post)

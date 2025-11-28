@@ -16,7 +16,7 @@ import { POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
 import { PageResult } from '@core/models/interface/page-result';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
-import { AddCommentRequest, Comment } from '@core/models/interface/comments';
+import { AddCommentRequest, Comment, CommentAction } from '@core/models/interface/comments';
 import { AuthService } from './auth.service';
 import { ModalService } from './modal.service';
 import { OperationResult } from '@core/models/interface/operations';
@@ -92,7 +92,7 @@ export class PostService {
     () => new Map(this.reactionList().map((reaction) => [reaction.id, reaction])),
   );
 
-  readonly menuActionHandlers = new Map<
+  readonly postMenuActionHandlers = new Map<
     PostAction,
     (post: Post, type?: string) => Observable<OperationResult | Post>
   >([
@@ -100,6 +100,11 @@ export class PostService {
     ['save', (post, type) => this.savePost(post, type)],
     ['unsave', (post, type) => this.unsavePost(post, type)],
   ]);
+
+  readonly commentMenuActionHandlers = new Map<
+    CommentAction,
+    (comment: Comment) => Observable<OperationResult>
+  >([['initial-delete', (comment) => this.deleteCommentInitial(comment)]]);
 
   loadInitialPosts(strategy: PostLoadingStrategy = 'regular') {
     this.#postSignal.set([]);
@@ -410,6 +415,31 @@ export class PostService {
     );
   }
 
+  deleteCommentInitial(comment: Comment): Observable<OperationResult> {
+    this.closeDropdown();
+
+    const previousCommentState: Comment = comment;
+    const optimisticComment: Comment = {
+      ...comment,
+      content: '[This comment has been deleted]',
+      username: 'Unknown',
+      isDeleted: true,
+    };
+
+    this.updatePostCommentOptimisticData(comment.id, optimisticComment);
+
+    return this.http.patch<OperationResult>(`${this.env.apiRoot}/comment/${comment.id}`, null).pipe(
+      tap(() => {
+        console.log('Comment deleted successfully');
+      }),
+      catchError((error) => {
+        console.error('Delete comment failed, rolling back', error);
+        this.updatePostCommentOptimisticData(comment.id, previousCommentState);
+        return throwError(() => error);
+      }),
+    );
+  }
+
   clearRecentViewedPosts(): Observable<OperationResult> {
     const previousPosts = this.#recentViewedPostsSignal();
     this.#recentViewedPostsSignal.set([]);
@@ -575,6 +605,33 @@ export class PostService {
         return updatedPost;
       }
       return currentPost;
+    });
+  }
+
+  private updatePostCommentOptimisticData(commentId: string, updatedComment: Comment) {
+    this.#postDetailSignal.update((post) => {
+      if (!post.comments) return post;
+
+      let oldComment: Comment | undefined;
+      const updatedComments = post.comments.map((c) => {
+        if (c.id === commentId) {
+          oldComment = c;
+          return updatedComment;
+        }
+        return c;
+      });
+
+      if (!oldComment) {
+        return post;
+      }
+
+      const isDeleteOperation = updatedComment.isDeleted && !oldComment.isDeleted;
+
+      return {
+        ...post,
+        comments: updatedComments,
+        totalComment: isDeleteOperation ? post.totalComment - 1 : post.totalComment,
+      };
     });
   }
 }

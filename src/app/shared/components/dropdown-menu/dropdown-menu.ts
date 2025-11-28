@@ -1,5 +1,10 @@
 import { NgClass } from '@angular/common';
 import { Component, inject, input, output } from '@angular/core';
+import {
+  CommentAction,
+  CommentActionClickEvent,
+  CommentDropdownItems,
+} from '@core/models/interface/comments';
 import { ActionClickEvent, PostAction, PostDropdownItems } from '@core/models/interface/posts';
 import { AuthService } from '@core/services/auth.service';
 
@@ -12,17 +17,43 @@ import { AuthService } from '@core/services/auth.service';
 export class DropdownMenu {
   private authService = inject(AuthService);
 
-  dropdownItems = input.required<PostDropdownItems[]>();
+  dropdownItems = input.required<PostDropdownItems[] | CommentDropdownItems[]>();
   isOwner = input<boolean>(false);
   styles = input<string>();
   dropdownWidth = input<string>('w-32');
   modalType = input<string>('');
   itemClicked = output<ActionClickEvent>();
+  commentItemClicked = output<CommentActionClickEvent>();
   isAuthenticated = this.authService.isAuthenticated;
+
+  private readonly COMMENT_ACTIONS = new Set<CommentAction>([
+    'initial-delete',
+    'delete',
+    'remove',
+    'report',
+  ]);
+
+  onItemClick(item: PostDropdownItems | CommentDropdownItems, event: MouseEvent) {
+    event?.stopPropagation();
+
+    if (this.isCommentDropdownItem(item)) {
+      this.handleCommentItemClick(item, event);
+    } else {
+      this.handleItemClick(item, event);
+    }
+  }
 
   handleItemClick(item: PostDropdownItems, event: MouseEvent) {
     event?.stopPropagation();
     this.itemClicked.emit({
+      action: item.action,
+      event: event,
+    });
+  }
+
+  handleCommentItemClick(item: CommentDropdownItems, event: MouseEvent) {
+    event?.stopPropagation();
+    this.commentItemClicked.emit({
       action: item.action,
       event: event,
     });
@@ -47,5 +78,11 @@ export class DropdownMenu {
 
       return true;
     });
+  }
+
+  private isCommentDropdownItem(
+    item: PostDropdownItems | CommentDropdownItems,
+  ): item is CommentDropdownItems {
+    return this.COMMENT_ACTIONS.has(item.action as CommentAction);
   }
 }

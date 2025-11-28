@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ApiError } from '@core/models/interface/api-error';
+import { CommentAction } from '@core/models/interface/comments';
 import { PostAction, PostLoadingStrategy } from '@core/models/interface/posts';
 import { ReactionRequest } from '@core/models/interface/reactions';
 import { MessageService } from '@core/services/message.service';
@@ -27,12 +28,13 @@ export const POST_PLACEHOLDER = {
   totalReactions: 0,
 };
 
-export const SUCCESS_MESSAGES = new Map<PostAction, string>([
+export const SUCCESS_MESSAGES = new Map<PostAction | CommentAction, string>([
   ['save', 'Post saved successfully!'],
   ['unsave', 'Post unsaved successfully!'],
   ['delete', 'Post deleted successfully!'],
   ['hide', 'Post hidden successfully!'],
   ['report', 'Post reported successfully!'],
+  ['initial-delete', 'Successfully deleted comment!'],
 ]);
 
 export function handleHttpError(error: HttpErrorResponse, messageService: MessageService) {
