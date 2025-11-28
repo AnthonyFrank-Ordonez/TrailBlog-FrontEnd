@@ -16,6 +16,7 @@ import { tap } from 'rxjs';
 import { PostService } from '@core/services/post.service';
 import { CommunityService } from '@core/services/community.service';
 import { Tooltip } from '../tooltip/tooltip';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -28,6 +29,7 @@ import { Tooltip } from '../tooltip/tooltip';
     RouterLink,
     InitialsPipe,
     Tooltip,
+    NgOptimizedImage,
   ],
   templateUrl: './header.html',
   styleUrl: './header.css',
