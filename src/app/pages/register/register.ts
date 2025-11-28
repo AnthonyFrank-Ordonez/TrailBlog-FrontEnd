@@ -77,9 +77,9 @@ export class Register {
     const { username, email, password } = this.signupForm.value;
 
     const userData: RegisterData = {
-      username,
-      email,
-      password,
+      username: username.trim().toLowerCase(),
+      email: email.trim().toLowerCase(),
+      password: password.trim(),
     };
 
     this.authService
