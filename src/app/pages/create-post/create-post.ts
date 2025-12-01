@@ -15,7 +15,6 @@ import {
   FormControl,
   FormGroup,
   Validators,
-  ɵInternalFormsSharedModule,
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -26,11 +25,10 @@ import { MessageService } from '@core/services/message.service';
 import { PostService } from '@core/services/post.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { debounce, handleHttpError } from '@shared/utils/utils';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-create-post',
-  imports: [ɵInternalFormsSharedModule, ReactiveFormsModule, InitialsPipe],
+  imports: [ReactiveFormsModule, InitialsPipe],
   templateUrl: './create-post.html',
   styleUrl: './create-post.css',
 })

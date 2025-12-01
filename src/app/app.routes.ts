@@ -3,12 +3,12 @@ import { Layout } from '@shared/components/layout/layout';
 import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
-import { Communities } from './pages/communities/communities';
 import { authGuard } from './core/guards/auth-guard';
 import { noAuthGuard } from './core/guards/no-auth-guard';
 import { CreatePost } from '@pages/create-post/create-post';
 import { PostDetail } from '@pages/post-detail/post-detail';
 import { Popular } from '@pages/popular/popular';
+import { ManageCommunities } from '@pages/manage-communities/manage-communities';
 
 export const routes: Routes = [
   {
@@ -26,7 +26,7 @@ export const routes: Routes = [
       },
       {
         path: 'communities',
-        component: Communities,
+        component: ManageCommunities,
         canActivate: [authGuard],
       },
       {

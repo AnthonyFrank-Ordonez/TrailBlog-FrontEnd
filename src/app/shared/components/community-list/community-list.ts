@@ -1,4 +1,12 @@
-import { Component, computed, DestroyRef, inject, linkedSignal, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  linkedSignal,
+  signal,
+} from '@angular/core';
 import { CommunityCard } from './community-card/community-card';
 import { CommunityService } from '@core/services/community.service';
 import { Communities } from '@core/models/interface/community';
@@ -20,8 +28,8 @@ export class CommunityList {
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
 
+  userCommunities = input.required<Communities[]>();
   isAuthenticated = this.authService.isAuthenticated;
-  userCommunities = this.communityService.userCommunities;
   communitiesLoading = this.communityService.userCommunitiesLoading;
   communityFilter = this.communityService.communityFilter;
   skeletonArray = Array(5).fill(0);

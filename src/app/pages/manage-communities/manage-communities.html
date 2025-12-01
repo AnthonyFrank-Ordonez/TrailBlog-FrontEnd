@@ -28,11 +28,12 @@
     <input
       type="text"
       placeholder="Search your communities"
+      [formControl]="searchControl"
       class="block border-gray-500/80 border rounded-md max-w-5xl w-full pl-10 pr-3 py-2 text-gray-500 hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 text-sm transition-colors"
     />
   </div>
 
   <div>
-    <app-community-list />
+    <app-community-list [userCommunities]="filteredUserCommunities()" />
   </div>
 </div>
