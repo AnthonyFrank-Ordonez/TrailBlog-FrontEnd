@@ -25,7 +25,7 @@ import { CommunityService } from '@core/services/community.service';
 import { MessageService } from '@core/services/message.service';
 import { PostService } from '@core/services/post.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
-import { handleHttpError } from '@shared/utils/utils';
+import { debounce, handleHttpError } from '@shared/utils/utils';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
@@ -57,16 +57,12 @@ export class CreatePost implements OnInit {
   searchControl = new FormControl('');
   postForm: FormGroup = this.createForm();
 
-  constructor(private elementRef: ElementRef) {}
-
   ngOnInit(): void {
     this.filteredUserCommunities.set([...this.userCommunities()]);
 
-    this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((searchTerm) => {
-        this.filterUserCommunities(searchTerm || '');
-      });
+    this.searchControl.valueChanges.pipe(debounce(this.destroyRef, 400)).subscribe((searchTerm) => {
+      this.filterUserCommunities(searchTerm || '');
+    });
   }
 
   private createForm(): FormGroup {

@@ -7,7 +7,7 @@ import { PostAction, PostLoadingStrategy } from '@core/models/interface/posts';
 import { ReactionRequest } from '@core/models/interface/reactions';
 import { MessageService } from '@core/services/message.service';
 import { PostService } from '@core/services/post.service';
-import { debounceTime, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, OperatorFunction, pipe, switchMap } from 'rxjs';
 
 export const POST_PLACEHOLDER = {
   id: '',
@@ -36,6 +36,13 @@ export const SUCCESS_MESSAGES = new Map<PostAction | CommentAction, string>([
   ['report', 'Post reported successfully!'],
   ['initial-delete', 'Successfully deleted comment!'],
 ]);
+
+export function debounce<T>(
+  destroyRef: DestroyRef,
+  debounceMs: number = 400,
+): OperatorFunction<T, T> {
+  return pipe(debounceTime(debounceMs), distinctUntilChanged(), takeUntilDestroyed(destroyRef));
+}
 
 export function handleHttpError(error: HttpErrorResponse, messageService: MessageService) {
   if (error.error instanceof ErrorEvent) {
@@ -84,8 +91,7 @@ export function setupReactionSubject(
 ) {
   postService.reaction$
     .pipe(
-      debounceTime(300),
-      takeUntilDestroyed(destroyRef),
+      debounce(destroyRef, 400),
       switchMap((reactionData: ReactionRequest) => postService.toggleReactions(reactionData)),
     )
     .subscribe({
