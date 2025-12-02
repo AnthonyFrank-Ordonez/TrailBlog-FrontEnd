@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
+  computed,
   DestroyRef,
   ElementRef,
   HostListener,
@@ -48,18 +49,28 @@ export class CreatePost implements OnInit {
   userCommunities = this.communityService.userCommunities;
   isSubmitting = this.postService.isSubmitting;
 
-  filteredUserCommunities = signal<Communities[]>([]);
   isCommunitySelectionSelected = signal<boolean>(false);
   selectedCommunity = signal<Communities | null>(null);
-
   searchControl = new FormControl('');
+  searchTerm = signal<string>('');
   postForm: FormGroup = this.createForm();
 
-  ngOnInit(): void {
-    this.filteredUserCommunities.set([...this.userCommunities()]);
+  filteredUserCommunities = computed(() => {
+    const term = this.searchTerm().toLowerCase().trim();
+    const communities = this.userCommunities();
 
+    if (!term) return communities;
+
+    return communities.filter(
+      (community) =>
+        community.communityName.toLowerCase().includes(term) ||
+        community.description?.toLowerCase().includes(term),
+    );
+  });
+
+  ngOnInit(): void {
     this.searchControl.valueChanges.pipe(debounce(this.destroyRef, 400)).subscribe((searchTerm) => {
-      this.filterUserCommunities(searchTerm || '');
+      this.searchTerm.set(searchTerm || '');
     });
   }
 
@@ -71,26 +82,9 @@ export class CreatePost implements OnInit {
     });
   }
 
-  private filterUserCommunities(searchTerm: string): void {
-    if (!searchTerm.trim()) {
-      this.filteredUserCommunities.set([...this.userCommunities()]);
-      return;
-    }
-
-    const term = searchTerm.toLowerCase();
-    this.filteredUserCommunities.set(
-      this.userCommunities().filter(
-        (community) =>
-          community.communityName.toLowerCase().includes(term) ||
-          community.description?.toLowerCase().includes(term),
-      ),
-    );
-  }
-
   showCommunitySelection(): void {
     this.isCommunitySelectionSelected.set(true);
     this.searchControl.setValue('');
-    this.filteredUserCommunities.set([...this.userCommunities()]);
 
     setTimeout(() => {
       if (this.searchInput) {

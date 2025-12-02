@@ -1,6 +1,5 @@
-import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Communities } from '@core/models/interface/community';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommunityService } from '@core/services/community.service';
 import { CommunityList } from '@shared/components/community-list/community-list';
 import { debounce } from '@shared/utils/utils';
@@ -18,7 +17,6 @@ export class ManageCommunities implements OnInit {
   userCommunities = this.communityService.userCommunities;
   searchControl = new FormControl('');
   searchTerm = signal<string>('');
-  // filteredUserCommunities = signal<Communities[]>([]);
 
   filteredUserCommunities = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
