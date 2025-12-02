@@ -58,17 +58,17 @@ export class CommunityList {
     this.communityService.toggleCommunityMembership(communityId, this.isAuthenticated());
   }
 
-  handleCommunityFavorite(communityId: string) {
-    if (this.isCommunityFavorite(communityId)) {
-      this.handleUnfavoriteCommunity(communityId);
+  handleCommunityFavorite(community: Communities) {
+    if (this.isCommunityFavorite(community.id)) {
+      this.handleUnfavoriteCommunity(community);
     } else {
-      this.handleFavoriteCommunity(communityId);
+      this.handleFavoriteCommunity(community);
     }
   }
 
-  handleFavoriteCommunity(communityId: string) {
+  handleFavoriteCommunity(community: Communities) {
     this.communityService
-      .favoriteCommunity(communityId)
+      .favoriteCommunity(community)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {
@@ -77,9 +77,9 @@ export class CommunityList {
       });
   }
 
-  handleUnfavoriteCommunity(communityId: string) {
+  handleUnfavoriteCommunity(community: Communities) {
     this.communityService
-      .unfavoriteCommunity(communityId)
+      .unfavoriteCommunity(community)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {

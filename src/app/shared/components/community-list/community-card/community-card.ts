@@ -11,7 +11,7 @@ import { InitialsPipe } from '@shared/pipes/initials-pipe';
 export class CommunityCard {
   community = input.required<Communities>();
   isFavorite = input<boolean>(false);
-  toggleFavoriteAction = output<string>();
+  toggleFavoriteAction = output<Communities>();
   leaveCommunityAction = output<string>();
 
   onLeaveCommunity(): void {
@@ -19,6 +19,6 @@ export class CommunityCard {
   }
 
   toggleFavorite() {
-    this.toggleFavoriteAction.emit(this.community().id);
+    this.toggleFavoriteAction.emit(this.community());
   }
 }

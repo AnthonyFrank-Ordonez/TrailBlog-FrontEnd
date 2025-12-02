@@ -113,35 +113,41 @@ export class CommunityService {
     );
   }
 
-  favoriteCommunity(communityId: string): Observable<Communities> {
-    return this.http.post<Communities>(`${this.apiUrl}/${communityId}/favorite`, null).pipe(
+  favoriteCommunity(community: Communities): Observable<Communities> {
+    const previousState = community.isFavorite;
+    const optimisticCommunity = { ...community, isFavorite: true };
+
+    this.updateUserCommunitiesWithOptimisticData(community.id, optimisticCommunity);
+
+    return this.http.post<Communities>(`${this.apiUrl}/${community.id}/favorite`, null).pipe(
       tap((updatedCommunity) => {
         console.log('Favorite Community');
 
-        this.#userCommunities.update((communities) =>
-          communities.map((community) =>
-            community.id === updatedCommunity.id ? { ...updatedCommunity } : community,
-          ),
-        );
+        this.updateUserCommunitiesWithOptimisticData(community.id, updatedCommunity);
       }),
       catchError((error) => {
+        const rollbackCommunity = { ...community, isFavorite: previousState };
+        this.updateUserCommunitiesWithOptimisticData(community.id, rollbackCommunity);
         return throwError(() => error);
       }),
     );
   }
 
-  unfavoriteCommunity(communityId: string): Observable<Communities> {
-    return this.http.post<Communities>(`${this.apiUrl}/${communityId}/unfavorite`, null).pipe(
+  unfavoriteCommunity(community: Communities): Observable<Communities> {
+    const previousState = community.isFavorite;
+    const optimisticCommunity = { ...community, isFavorite: false };
+
+    this.updateUserCommunitiesWithOptimisticData(community.id, optimisticCommunity);
+
+    return this.http.post<Communities>(`${this.apiUrl}/${community.id}/unfavorite`, null).pipe(
       tap((updatedCommunity) => {
         console.log('Unfavorite Community');
 
-        this.#userCommunities.update((communities) =>
-          communities.map((community) =>
-            community.id === updatedCommunity.id ? { ...updatedCommunity } : community,
-          ),
-        );
+        this.updateUserCommunitiesWithOptimisticData(community.id, updatedCommunity);
       }),
       catchError((error) => {
+        const rollbackCommunity = { ...community, isFavorite: previousState };
+        this.updateUserCommunitiesWithOptimisticData(community.id, rollbackCommunity);
         return throwError(() => error);
       }),
     );
@@ -202,6 +208,15 @@ export class CommunityService {
           handleHttpError(error, this.messageService);
         },
       });
+  }
+
+  private updateUserCommunitiesWithOptimisticData(
+    communityId: string,
+    updatedCommunity: Communities,
+  ): void {
+    this.#userCommunities.update((communities) =>
+      communities.map((c) => (c.id === communityId ? updatedCommunity : c)),
+    );
   }
 
   resetCommunityServiceData(): void {
