@@ -16,6 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   getStrategyFromPath,
   handleHttpError,
+  isExploreMetadata,
   setupReactionSubject,
   SUCCESS_MESSAGES,
 } from '@shared/utils/utils';
@@ -30,10 +31,12 @@ import {
 } from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
+import { PostMetadata } from '@core/models/interface/page-result';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-post-list',
-  imports: [PostCard, ZardDividerComponent],
+  imports: [PostCard, NgOptimizedImage, ZardDividerComponent],
   templateUrl: './post-list.html',
   styleUrl: './post-list.css',
 })
@@ -46,6 +49,7 @@ export class PostList implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   posts = input.required<Post[]>();
+  metadata = input<PostMetadata | undefined>();
 
   currentPath = this.currentRouteService.currentPath;
   isAuthenticated = this.authService.isAuthenticated;
@@ -179,6 +183,10 @@ export class PostList implements OnInit {
 
   isPostShareModalOpen(postId: string): boolean {
     return this.postService.isDropDownOpen('share', postId);
+  }
+
+  isExploreMetadata(metadata: PostMetadata | undefined): boolean {
+    return isExploreMetadata(metadata);
   }
 
   handlePostMenuAction(data: PostActionPayload) {

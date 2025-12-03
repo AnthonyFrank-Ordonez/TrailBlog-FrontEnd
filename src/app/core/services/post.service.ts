@@ -14,7 +14,7 @@ import {
 import { catchError, EMPTY, finalize, Observable, Subject, tap, throwError } from 'rxjs';
 import { POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
-import { PageResult } from '@core/models/interface/page-result';
+import { PageResult, PostMetadata } from '@core/models/interface/page-result';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AddCommentRequest, Comment, CommentAction } from '@core/models/interface/comments';
 import { AuthService } from './auth.service';
@@ -49,6 +49,7 @@ export class PostService {
   #sessionIdSignal = signal<string>('');
   #postMenuModalIdSignal = signal<string | null>(null);
   #activeDropdown = signal<PostDropdown>({ type: null, id: null });
+  #metadataSignal = signal<PostMetadata | undefined>(undefined);
   reaction$ = new Subject<ReactionRequest>();
 
   posts = this.#postSignal.asReadonly();
@@ -61,6 +62,7 @@ export class PostService {
   isSubmitting = this.#isSubmittingSignal.asReadonly();
   postMenuModalId = this.#postMenuModalIdSignal.asReadonly();
   activeDropdown = this.#activeDropdown.asReadonly();
+  metadata = this.#metadataSignal.asReadonly();
 
   readonly hasMore = computed(() => this.#currentPageSignal() < this.#totalPagesSignal());
 
@@ -72,6 +74,10 @@ export class PostService {
     popular: {
       endpoint: `${this.apiUrl}/popular`,
       useSessionId: false,
+    },
+    explore: {
+      endpoint: `${this.apiUrl}/explore`,
+      useSessionId: true,
     },
   };
 
@@ -115,7 +121,7 @@ export class PostService {
     return this.loadMorePosts();
   }
 
-  loadMorePosts(): Observable<HttpResponse<PageResult<Post>>> {
+  loadMorePosts(): Observable<HttpResponse<PageResult<Post, PostMetadata>>> {
     if (this.#isPostLoadingSignal()) {
       console.log('Already loading, skipping...');
       return EMPTY;
@@ -139,31 +145,40 @@ export class PostService {
       params = params.set('sessionId', this.#sessionIdSignal());
     }
 
-    return this.http.get<PageResult<Post>>(config.endpoint, { params, observe: 'response' }).pipe(
-      tap((result) => {
-        const response = result.body!;
+    return this.http
+      .get<PageResult<Post, PostMetadata>>(config.endpoint, { params, observe: 'response' })
+      .pipe(
+        tap((result) => {
+          const response = result.body!;
 
-        if (config.useSessionId) {
-          const sessionId = result.headers.get('X-Session-Id');
+          console.log('🚀 ~ PostService ~ loadMorePosts ~ response:', response);
 
-          if (sessionId) {
-            this.#sessionIdSignal.set(sessionId);
+          if (config.useSessionId) {
+            const sessionId = result.headers.get('X-Session-Id');
+
+            if (sessionId) {
+              this.#sessionIdSignal.set(sessionId);
+            }
           }
-        }
 
-        this.#postSignal.update((currentPosts) => [...currentPosts, ...response.data]);
+          this.#postSignal.update((currentPosts) => [...currentPosts, ...response.data]);
 
-        this.#totalCountSignal.set(response.totalCount);
-        this.#totalPagesSignal.set(response.totalPages);
-        this.#currentPageSignal.set(nextPage);
-      }),
-      catchError((error: HttpErrorResponse) => {
-        return throwError(() => error);
-      }),
-      finalize(() => {
-        this.#isPostLoadingSignal.set(false);
-      }),
-    );
+          // Store metadata if available
+          if (response.metadata) {
+            this.#metadataSignal.set(response.metadata);
+          }
+
+          this.#totalCountSignal.set(response.totalCount);
+          this.#totalPagesSignal.set(response.totalPages);
+          this.#currentPageSignal.set(nextPage);
+        }),
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        }),
+        finalize(() => {
+          this.#isPostLoadingSignal.set(false);
+        }),
+      );
   }
 
   loadMostPopularPost(): Observable<PageResult<Post>> {

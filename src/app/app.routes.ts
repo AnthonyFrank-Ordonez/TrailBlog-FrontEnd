@@ -10,6 +10,7 @@ import { PostDetail } from '@pages/post-detail/post-detail';
 import { Popular } from '@pages/popular/popular';
 import { ManageCommunities } from '@pages/manage-communities/manage-communities';
 import { PageNotFound } from '@pages/page-not-found/page-not-found';
+import { Explore } from '@pages/explore/explore';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,10 @@ export const routes: Routes = [
         path: 'create',
         component: CreatePost,
         canActivate: [authGuard],
+      },
+      {
+        path: 'explore',
+        component: Explore,
       },
       {
         path: 'post/:slug',

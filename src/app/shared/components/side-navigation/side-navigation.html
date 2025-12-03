@@ -55,6 +55,7 @@
           class="flex items-center w-full cursor-pointer space-x-2 px-3 py-2 rounded-lg hover:bg-gray-800/40 transition-colors"
           [class.text-secondary]="activeTab() === 'explore'"
           [class.text-white]="activeTab() !== 'explore'"
+          (click)="toggleNavigation('/explore')"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

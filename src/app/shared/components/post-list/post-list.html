@@ -56,6 +56,16 @@
   <div class="text-center py-8 text-gray-400">You've reached the end!</div>
 }
 
-@if (posts().length === 0 && !isPostLoading()) {
-  <div class="text-center py-12 text-gray-400">No posts found</div>
+@if (!isPostLoading() && metadata(); as meta) {
+  @if (isExploreMetadata(meta)) {
+    <div class="flex flex-col items-center justify-center mt-12 lg:mt-15">
+      <img ngSrc="assets/empty.png" alt="empty" width="300" height="300" priority />
+      <p class="text-white font-medium text-center">{{ meta.message }}</p>
+      <p class="text-gray-700 text-sm mt-1">{{ meta.code }}</p>
+    </div>
+  }
+} @else {
+  @if (posts().length === 0 && !isPostLoading()) {
+    <div class="text-center py-12 text-gray-400">No posts found</div>
+  }
 }

@@ -3,6 +3,7 @@ import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ApiError } from '@core/models/interface/api-error';
 import { CommentAction } from '@core/models/interface/comments';
+import { ExploreMetadata, PostMetadata } from '@core/models/interface/page-result';
 import { PostAction, PostLoadingStrategy } from '@core/models/interface/posts';
 import { ReactionRequest } from '@core/models/interface/reactions';
 import { MessageService } from '@core/services/message.service';
@@ -63,6 +64,7 @@ export function getStrategyFromPath(path: string): PostLoadingStrategy {
   const strategyMap: Record<string, PostLoadingStrategy> = {
     '/': 'regular',
     '/popular': 'popular',
+    '/explore': 'explore',
   };
 
   const strategy = strategyMap[path];
@@ -80,6 +82,7 @@ export function getActiveTabFromPath(path: string): string {
   if (path.startsWith('/create')) return 'create';
   if (path.startsWith('/communities')) return 'community';
   if (path.startsWith('/post/')) return 'post-detail';
+  if (path.startsWith('/explore')) return 'explore';
 
   return 'home';
 }
@@ -99,4 +102,16 @@ export function setupReactionSubject(
         handleHttpError(error, messageService);
       },
     });
+}
+
+export function isExploreMetadata(metadata: PostMetadata | undefined): metadata is ExploreMetadata {
+  return (
+    metadata !== undefined &&
+    'allCommunitiesJoined' in metadata &&
+    'code' in metadata &&
+    'message' in metadata &&
+    typeof metadata.allCommunitiesJoined === 'boolean' &&
+    typeof metadata.code === 'string' &&
+    typeof metadata.message === 'string'
+  );
 }

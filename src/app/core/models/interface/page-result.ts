@@ -1,4 +1,11 @@
-export interface PageResult<T> {
+export interface ExploreMetadata {
+  allCommunitiesJoined: boolean;
+  code: string;
+  message: string;
+}
+
+export type PostMetadata = ExploreMetadata | Record<string, unknown>;
+export interface PageResult<T, M = PostMetadata> {
   data: T[];
   page: number;
   pageSize: number;
@@ -6,5 +13,5 @@ export interface PageResult<T> {
   totalPages: number;
   hasPrevious: boolean;
   hasNext: boolean;
-  metadata?: Object;
+  metadata?: M;
 }

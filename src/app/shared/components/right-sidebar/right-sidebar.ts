@@ -19,6 +19,7 @@ export class RightSidebar {
     '/': { component: 'recent-viewed', requiresAuth: true },
     '/popular': { component: 'recent-viewed', requiresAuth: true },
     '/communities': { component: 'manage-community', requiresAuth: true },
+    '/explore': { component: 'recent-viewed', requiresAuth: true },
   };
 
   currentPath = this.currentRouteService.currentPath;
