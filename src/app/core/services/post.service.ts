@@ -539,6 +539,7 @@ export class PostService {
 
   resetPostServiceData(): void {
     this.#recentViewedPostsSignal.set([]);
+    this.#metadataSignal.set(undefined);
   }
 
   async handlePostShareAction(action: PostAction, post: Post): Promise<void> {
