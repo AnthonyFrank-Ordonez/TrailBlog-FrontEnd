@@ -151,8 +151,6 @@ export class PostService {
         tap((result) => {
           const response = result.body!;
 
-          console.log('🚀 ~ PostService ~ loadMorePosts ~ response:', response);
-
           if (config.useSessionId) {
             const sessionId = result.headers.get('X-Session-Id');
 
