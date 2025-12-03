@@ -11,6 +11,7 @@ import { Popular } from '@pages/popular/popular';
 import { ManageCommunities } from '@pages/manage-communities/manage-communities';
 import { PageNotFound } from '@pages/page-not-found/page-not-found';
 import { Explore } from '@pages/explore/explore';
+import { About } from '@pages/about/about';
 
 export const routes: Routes = [
   {
@@ -39,6 +40,10 @@ export const routes: Routes = [
       {
         path: 'explore',
         component: Explore,
+      },
+      {
+        path: 'about',
+        component: About,
       },
       {
         path: 'post/:slug',

@@ -83,6 +83,7 @@ export function getActiveTabFromPath(path: string): string {
   if (path.startsWith('/communities')) return 'community';
   if (path.startsWith('/post/')) return 'post-detail';
   if (path.startsWith('/explore')) return 'explore';
+  if (path.startsWith('/about')) return 'about';
 
   return 'home';
 }

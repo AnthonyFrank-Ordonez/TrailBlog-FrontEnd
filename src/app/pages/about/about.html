@@ -1,0 +1,134 @@
+<div class="px-5 lg:px-10 2xl:px-23 py-10">
+  <div class="mt-3">
+    <h3 class="text-secondary text-5xl font-bold tracking-wide mb-3">About Trail</h3>
+    <div class="border-b border-b-white/20 hidden lg:block"></div>
+    <p class="text-white text-xl mt-3 font-light text-justify">
+      Trail is a community driven platform designed to connect developers, share knowledge, and
+      foster meaningful discussions. Our mission is to create a space where developers can come
+      together to learn, share, solve complex problems, and grow their skills. We believe that
+      through collaboration and knowledge sharing, we can create a better future for the development
+      community not only for development community but also for the entire world.
+    </p>
+  </div>
+
+  <div class="mt-10">
+    <h5 class="text-secondary font-bold tracking-wide text-3xl">Key Features</h5>
+    <div class="mt-5 text-white">
+      <ul class="list-disc space-y-2 pl-7 text-lg font-light">
+        <li>
+          <span class="font-medium">Organized Communities:</span> Find and join specific topic-base
+          groups
+        </li>
+        <li>
+          <span class="font-medium">Knowledge Sharing:</span> Share your knowledge and expertise
+        </li>
+        <li>
+          <span class="font-medium">Mobile First:</span> Access Trail on the go with our mobile app
+        </li>
+        <li>
+          <span class="font-medium">Responsive Design:</span> Enjoy a seamless experience across
+          devices
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-10">
+    <h5 class="text-secondary font-bold tracking-wide text-3xl">Get Involved</h5>
+
+    <div class="flex space-x-3 mt-5">
+      <button
+        routerLink="/explore"
+        class="bg-transparent border border-white/20 text-white px-6 py-2.5 rounded-full cursor-pointer text-sm hover:bg-gray-500/20"
+      >
+        Join Community
+      </button>
+      <button
+        routerLink="/create"
+        class="bg-gray-500/20 text-white px-6 py-2.5 rounded-full cursor-pointer text-sm hover:bg-gray-500/40"
+      >
+        Contribute your expertise
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-10">
+    <h5 class="text-secondary font-bold tracking-wide text-3xl">Contact Us</h5>
+    <div class="mt-5 text-white">
+      <p class="mb-5">For any questions or feedback, please fill out the form below:</p>
+
+      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="space-y-5 max-w-5xl">
+        <div>
+          <label for="name" class="block text-sm font-medium mb-2">Name</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Your name"
+            class="w-full px-4 py-2.5 bg-gray-500/20 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors"
+            [class.border-red-500]="
+              contactForm.get('name')?.invalid && contactForm.get('name')?.touched
+            "
+          />
+          @if (contactForm.get('name')?.invalid && contactForm.get('name')?.touched) {
+            <p class="text-red-500 text-sm mt-1">Name is required</p>
+          }
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium mb-2">Email</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="your.email@example.com"
+            class="w-full px-4 py-2.5 bg-gray-500/20 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors"
+            [class.border-red-500]="
+              contactForm.get('email')?.invalid && contactForm.get('email')?.touched
+            "
+          />
+          @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
+            <p class="text-red-500 text-sm mt-1">
+              @if (contactForm.get('email')?.hasError('required')) {
+                Email is required
+              } @else if (contactForm.get('email')?.hasError('email')) {
+                Please enter a valid email address
+              }
+            </p>
+          }
+        </div>
+
+        <div>
+          <label for="message" class="block text-sm font-medium mb-2">Message</label>
+          <textarea
+            id="message"
+            formControlName="message"
+            placeholder="Your message..."
+            rows="6"
+            class="w-full px-4 py-2.5 bg-gray-500/20 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors resize-none"
+            [class.border-red-500]="
+              contactForm.get('message')?.invalid && contactForm.get('message')?.touched
+            "
+          ></textarea>
+          @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
+            <p class="text-red-500 text-sm mt-1">Message is required</p>
+          }
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button
+            type="submit"
+            [disabled]="contactForm.invalid || isSubmitting()"
+            class="bg-secondary text-white px-8 py-2.5 rounded-full cursor-pointer text-sm font-medium hover:bg-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            @if (isSubmitting()) {
+              Sending...
+            } @else {
+              Send Message
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
