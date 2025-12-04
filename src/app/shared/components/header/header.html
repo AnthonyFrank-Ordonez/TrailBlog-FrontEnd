@@ -213,7 +213,7 @@
     <div class="flex items-center space-x-2">
       @if (isAuthenticated()) {
         <!-- Create Btn -->
-        <app-tooltip toolTipText="Create a new post" baseTooltipClass="mt-1 pointer-events-none">
+        <app-tooltip toolTipText="Create a new post">
           <button
             class="flex items-center space-x-1.5 px-2 py-2 text-white rounded-full text-sm font-medium transition-colors hover:bg-gray-800/40 cursor-pointer"
             routerLink="/create"
@@ -231,7 +231,7 @@
         </app-tooltip>
 
         <!-- Notification -->
-        <app-tooltip toolTipText="Notification" baseTooltipClass="mt-1 pointer-events-none">
+        <app-tooltip toolTipText="Notification">
           <button
             class="p-2 text-white hover:bg-gray-800/40 rounded-full transition-colors cursor-pointer"
           >

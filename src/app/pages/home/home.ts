@@ -1,10 +1,11 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { PostList } from '@shared/components/post-list/post-list';
 import { PostService } from '@core/services/post.service';
+import { Tooltip } from '@shared/components/tooltip/tooltip';
 
 @Component({
   selector: 'app-home',
-  imports: [PostList],
+  imports: [PostList, Tooltip],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
