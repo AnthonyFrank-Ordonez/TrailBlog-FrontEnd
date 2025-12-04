@@ -5,7 +5,7 @@ export type ReactionType = 'like' | 'dislike';
 
 export type PostLoadingStrategy = 'regular' | 'popular' | 'explore';
 
-export type DropdownType = 'menu' | 'share' | 'reaction';
+export type DropdownType = 'menu' | 'share' | 'reaction' | 'filter';
 
 export type PostAction =
   | 'share'

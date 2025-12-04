@@ -5,13 +5,11 @@ import {
   HostListener,
   inject,
   input,
-  linkedSignal,
   OnInit,
   untracked,
 } from '@angular/core';
 import { PostCard } from './post-card/post-card';
 import { PostService } from '@core/services/post.service';
-import { ZardDividerComponent } from '@shared/components/divider/divider.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   getStrategyFromPath,
@@ -36,7 +34,7 @@ import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-post-list',
-  imports: [PostCard, NgOptimizedImage, ZardDividerComponent],
+  imports: [PostCard, NgOptimizedImage],
   templateUrl: './post-list.html',
   styleUrl: './post-list.css',
 })
@@ -261,7 +259,6 @@ export class PostList implements OnInit {
     const isButton = target.closest('.action-btn, button');
 
     if (!insideModal && !isButton) {
-      console.log('Clicked Outside!');
       this.postService.closeDropdown();
     }
   }

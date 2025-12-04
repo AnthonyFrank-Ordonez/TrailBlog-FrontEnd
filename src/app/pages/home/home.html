@@ -1,51 +1,52 @@
 <div class="lg:px-5 2xl:px-16 py-5">
-  <div class="border-b border-b-white/20 hidden lg:block">
+  <div class="border-b border-b-white/20 hidden lg:block mb-3">
     <!-- Filtering of Post -->
-    <button
-      class="mb-2 text-white font-light text-sm items-center space-x-1 rounded-full hover:bg-gray-800/50 px-3 py-1.5 cursor-pointer flex"
-      z-dropdown
-      [zDropdownMenu]="sort"
-    >
-      <span>Best</span>
-      <svg
-        class="w-5 h-5"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="currentColor"
+    <div class="relative">
+      <button
+        (click)="togglePostMenuFilter()"
+        class="action-btn mb-2 text-white font-light text-sm items-center space-x-1 rounded-full hover:bg-gray-800/50 px-3 py-1.5 cursor-pointer flex"
       >
-        <path
-          d="M19.5 8.25L12 15.75L4.5 8.25"
-          stroke="#0F172A"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </button>
+        <span>{{ activePostFilter() }}</span>
+        <svg
+          class="w-5 h-5 duration-300 transition-transform"
+          [class.rotate-180]="isPostMenuFilterOpen()"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+        >
+          <path
+            d="M19.5 8.25L12 15.75L4.5 8.25"
+            stroke="#0F172A"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
 
-    <z-dropdown-menu-content
-      #sort="zDropdownMenuContent"
-      class="bg-primary text-white border-white/30 hidden lg:block"
-    >
-      <z-dropdown-menu-label>Sort By</z-dropdown-menu-label>
-      <z-dropdown-menu-item class="hover:bg-gray-800/50" (click)="onSort()">
-        <span>Best</span>
-      </z-dropdown-menu-item>
-
-      <z-dropdown-menu-item class="hover:bg-gray-800/50" (click)="onSort()">
-        <span>Hot</span>
-      </z-dropdown-menu-item>
-
-      <z-dropdown-menu-item class="hover:bg-gray-800/50" (click)="onSort()">
-        <span>New</span>
-      </z-dropdown-menu-item>
-
-      <z-dropdown-menu-item class="hover:bg-gray-800/50" (click)="onSort()">
-        <span>Top</span>
-      </z-dropdown-menu-item>
-    </z-dropdown-menu-content>
+      @if (isPostMenuFilterOpen()) {
+        <div
+          class="absolute top-9 flex flex-col z-50 bg-black border border-white/30 p-0.5 w-24 rounded-md"
+          animate.enter="dropdown-fade-in"
+          animate.leave="dropdown-fade-out"
+          data-modal-type="post-filter"
+        >
+          <span class="text-gray-500 text-sm flex gap-1 text-left w-full px-2 py-1.5 font-medium"
+            >Filter by</span
+          >
+          @for (item of postFilterType(); track $index) {
+            <button
+              (click)="togglePostFilter(item)"
+              class="text-white text-sm flex gap-1 text-left cursor-pointer hover:bg-white/20 duration-300 transition-colors w-full rounded-md px-2 py-1.5"
+            >
+              <span>{{ item }}</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
   </div>
 
   <div class="">
