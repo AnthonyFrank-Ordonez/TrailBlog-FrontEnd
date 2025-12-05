@@ -26,7 +26,7 @@ import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
 import { PostMetadata } from '@core/models/interface/page-result';
 import { NgOptimizedImage } from '@angular/common';
-import { MenuItems } from '@core/models/interface/menus';
+import { MenuItems, PostMenuItems } from '@core/models/interface/menus';
 
 @Component({
   selector: 'app-post-list',
@@ -55,7 +55,7 @@ export class PostList implements OnInit {
   skeletonArray = Array(5).fill(0);
   hasMore = this.postService.hasMore;
 
-  readonly menuItems: MenuItems[] = [
+  readonly menuItems: PostMenuItems[] = [
     {
       type: 'post',
       label: 'Save',
@@ -116,7 +116,7 @@ export class PostList implements OnInit {
     },
   ];
 
-  readonly shareItems: MenuItems[] = [
+  readonly shareItems: PostMenuItems[] = [
     {
       type: 'post',
       label: 'Copy',

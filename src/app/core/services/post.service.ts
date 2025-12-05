@@ -19,7 +19,7 @@ import { AuthService } from './auth.service';
 import { ModalService } from './modal.service';
 import { OperationResult } from '@core/models/interface/operations';
 import { CurrentRouteService } from './current-route.service';
-import { CommentAction, MenuItems, PostAction } from '@core/models/interface/menus';
+import { CommentAction, MenuItems, PostAction, PostMenuItems } from '@core/models/interface/menus';
 
 @Injectable({
   providedIn: 'root',
@@ -239,7 +239,7 @@ export class PostService {
     return this.reactionListMap().get(id);
   }
 
-  getMenuItems(post: Post): MenuItems[] {
+  getMenuItems(post: Post): PostMenuItems[] {
     var isSaved = post.isSaved;
 
     return [

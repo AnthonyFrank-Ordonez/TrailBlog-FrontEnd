@@ -15,7 +15,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddCommentRequest, Comment } from '@core/models/interface/comments';
-import { CommentMenuItems, MenuClickEvent, MenuItems } from '@core/models/interface/menus';
+import {
+  CommentMenuItems,
+  MenuClickEvent,
+  MenuItems,
+  PostMenuItems,
+} from '@core/models/interface/menus';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
@@ -53,7 +58,7 @@ export class PostDetail implements OnInit {
   private authService = inject(AuthService);
   private userService = inject(UserService);
 
-  readonly shareItems: MenuItems[] = [
+  readonly shareItems: PostMenuItems[] = [
     {
       type: 'post',
       label: 'Copy',
