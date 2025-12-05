@@ -90,7 +90,7 @@
             [isOwner]="post().isOwner"
             [dropdownItems]="handleGetPostMenuItems()"
             modalType="menu"
-            (itemClicked)="handlePostMenuActions($event)"
+            (menuItemClicked)="handlePostMenuActions($event)"
           />
         }
       </div>
@@ -229,7 +229,7 @@
                 styles="w-32 mt-1 left-0"
                 [dropdownItems]="shareItems"
                 modalType="share"
-                (itemClicked)="handleShareActions($event)"
+                (menuItemClicked)="handleShareActions($event)"
               />
             }
           </div>
@@ -373,7 +373,7 @@
                       styles="w-32 right-0"
                       [isOwner]="comment.isOwner"
                       [dropdownItems]="commentMenuItems"
-                      (commentItemClicked)="handleCommentMenuActions($event, comment)"
+                      (menuItemClicked)="handleCommentMenuActions($event, comment)"
                     />
                   }
                 </div>

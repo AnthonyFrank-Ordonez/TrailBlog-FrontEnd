@@ -17,7 +17,6 @@ import { PostService } from '@core/services/post.service';
 import { CommunityService } from '@core/services/community.service';
 import { Tooltip } from '../tooltip/tooltip';
 import { NgOptimizedImage } from '@angular/common';
-import { PostDropdownItems } from '@core/models/interface/posts';
 
 @Component({
   selector: 'app-header',

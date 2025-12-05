@@ -1,4 +1,5 @@
 import { Comment } from './comments';
+import { PostAction } from './menus';
 import { ReactionSummary } from './reactions';
 
 export type ReactionType = 'like' | 'dislike';
@@ -6,18 +7,6 @@ export type ReactionType = 'like' | 'dislike';
 export type PostLoadingStrategy = 'regular' | 'popular' | 'explore';
 
 export type DropdownType = 'menu' | 'share' | 'reaction' | 'filter';
-
-export type PostAction =
-  | 'share'
-  | 'copy'
-  | 'embed'
-  | 'save'
-  | 'unsave'
-  | 'hide'
-  | 'report'
-  | 'delete'
-  | 'profile';
-
 export interface Post {
   id: string;
   title: string;
@@ -60,17 +49,6 @@ export interface PostStrategyConfig {
   useSessionId: boolean;
 }
 
-export interface PostDropdownItems {
-  label: string;
-  iconClass: string;
-  svgPath: Array<string>;
-  ownerOnly: boolean;
-  forAuthenticated: boolean;
-  hideForOwner?: boolean;
-  action: PostAction;
-  fill: boolean;
-}
-
 export interface PostDropdown {
   type: DropdownType | null;
   id: string | null;
@@ -79,9 +57,4 @@ export interface PostDropdown {
 export interface PostActionPayload {
   action: PostAction;
   post: Post;
-}
-
-export interface ActionClickEvent {
-  action: PostAction;
-  event: MouseEvent;
 }

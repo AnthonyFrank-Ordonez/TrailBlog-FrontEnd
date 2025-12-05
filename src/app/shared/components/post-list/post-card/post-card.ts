@@ -1,11 +1,7 @@
 import { NgClass } from '@angular/common';
 import { Component, ElementRef, inject, input, output, ViewChild } from '@angular/core';
-import {
-  ActionClickEvent,
-  Post,
-  PostActionPayload,
-  PostDropdownItems,
-} from '@core/models/interface/posts';
+import { MenuClickEvent, MenuItems } from '@core/models/interface/menus';
+import { Post, PostActionPayload } from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { PostService } from '@core/services/post.service';
@@ -29,8 +25,8 @@ export class PostCard {
 
   post = input.required<Post>();
   reactionList = input<ReactionList[]>([]);
-  menuItems = input<PostDropdownItems[]>([]);
-  shareItems = input<PostDropdownItems[]>([]);
+  menuItems = input<MenuItems[]>([]);
+  shareItems = input<MenuItems[]>([]);
   isUserJoined = input<boolean>(false);
   isPostMenuOpen = input<boolean>(false);
   isPostReactModalOpen = input<boolean>(false);
@@ -65,22 +61,26 @@ export class PostCard {
     this.shareModal.emit(this.post().id);
   }
 
-  handleShareItemClick(data: ActionClickEvent) {
+  handleShareItemClick(data: MenuClickEvent) {
     data.event.stopPropagation();
 
-    this.shareAction.emit({
-      action: data.action,
-      post: this.post(),
-    });
+    if (data.type === 'post') {
+      this.shareAction.emit({
+        action: data.action,
+        post: this.post(),
+      });
+    }
   }
 
-  handleMenuItemClick(data: ActionClickEvent) {
+  handleMenuItemClick(data: MenuClickEvent) {
     data.event.stopPropagation();
 
-    this.menuAction.emit({
-      action: data.action,
-      post: this.post(),
-    });
+    if (data.type === 'post') {
+      this.menuAction.emit({
+        action: data.action,
+        post: this.post(),
+      });
+    }
   }
 
   handlePostDetailNavigate(event: MouseEvent) {

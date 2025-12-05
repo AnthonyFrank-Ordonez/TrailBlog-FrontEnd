@@ -1,11 +1,11 @@
 import { NgClass } from '@angular/common';
 import { Component, computed, inject, input, output } from '@angular/core';
 import {
-  CommentAction,
-  CommentActionClickEvent,
-  CommentDropdownItems,
-} from '@core/models/interface/comments';
-import { ActionClickEvent, PostAction, PostDropdownItems } from '@core/models/interface/posts';
+  CommentMenuItems,
+  MenuClickEvent,
+  MenuItems,
+  PostMenuItems,
+} from '@core/models/interface/menus';
 import { AuthService } from '@core/services/auth.service';
 
 @Component({
@@ -17,16 +17,13 @@ import { AuthService } from '@core/services/auth.service';
 export class DropdownMenu {
   private authService = inject(AuthService);
 
-  dropdownItems = input.required<PostDropdownItems[] | CommentDropdownItems[]>();
+  dropdownItems = input.required<MenuItems[]>();
   isOwner = input<boolean>(false);
   styles = input<string>();
   dropdownWidth = input<string>('w-32');
   modalType = input<string>('');
-  itemClicked = output<ActionClickEvent>();
-  commentItemClicked = output<CommentActionClickEvent>();
+  menuItemClicked = output<MenuClickEvent>();
   isAuthenticated = this.authService.isAuthenticated;
-
-  private readonly COMMENT_ACTIONS = new Set<CommentAction>(['initial-delete', 'remove', 'report']);
 
   filteredMenuItems = computed(() => {
     return this.dropdownItems().filter((item) => {
@@ -49,35 +46,34 @@ export class DropdownMenu {
     });
   });
 
-  onItemClick(item: PostDropdownItems | CommentDropdownItems, event: MouseEvent) {
+  onItemClick(item: MenuItems, event: MouseEvent) {
     event?.stopPropagation();
 
-    if (this.isCommentDropdownItem(item)) {
-      this.handleCommentItemClick(item, event);
-    } else {
-      this.handleItemClick(item, event);
+    switch (item.type) {
+      case 'post':
+        this.handlePostItemClick(item, event);
+        break;
+      case 'comment':
+        this.handleCommentItemClick(item, event);
+        break;
     }
   }
 
-  handleItemClick(item: PostDropdownItems, event: MouseEvent) {
+  handlePostItemClick(item: PostMenuItems, event: MouseEvent) {
     event?.stopPropagation();
-    this.itemClicked.emit({
+    this.menuItemClicked.emit({
+      type: 'post',
       action: item.action,
       event: event,
     });
   }
 
-  handleCommentItemClick(item: CommentDropdownItems, event: MouseEvent) {
+  handleCommentItemClick(item: CommentMenuItems, event: MouseEvent) {
     event?.stopPropagation();
-    this.commentItemClicked.emit({
+    this.menuItemClicked.emit({
+      type: 'comment',
       action: item.action,
       event: event,
     });
-  }
-
-  private isCommentDropdownItem(
-    item: PostDropdownItems | CommentDropdownItems,
-  ): item is CommentDropdownItems {
-    return this.COMMENT_ACTIONS.has(item.action as CommentAction);
   }
 }

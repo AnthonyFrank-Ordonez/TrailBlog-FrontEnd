@@ -4,9 +4,7 @@ import {
   CreatePostRequest,
   DropdownType,
   Post,
-  PostAction,
   PostDropdown,
-  PostDropdownItems,
   PostLoadingStrategy,
   PostStrategyConfig,
   RecentViewedPost,
@@ -16,11 +14,12 @@ import { POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
 import { PageResult, PostMetadata } from '@core/models/interface/page-result';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
-import { AddCommentRequest, Comment, CommentAction } from '@core/models/interface/comments';
+import { AddCommentRequest, Comment } from '@core/models/interface/comments';
 import { AuthService } from './auth.service';
 import { ModalService } from './modal.service';
 import { OperationResult } from '@core/models/interface/operations';
 import { CurrentRouteService } from './current-route.service';
+import { CommentAction, MenuItems, PostAction } from '@core/models/interface/menus';
 
 @Injectable({
   providedIn: 'root',
@@ -240,11 +239,12 @@ export class PostService {
     return this.reactionListMap().get(id);
   }
 
-  getMenuItems(post: Post): PostDropdownItems[] {
+  getMenuItems(post: Post): MenuItems[] {
     var isSaved = post.isSaved;
 
     return [
       {
+        type: 'post',
         label: isSaved ? 'Unsave' : 'Save',
         iconClass: isSaved ? 'icon-tabler-bookmark-filled' : 'icon-tabler-bookmark',
         svgPath: isSaved
@@ -259,6 +259,7 @@ export class PostService {
         fill: isSaved ? true : false,
       },
       {
+        type: 'post',
         label: 'Hide',
         iconClass: 'icon-tabler-eye-off',
         svgPath: [
@@ -273,6 +274,7 @@ export class PostService {
         fill: false,
       },
       {
+        type: 'post',
         label: 'Report',
         iconClass: 'icon-tabler-message-report',
         svgPath: [
@@ -287,6 +289,7 @@ export class PostService {
         fill: false,
       },
       {
+        type: 'post',
         label: 'Delete',
         iconClass: 'icon-tabler-trash',
         svgPath: [

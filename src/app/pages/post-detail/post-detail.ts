@@ -14,13 +14,8 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  AddCommentRequest,
-  Comment,
-  CommentActionClickEvent,
-  CommentDropdownItems,
-} from '@core/models/interface/comments';
-import { ActionClickEvent, PostDropdownItems } from '@core/models/interface/posts';
+import { AddCommentRequest, Comment } from '@core/models/interface/comments';
+import { CommentMenuItems, MenuClickEvent, MenuItems } from '@core/models/interface/menus';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
@@ -31,7 +26,6 @@ import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 import { handleHttpError, setupReactionSubject, SUCCESS_MESSAGES } from '@shared/utils/utils';
-import { catchError } from 'rxjs';
 
 @Component({
   selector: 'app-post-detail',
@@ -59,8 +53,9 @@ export class PostDetail implements OnInit {
   private authService = inject(AuthService);
   private userService = inject(UserService);
 
-  readonly shareItems: PostDropdownItems[] = [
+  readonly shareItems: MenuItems[] = [
     {
+      type: 'post',
       label: 'Copy',
       iconClass: 'icon-tabler-clipboard',
       svgPath: [
@@ -72,6 +67,7 @@ export class PostDetail implements OnInit {
       fill: false,
     },
     {
+      type: 'post',
       label: 'Embed',
       iconClass: 'icon-tabler-file-code-2',
       svgPath: [
@@ -84,8 +80,9 @@ export class PostDetail implements OnInit {
     },
   ];
 
-  readonly commentMenuItems: CommentDropdownItems[] = [
+  readonly commentMenuItems: CommentMenuItems[] = [
     {
+      type: 'comment',
       label: 'Report',
       iconClass: 'icon-tabler-message-report',
       svgPath: [
@@ -100,6 +97,8 @@ export class PostDetail implements OnInit {
       fill: false,
     },
     {
+      type: 'comment',
+
       label: 'Delete',
       iconClass: 'icon-tabler-trash',
       svgPath: [
@@ -230,11 +229,13 @@ export class PostDetail implements OnInit {
     this.isCommentSelected.set(false);
   }
 
-  handleGetPostMenuItems(): PostDropdownItems[] {
+  handleGetPostMenuItems(): MenuItems[] {
     return this.postService.getMenuItems(this.post());
   }
 
-  handlePostMenuActions(data: ActionClickEvent) {
+  handlePostMenuActions(data: MenuClickEvent) {
+    if (data.type !== 'post') return;
+
     const handler = this.postService.postMenuActionHandlers.get(data.action);
 
     if (handler) {
@@ -252,7 +253,9 @@ export class PostDetail implements OnInit {
     }
   }
 
-  handleCommentMenuActions(data: CommentActionClickEvent, comment: Comment) {
+  handleCommentMenuActions(data: MenuClickEvent, comment: Comment) {
+    if (data.type !== 'comment') return;
+
     const handler = this.postService.commentMenuActionHandlers.get(data.action);
 
     if (handler) {
@@ -272,7 +275,9 @@ export class PostDetail implements OnInit {
     }
   }
 
-  async handleShareActions(data: ActionClickEvent) {
+  async handleShareActions(data: MenuClickEvent) {
+    if (data.type !== 'post') return;
+
     await this.postService.handlePostShareAction(data.action, this.post());
   }
 

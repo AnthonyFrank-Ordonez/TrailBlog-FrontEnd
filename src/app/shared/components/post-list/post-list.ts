@@ -21,16 +21,12 @@ import {
 import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-  Post,
-  PostAction,
-  PostActionPayload,
-  PostDropdownItems,
-} from '@core/models/interface/posts';
+import { Post, PostActionPayload } from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
 import { PostMetadata } from '@core/models/interface/page-result';
 import { NgOptimizedImage } from '@angular/common';
+import { MenuItems } from '@core/models/interface/menus';
 
 @Component({
   selector: 'app-post-list',
@@ -59,8 +55,9 @@ export class PostList implements OnInit {
   skeletonArray = Array(5).fill(0);
   hasMore = this.postService.hasMore;
 
-  readonly menuItems: PostDropdownItems[] = [
+  readonly menuItems: MenuItems[] = [
     {
+      type: 'post',
       label: 'Save',
       iconClass: 'icon-tabler-bookmark',
       svgPath: ['M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z'],
@@ -71,6 +68,7 @@ export class PostList implements OnInit {
       fill: false,
     },
     {
+      type: 'post',
       label: 'Hide',
       iconClass: 'icon-tabler-eye-off',
       svgPath: [
@@ -85,6 +83,7 @@ export class PostList implements OnInit {
       fill: false,
     },
     {
+      type: 'post',
       label: 'Report',
       iconClass: 'icon-tabler-message-report',
       svgPath: [
@@ -99,6 +98,7 @@ export class PostList implements OnInit {
       fill: false,
     },
     {
+      type: 'post',
       label: 'Delete',
       iconClass: 'icon-tabler-trash',
       svgPath: [
@@ -116,8 +116,9 @@ export class PostList implements OnInit {
     },
   ];
 
-  readonly shareItems: PostDropdownItems[] = [
+  readonly shareItems: MenuItems[] = [
     {
+      type: 'post',
       label: 'Copy',
       iconClass: 'icon-tabler-clipboard',
       svgPath: [
@@ -129,6 +130,7 @@ export class PostList implements OnInit {
       fill: false,
     },
     {
+      type: 'post',
       label: 'Embed',
       iconClass: 'icon-tabler-file-code-2',
       svgPath: [
@@ -205,7 +207,7 @@ export class PostList implements OnInit {
     }
   }
 
-  handleGetPostMenuItems(post: Post): PostDropdownItems[] {
+  handleGetPostMenuItems(post: Post): MenuItems[] {
     return this.postService.getMenuItems(post);
   }
 

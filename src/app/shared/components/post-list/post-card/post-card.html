@@ -57,7 +57,7 @@
             [isOwner]="post().isOwner"
             [dropdownItems]="menuItems()"
             modalType="menu"
-            (itemClicked)="handleMenuItemClick($event)"
+            (menuItemClicked)="handleMenuItemClick($event)"
           />
         }
       </div>
@@ -183,7 +183,7 @@
           styles="w-32 mt-1 left-0"
           modalType="share"
           [dropdownItems]="shareItems()"
-          (itemClicked)="handleShareItemClick($event)"
+          (menuItemClicked)="handleShareItemClick($event)"
         />
       }
     </div>
