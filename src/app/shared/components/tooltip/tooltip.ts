@@ -16,7 +16,7 @@ export class Tooltip {
   isHidden = signal<boolean>(false);
 
   getTooltipClass() {
-    const baseClass = `absolute left-1/2 -translate-x-1/2   transition-all duration-200 ${this.isHoverable() ? '' : 'pointer-events-none'}`;
+    const baseClass = `absolute left-1/2 -translate-x-1/2 transition-all duration-200 ${this.isHoverable() ? '' : 'pointer-events-none'}`;
 
     if (this.isHidden()) {
       return `${baseClass} opacity-0 invisible`;

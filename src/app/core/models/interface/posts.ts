@@ -15,7 +15,8 @@ export type PostAction =
   | 'unsave'
   | 'hide'
   | 'report'
-  | 'delete';
+  | 'delete'
+  | 'profile';
 
 export interface Post {
   id: string;
