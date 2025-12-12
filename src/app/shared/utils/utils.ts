@@ -36,6 +36,7 @@ export const SUCCESS_MESSAGES = new Map<PostAction | CommentAction, string>([
   ['hide', 'Post hidden successfully!'],
   ['report', 'Post reported successfully!'],
   ['initial-delete', 'Successfully deleted comment!'],
+  ['archive', 'Post archived successfully!'],
 ]);
 
 export function debounce<T>(
@@ -65,6 +66,7 @@ export function getStrategyFromPath(path: string): PostLoadingStrategy {
     '/': 'regular',
     '/popular': 'popular',
     '/explore': 'explore',
+    '/drafts': 'drafts',
   };
 
   const strategy = strategyMap[path];
@@ -84,6 +86,7 @@ export function getActiveTabFromPath(path: string): string {
   if (path.startsWith('/post/')) return 'post-detail';
   if (path.startsWith('/explore')) return 'explore';
   if (path.startsWith('/about')) return 'about';
+  if (path.startsWith('/drafts')) return 'drafts';
 
   return 'home';
 }

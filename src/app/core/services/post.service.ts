@@ -80,6 +80,10 @@ export class PostService {
       endpoint: `${this.apiUrl}/explore`,
       useSessionId: true,
     },
+    drafts: {
+      endpoint: `${this.apiUrl}/drafts`,
+      useSessionId: true,
+    },
   };
 
   private readonly shareActionHandlers = new Map<PostAction, (post: Post) => Promise<void> | void>([
@@ -106,6 +110,7 @@ export class PostService {
     ['delete', (post, type) => this.deletePost(post, type)],
     ['save', (post, type) => this.savePost(post, type)],
     ['unsave', (post, type) => this.unsavePost(post, type)],
+    ['archive', (post, type) => this.archivePost(post, type)],
   ]);
 
   readonly commentMenuActionHandlers = new Map<
@@ -243,8 +248,9 @@ export class PostService {
 
   getMenuItems(post: Post): PostMenuItems[] {
     var isSaved = post.isSaved;
+    const isDraftsPage = this.currentRouteService.currentPath().startsWith('/drafts');
 
-    return [
+    const allMenuItems: PostMenuItems[] = [
       {
         type: 'post',
         label: isSaved ? 'Unsave' : 'Save',
@@ -292,6 +298,21 @@ export class PostService {
       },
       {
         type: 'post',
+        label: 'Archive',
+        iconClass: 'icon-tabler-archive',
+        svgPath: [
+          'M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z',
+          'M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10',
+          'M10 12l4 0',
+        ],
+        ownerOnly: true,
+        forAuthenticated: true,
+        hideForOwner: false,
+        action: 'archive',
+        fill: false,
+      },
+      {
+        type: 'post',
         label: 'Delete',
         iconClass: 'icon-tabler-trash',
         svgPath: [
@@ -308,6 +329,13 @@ export class PostService {
         fill: false,
       },
     ];
+
+    // Filter menu items based on whether user is on drafts page
+    if (isDraftsPage) {
+      return allMenuItems.filter((item) => item.action === 'delete');
+    }
+
+    return allMenuItems;
   }
 
   createPost(postData: CreatePostRequest): Observable<Post> {
@@ -336,7 +364,7 @@ export class PostService {
       tap((post) => {
         console.log('Creating draft posts...');
 
-        this.#draftPostSignal.update((values) => [...values, post]);
+        this.#postSignal.update((values) => [...values, post]);
       }),
       catchError((error) => {
         return throwError(() => error);
@@ -429,6 +457,24 @@ export class PostService {
         console.error('Unsave post failed, rolling back', error);
         const rollbackPost = { ...post, isSaved: previousSavedState };
         this.updatePostsWithOptimisticData(post.id, rollbackPost);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  archivePost(post: Post, type?: string): Observable<OperationResult> {
+    this.closeDropdown();
+
+    const archivedPost = post;
+    const oldIndex = this.#postSignal().findIndex((p) => p.id === post.id);
+    this.removePostOptimistic(post.id);
+
+    return this.http.patch<OperationResult>(`${this.apiUrl}/${post.id}/archive`, null).pipe(
+      tap(() => {
+        console.log('Archiving post...');
+      }),
+      catchError((error) => {
+        this.rollbackRemovePostOptimistic(oldIndex, archivedPost);
         return throwError(() => error);
       }),
     );
@@ -644,6 +690,22 @@ export class PostService {
       }
       return currentPost;
     });
+  }
+
+  private removePostOptimistic(postId: string) {
+    this.#postSignal.update((posts) => posts.filter((p) => p.id !== postId));
+
+    this.#recentViewedPostsSignal.update((rp) => rp.filter((p) => p.postId !== postId));
+  }
+
+  private rollbackRemovePostOptimistic(index: number, post: Post) {
+    this.#postSignal.update((posts) => [...posts.slice(0, index), post, ...posts.slice(index)]);
+
+    this.#recentViewedPostsSignal.update((rp) => [
+      ...rp.slice(0, index),
+      { postId: post.id, ...post },
+      ...rp.slice(index),
+    ]);
   }
 
   private updatePostCommentOptimisticData(commentId: string, updatedComment: Comment) {

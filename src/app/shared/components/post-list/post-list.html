@@ -1,6 +1,7 @@
 @for (post of posts(); track post.id) {
   <app-post-card
     [post]="post"
+    [currentPath]="currentPath()"
     [isUserJoined]="isUserInCommunity(post.communityId)"
     [isPostMenuOpen]="isPostMenuOpen(post.id)"
     [isPostReactModalOpen]="isPostReactModalOpen(post.id)"

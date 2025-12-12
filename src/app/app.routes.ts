@@ -12,6 +12,7 @@ import { ManageCommunities } from '@pages/manage-communities/manage-communities'
 import { PageNotFound } from '@pages/page-not-found/page-not-found';
 import { Explore } from '@pages/explore/explore';
 import { About } from '@pages/about/about';
+import { Drafts } from '@pages/drafts/drafts';
 
 export const routes: Routes = [
   {
@@ -40,6 +41,11 @@ export const routes: Routes = [
       {
         path: 'explore',
         component: Explore,
+      },
+      {
+        path: 'drafts',
+        component: Drafts,
+        canActivate: [authGuard],
       },
       {
         path: 'about',

@@ -7,6 +7,7 @@ export type PostAction =
   | 'hide'
   | 'report'
   | 'delete'
+  | 'archive'
   | 'profile';
 
 export type CommentAction = 'initial-delete' | 'delete' | 'remove' | 'report';

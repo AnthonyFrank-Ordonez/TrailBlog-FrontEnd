@@ -16,18 +16,27 @@
     </div>
 
     <div class="flex items-center space-x-1">
-      <!-- Join btn -->
-      <button
-        class="text-xs px-3 py-1 rounded-full cursor-pointer transition-colors duration-200"
-        (click)="toggleJoin($event)"
-        [ngClass]="
-          isUserJoined()
-            ? 'text-gray-500 bg-transparent border border-gray-500 hover:bg-white/5'
-            : 'bg-secondary text-white hover:bg-secondary/70'
-        "
-      >
-        {{ isUserJoined() ? 'Joined' : 'Join' }}
-      </button>
+      @if (currentPath() === '/drafts') {
+        <!-- Publish Button -->
+        <button
+          class="text-xs px-3 py-1 rounded-full cursor-pointer transition-colors duration-200 bg-secondary text-white hover:bg-secondary/70"
+        >
+          Publish
+        </button>
+      } @else {
+        <!-- Join btn -->
+        <button
+          class="text-xs px-3 py-1 rounded-full cursor-pointer transition-colors duration-200"
+          (click)="toggleJoin($event)"
+          [ngClass]="
+            isUserJoined()
+              ? 'text-gray-500 bg-transparent border border-gray-500 hover:bg-white/5'
+              : 'bg-secondary text-white hover:bg-secondary/70'
+          "
+        >
+          {{ isUserJoined() ? 'Joined' : 'Join' }}
+        </button>
+      }
 
       <!-- Three Dots -->
       <div class="relative" #menuContainer>
@@ -88,7 +97,7 @@
     </div>
   }
 
-  <div class="flex items-center mt-3.5 space-x-2">
+  <div class="flex items-center mt-3.5 space-x-2" [class.hidden]="currentPath() === '/drafts'">
     <!-- React Button -->
     <div class="relative" #reactionContainer>
       <button

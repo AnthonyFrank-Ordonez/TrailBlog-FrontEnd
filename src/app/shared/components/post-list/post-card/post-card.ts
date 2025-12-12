@@ -24,6 +24,7 @@ export class PostCard {
   private authService = inject(AuthService);
 
   post = input.required<Post>();
+  currentPath = input<string>();
   reactionList = input<ReactionList[]>([]);
   menuItems = input<MenuItems[]>([]);
   shareItems = input<MenuItems[]>([]);

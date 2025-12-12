@@ -17,6 +17,7 @@ import { PostService } from '@core/services/post.service';
 import { CommunityService } from '@core/services/community.service';
 import { Tooltip } from '../tooltip/tooltip';
 import { NgOptimizedImage } from '@angular/common';
+import { CurrentRouteService } from '@core/services/current-route.service';
 
 @Component({
   selector: 'app-header',
@@ -30,6 +31,7 @@ export class Header implements OnDestroy {
   private userService = inject(UserService);
   private postService = inject(PostService);
   private communityService = inject(CommunityService);
+  private currentRouteService = inject(CurrentRouteService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
@@ -42,7 +44,10 @@ export class Header implements OnDestroy {
   scrollTimeout: ReturnType<typeof setTimeout> | null = null;
   lastScrollTop = 0;
 
-  profileMenuMap = new Map<string, () => void>([['signout', () => this.onSignOut()]]);
+  profileMenuMap = new Map<string, () => void>([
+    ['signout', () => this.onSignOut()],
+    ['drafts', () => this.onDrafts()],
+  ]);
 
   readonly profileMenuItems = [
     {
@@ -117,6 +122,10 @@ export class Header implements OnDestroy {
           handleHttpError(error, this.messageService);
         },
       });
+  }
+
+  onDrafts() {
+    this.currentRouteService.handleRedirection(['drafts']);
   }
 
   @HostListener('window:scroll')
