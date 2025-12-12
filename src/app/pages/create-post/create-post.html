@@ -242,53 +242,128 @@
     </div>
 
     <div class="flex justify-end mt-5">
-      <button
-        type="submit"
-        [disabled]="postForm.invalid"
-        class="text-white px-8 py-3 font-medium text-sm cursor-pointer bg-secondary rounded-full transition-colors duration-300 hover:bg-secondary/80 disabled:bg-gray-500/20 disabled:text-gray-600 disabled:cursor-not-allowed max-w-fit w-full"
-      >
-        @if (this.isSubmitting()) {
-          <div class="flex items-center justify-center py-2.5 px-8">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="w-8 h-8 absolute">
-              <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="40" cy="100">
-                <animate
-                  attributeName="opacity"
-                  calcMode="spline"
-                  dur="2"
-                  values="1;0;1;"
-                  keySplines=".5 0 .5 1;.5 0 .5 1"
-                  repeatCount="indefinite"
-                  begin="-.4"
-                ></animate>
-              </circle>
-              <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="100" cy="100">
-                <animate
-                  attributeName="opacity"
-                  calcMode="spline"
-                  dur="2"
-                  values="1;0;1;"
-                  keySplines=".5 0 .5 1;.5 0 .5 1"
-                  repeatCount="indefinite"
-                  begin="-.2"
-                ></animate>
-              </circle>
-              <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="160" cy="100">
-                <animate
-                  attributeName="opacity"
-                  calcMode="spline"
-                  dur="2"
-                  values="1;0;1;"
-                  keySplines=".5 0 .5 1;.5 0 .5 1"
-                  repeatCount="indefinite"
-                  begin="0"
-                ></animate>
-              </circle>
-            </svg>
+      <div class="relative inline-flex group">
+        <!-- Main Submit Button -->
+        <button
+          type="submit"
+          [disabled]="postForm.invalid"
+          class="text-white pl-8 pr-6 py-3 font-medium text-sm cursor-pointer bg-secondary rounded-l-full transition-colors duration-300 group-hover:bg-secondary/80 disabled:bg-gray-500/20 disabled:text-gray-600 disabled:cursor-not-allowed"
+        >
+          @if (this.isSubmitting()) {
+            <div class="flex items-center justify-center py-2.5 px-8">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 200 200"
+                class="w-8 h-8 absolute"
+              >
+                <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="40" cy="100">
+                  <animate
+                    attributeName="opacity"
+                    calcMode="spline"
+                    dur="2"
+                    values="1;0;1;"
+                    keySplines=".5 0 .5 1;.5 0 .5 1"
+                    repeatCount="indefinite"
+                    begin="-.4"
+                  ></animate>
+                </circle>
+                <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="100" cy="100">
+                  <animate
+                    attributeName="opacity"
+                    calcMode="spline"
+                    dur="2"
+                    values="1;0;1;"
+                    keySplines=".5 0 .5 1;.5 0 .5 1"
+                    repeatCount="indefinite"
+                    begin="-.2"
+                  ></animate>
+                </circle>
+                <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="160" cy="100">
+                  <animate
+                    attributeName="opacity"
+                    calcMode="spline"
+                    dur="2"
+                    values="1;0;1;"
+                    keySplines=".5 0 .5 1;.5 0 .5 1"
+                    repeatCount="indefinite"
+                    begin="0"
+                  ></animate>
+                </circle>
+              </svg>
+            </div>
+          } @else {
+            Create Post
+          }
+        </button>
+
+        <!-- Divider -->
+        <div
+          class="w-[1px] bg-white/20 group-hover:bg-white/20 transition-colors duration-300"
+        ></div>
+
+        <!-- Dropdown Toggle Button -->
+        <button
+          #dropdownToggle
+          type="button"
+          (click)="toggleDropdown()"
+          [disabled]="postForm.invalid"
+          class="text-white pl-2 pr-4 py-3 font-medium text-sm cursor-pointer bg-secondary rounded-r-full transition-colors duration-300 group-hover:bg-secondary/80 disabled:bg-gray-500/20 disabled:text-gray-600 disabled:cursor-not-allowed flex items-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down transition-transform duration-200"
+            [class.rotate-180]="isDropdownOpen()"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M6 9l6 6l6 -6" />
+          </svg>
+        </button>
+
+        <!-- Dropdown Menu -->
+        @if (isDropdownOpen()) {
+          <div
+            #dropdownMenu
+            animate.enter="animate-slideDown"
+            animate.leave="animate-slideUp"
+            class="absolute right-0 top-full mt-2 w-44 bg-primary border border-white/30 rounded-full shadow-lg z-10 overflow-hidden"
+          >
+            <button
+              type="button"
+              (click)="onDraftSubmit()"
+              [disabled]="postForm.invalid"
+              class="w-full text-sm text-left px-4 py-3 text-white hover:bg-gray-700/50 transition-colors duration-200 disabled:text-gray-600 disabled:cursor-not-allowed disabled:hover:bg-transparent cursor-pointer flex items-center gap-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-pencil-check w-5 h-5"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+                <path d="M13.5 6.5l4 4" />
+                <path d="M15 19l2 2l4 -4" />
+              </svg>
+
+              <span>Create Draft</span>
+            </button>
           </div>
-        } @else {
-          Create Post
         }
-      </button>
+      </div>
     </div>
   </form>
 </div>

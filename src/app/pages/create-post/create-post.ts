@@ -38,6 +38,8 @@ export class CreatePost implements OnInit {
   @ViewChild('formContainer') formContainer!: ElementRef;
   @ViewChild('toggleButton') toggleButton!: ElementRef;
   @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
+  @ViewChild('dropdownToggle') dropdownToggle!: ElementRef;
+  @ViewChild('dropdownMenu') dropdownMenu!: ElementRef;
 
   private router = inject(Router);
   private communityService = inject(CommunityService);
@@ -51,6 +53,7 @@ export class CreatePost implements OnInit {
 
   isCommunitySelectionSelected = signal<boolean>(false);
   selectedCommunity = signal<Communities | null>(null);
+  isDropdownOpen = signal<boolean>(false);
   searchControl = new FormControl('');
   searchTerm = signal<string>('');
   postForm: FormGroup = this.createForm();
@@ -128,16 +131,31 @@ export class CreatePost implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
-    if (!this.isCommunitySelectionSelected()) return;
+    // Handle community dropdown
+    if (this.isCommunitySelectionSelected()) {
+      const clickedInsideForm = this.formContainer?.nativeElement.contains(event.target);
+      const clickedButton = this.toggleButton?.nativeElement.contains(event.target);
+      const clickedDropdown = this.dropdownContainer?.nativeElement.contains(event.target);
 
-    const clickedInsideForm = this.formContainer?.nativeElement.contains(event.target);
-    const clickedButton = this.toggleButton?.nativeElement.contains(event.target);
-    const clickedDropdown = this.dropdownContainer?.nativeElement.contains(event.target);
-
-    if (clickedInsideForm && !clickedButton && !clickedDropdown) {
-      this.isCommunitySelectionSelected.set(false);
-      this.searchControl.setValue('');
+      if (clickedInsideForm && !clickedButton && !clickedDropdown) {
+        this.isCommunitySelectionSelected.set(false);
+        this.searchControl.setValue('');
+      }
     }
+
+    // Handle post action dropdown
+    if (this.isDropdownOpen()) {
+      const clickedToggle = this.dropdownToggle?.nativeElement.contains(event.target);
+      const clickedMenu = this.dropdownMenu?.nativeElement.contains(event.target);
+
+      if (!clickedToggle && !clickedMenu) {
+        this.isDropdownOpen.set(false);
+      }
+    }
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpen.update((value) => !value);
   }
 
   onPostSubmit() {
@@ -162,5 +180,17 @@ export class CreatePost implements OnInit {
           handleHttpError(error, this.messageService);
         },
       });
+  }
+
+  onDraftSubmit() {
+    if (this.postForm.invalid) {
+      return;
+    }
+
+    // TODO: Implement draft creation logic
+    // This is a placeholder for draft functionality
+    console.log('Draft creation - to be implemented');
+    this.isDropdownOpen.set(false);
+    this.messageService.showMessage('information', 'Draft feature coming soon!');
   }
 }
