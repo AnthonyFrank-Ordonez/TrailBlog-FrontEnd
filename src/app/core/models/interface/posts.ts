@@ -6,7 +6,7 @@ export type ReactionType = 'like' | 'dislike';
 
 export type PostLoadingStrategy = 'regular' | 'popular' | 'explore';
 
-export type DropdownType = 'menu' | 'share' | 'reaction' | 'filter';
+export type DropdownType = 'menu' | 'share' | 'reaction' | 'filter' | 'create';
 export interface Post {
   id: string;
   title: string;

@@ -33,6 +33,7 @@ export class PostService {
   private readonly apiUrl = `${this.env.apiRoot}/post`;
 
   #postSignal = signal<Post[]>([]);
+  #draftPostSignal = signal<Post[]>([]);
   #mostPopularPostsSignal = signal<Post[]>([]);
   #recentViewedPostsSignal = signal<RecentViewedPost[]>([]);
   #postDetailSignal = signal<Post>(POST_PLACEHOLDER);
@@ -52,6 +53,7 @@ export class PostService {
   reaction$ = new Subject<ReactionRequest>();
 
   posts = this.#postSignal.asReadonly();
+  draftPosts = this.#draftPostSignal.asReadonly();
   mostPopularPosts = this.#mostPopularPostsSignal.asReadonly();
   recentViewedPosts = this.#recentViewedPostsSignal.asReadonly();
   postDetail = this.#postDetailSignal.asReadonly();
@@ -316,6 +318,25 @@ export class PostService {
         console.log('creating posts...');
 
         this.#postSignal.update((values) => [...values, post]);
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.#isSubmittingSignal.set(false);
+      }),
+    );
+  }
+
+  createDraftPost(postData: CreatePostRequest): Observable<Post> {
+    this.closeDropdown();
+    this.#isSubmittingSignal.set(true);
+
+    return this.http.post<Post>(`${this.apiUrl}/drafts`, postData).pipe(
+      tap((post) => {
+        console.log('Creating draft posts...');
+
+        this.#draftPostSignal.update((values) => [...values, post]);
       }),
       catchError((error) => {
         return throwError(() => error);

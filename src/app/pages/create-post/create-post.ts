@@ -71,6 +71,8 @@ export class CreatePost implements OnInit {
     );
   });
 
+  isCreateDropdownOpen = computed(() => this.postService.isDropDownOpen('create', 'create'));
+
   ngOnInit(): void {
     this.searchControl.valueChanges.pipe(debounce(this.destroyRef, 400)).subscribe((searchTerm) => {
       this.searchTerm.set(searchTerm || '');
@@ -114,6 +116,60 @@ export class CreatePost implements OnInit {
     });
   }
 
+  toggleDropdown() {
+    this.postService.toggleDropdown('create', 'create');
+  }
+
+  onPostSubmit() {
+    if (this.postForm.invalid) {
+      return;
+    }
+
+    const postData: CreatePostRequest = {
+      title: this.postForm.value.title.trim(),
+      content: this.postForm.value.content.trim(),
+      communityId: this.postForm.value.communityId,
+    };
+
+    this.postService
+      .createPost(postData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/']);
+        },
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
+  }
+
+  onDraftSubmit() {
+    if (this.postForm.invalid) {
+      return;
+    }
+
+    const postData: CreatePostRequest = {
+      title: this.postForm.value.title.trim(),
+      content: this.postForm.value.content.trim(),
+      communityId: this.postForm.value.communityId,
+    };
+
+    this.postService
+      .createDraftPost(postData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/']);
+
+          this.messageService.showMessage('success', 'Draft post created successfully!');
+        },
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
+  }
+
   get titleErrors() {
     const control = this.postForm.get('title');
     return control?.errors && control.touched;
@@ -152,45 +208,5 @@ export class CreatePost implements OnInit {
         this.isDropdownOpen.set(false);
       }
     }
-  }
-
-  toggleDropdown() {
-    this.isDropdownOpen.update((value) => !value);
-  }
-
-  onPostSubmit() {
-    if (this.postForm.invalid) {
-      return;
-    }
-
-    const postData: CreatePostRequest = {
-      title: this.postForm.value.title.trim(),
-      content: this.postForm.value.content.trim(),
-      communityId: this.postForm.value.communityId,
-    };
-
-    this.postService
-      .createPost(postData)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/']);
-        },
-        error: (error: HttpErrorResponse) => {
-          handleHttpError(error, this.messageService);
-        },
-      });
-  }
-
-  onDraftSubmit() {
-    if (this.postForm.invalid) {
-      return;
-    }
-
-    // TODO: Implement draft creation logic
-    // This is a placeholder for draft functionality
-    console.log('Draft creation - to be implemented');
-    this.isDropdownOpen.set(false);
-    this.messageService.showMessage('information', 'Draft feature coming soon!');
   }
 }
