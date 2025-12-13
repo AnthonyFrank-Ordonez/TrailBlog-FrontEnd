@@ -383,7 +383,7 @@ export class PostService {
 
     this.updatePostsWithOptimisticData(post.id, optimisticPost);
 
-    return this.http.post<Post>(`${this.apiUrl}/${post.id}/saved`, null).pipe(
+    return this.http.post<Post>(`${this.apiUrl}/saved/${post.id}`, null).pipe(
       tap((updatedPost) => {
         console.log('Post saved successfully');
         this.updatePostsWithOptimisticData(post.id, updatedPost);
@@ -449,7 +449,7 @@ export class PostService {
 
     this.updatePostsWithOptimisticData(post.id, optimisticPost);
 
-    return this.http.delete<OperationResult>(`${this.apiUrl}/${post.id}/saved`).pipe(
+    return this.http.delete<OperationResult>(`${this.apiUrl}/saved/${post.id}`).pipe(
       tap(() => {
         console.log('Post unsaved successfully');
       }),
