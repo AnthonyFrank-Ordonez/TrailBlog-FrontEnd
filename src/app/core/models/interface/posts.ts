@@ -6,6 +6,8 @@ export type ReactionType = 'like' | 'dislike';
 
 export type PostLoadingStrategy = 'regular' | 'popular' | 'explore' | 'drafts';
 
+export type PostDeleteType = 'home' | 'saved' | 'drafts' | 'detail';
+
 export type DropdownType = 'menu' | 'share' | 'reaction' | 'filter' | 'create';
 export interface Post {
   id: string;
@@ -47,6 +49,10 @@ export interface CreatePostRequest {
 export interface PostStrategyConfig {
   endpoint: string;
   useSessionId: boolean;
+}
+
+export interface PostDeleteConfig {
+  endpoint: string;
 }
 
 export interface PostDropdown {

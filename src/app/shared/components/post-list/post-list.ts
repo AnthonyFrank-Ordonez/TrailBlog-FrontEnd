@@ -17,16 +17,18 @@ import {
   isExploreMetadata,
   setupReactionSubject,
   SUCCESS_MESSAGES,
+  toPostDeleteType,
 } from '@shared/utils/utils';
 import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Post, PostActionPayload } from '@core/models/interface/posts';
+import { Post, PostActionPayload, PostDeleteType } from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
 import { PostMetadata } from '@core/models/interface/page-result';
 import { NgOptimizedImage } from '@angular/common';
 import { MenuItems, PostMenuItems } from '@core/models/interface/menus';
+import { UserService } from '@core/services/user.service';
 
 @Component({
   selector: 'app-post-list',
@@ -40,6 +42,7 @@ export class PostList implements OnInit {
   private authService = inject(AuthService);
   private currentRouteService = inject(CurrentRouteService);
   private communityService = inject(CommunityService);
+  private userService = inject(UserService);
   private destroyRef = inject(DestroyRef);
 
   posts = input.required<Post[]>();
@@ -190,10 +193,11 @@ export class PostList implements OnInit {
   }
 
   handlePostMenuAction(data: PostActionPayload) {
+    const activeTab = toPostDeleteType(this.userService.activeUserTab());
     const handler = this.postService.postMenuActionHandlers.get(data.action);
 
     if (handler) {
-      handler(data.post)
+      handler(data.post, activeTab)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {

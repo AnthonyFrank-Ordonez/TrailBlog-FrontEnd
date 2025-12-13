@@ -4,6 +4,8 @@ import {
   CreatePostRequest,
   DropdownType,
   Post,
+  PostDeleteConfig,
+  PostDeleteType,
   PostDropdown,
   PostLoadingStrategy,
   PostStrategyConfig,
@@ -19,7 +21,7 @@ import { AuthService } from './auth.service';
 import { ModalService } from './modal.service';
 import { OperationResult } from '@core/models/interface/operations';
 import { CurrentRouteService } from './current-route.service';
-import { CommentAction, MenuItems, PostAction, PostMenuItems } from '@core/models/interface/menus';
+import { CommentAction, PostAction, PostMenuItems } from '@core/models/interface/menus';
 
 @Injectable({
   providedIn: 'root',
@@ -86,6 +88,21 @@ export class PostService {
     },
   };
 
+  private readonly deletePostConfig: Record<PostDeleteType, PostDeleteConfig> = {
+    home: {
+      endpoint: `${this.apiUrl}`,
+    },
+    saved: {
+      endpoint: `${this.apiUrl}/saved`,
+    },
+    detail: {
+      endpoint: `${this.apiUrl}`,
+    },
+    drafts: {
+      endpoint: `${this.apiUrl}/drafts`,
+    },
+  };
+
   private readonly shareActionHandlers = new Map<PostAction, (post: Post) => Promise<void> | void>([
     ['copy', (post) => this.copyPostLink(post)],
     ['embed', (post) => this.copyPostLink(post)],
@@ -105,7 +122,7 @@ export class PostService {
 
   readonly postMenuActionHandlers = new Map<
     PostAction,
-    (post: Post, type?: string) => Observable<OperationResult | Post>
+    (post: Post, type?: PostDeleteType) => Observable<OperationResult | Post>
   >([
     ['delete', (post, type) => this.deletePost(post, type)],
     ['save', (post, type) => this.savePost(post, type)],
@@ -480,19 +497,26 @@ export class PostService {
     );
   }
 
-  deletePost(post: Post, type?: string): Observable<OperationResult> {
-    return this.http.delete<OperationResult>(`${this.apiUrl}/${post.id}`).pipe(
+  deletePost(post: Post, type?: PostDeleteType): Observable<OperationResult> {
+    console.log('🚀 ~ PostService ~ deletePost ~ type:', type);
+    const config = this.deletePostConfig[type || 'home'];
+    console.log('🚀 ~ PostService ~ deletePost ~ config:', config);
+
+    const deletedPost = post;
+    const oldIndex = this.#postSignal().findIndex((p) => p.id === post.id);
+
+    this.removePostOptimistic(post.id);
+
+    return this.http.delete<OperationResult>(`${config.endpoint}/${post.id}`).pipe(
       tap(() => {
         console.log('Deleting post...');
-
-        this.#postSignal.update((posts) => posts.filter((p) => p.id !== post.id));
-        this.#recentViewedPostsSignal.update((rp) => rp.filter((p) => p.postId !== post.id));
 
         if (type === 'detail') {
           this.currentRouteService.handleRedirection('/');
         }
       }),
       catchError((error) => {
+        this.rollbackRemovePostOptimistic(oldIndex, deletedPost);
         return throwError(() => error);
       }),
     );

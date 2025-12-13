@@ -4,11 +4,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ApiError } from '@core/models/interface/api-error';
 import { CommentAction, PostAction } from '@core/models/interface/menus';
 import { ExploreMetadata, PostMetadata } from '@core/models/interface/page-result';
-import { PostLoadingStrategy } from '@core/models/interface/posts';
+import { PostDeleteType, PostLoadingStrategy } from '@core/models/interface/posts';
 import { ReactionRequest } from '@core/models/interface/reactions';
 import { MessageService } from '@core/services/message.service';
 import { PostService } from '@core/services/post.service';
 import { debounceTime, distinctUntilChanged, OperatorFunction, pipe, switchMap } from 'rxjs';
+
+const postDeleteTypeSet = new Set<string>(['home', 'saved', 'drafts', 'detail']);
 
 export const POST_PLACEHOLDER = {
   id: '',
@@ -118,4 +120,12 @@ export function isExploreMetadata(metadata: PostMetadata | undefined): metadata 
     typeof metadata.code === 'string' &&
     typeof metadata.message === 'string'
   );
+}
+
+export function isPostDeleteType(activeTab: string | undefined): activeTab is PostDeleteType {
+  return typeof activeTab === 'string' && postDeleteTypeSet.has(activeTab);
+}
+
+export function toPostDeleteType(activeTab: string | undefined): PostDeleteType | undefined {
+  return isPostDeleteType(activeTab) ? activeTab : undefined;
 }
