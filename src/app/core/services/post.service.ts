@@ -30,7 +30,7 @@ export class PostService {
   private authService = inject(AuthService);
   private modalService = inject(ModalService);
   private currentRouteService = inject(CurrentRouteService);
-  private readonly apiUrl = `${this.env.apiRoot}/post`;
+  private readonly apiUrl = `${this.env.apiRoot}/posts`;
 
   #postSignal = signal<Post[]>([]);
   #draftPostSignal = signal<Post[]>([]);

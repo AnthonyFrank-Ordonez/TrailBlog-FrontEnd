@@ -26,7 +26,7 @@ export class CommunityService {
   private modalService = inject(ModalService);
   private messageService = inject(MessageService);
   private destroyRef = inject(DestroyRef);
-  private readonly apiUrl = `${this.env.apiRoot}/community`;
+  private readonly apiUrl = `${this.env.apiRoot}/communitys`;
 
   #userCommunities = signal<Communities[]>([]);
   #userCommunitiesLoading = signal<boolean>(false);

@@ -67,7 +67,7 @@ export class AuthService {
   login(credentials: Credentials): Observable<LoginResponse> {
     this.#isLoggingInSignal.set(true);
 
-    return this.http.post<LoginResponse>(`${this.env.apiRoot}/auth/login`, credentials).pipe(
+    return this.http.post<LoginResponse>(`${this.env.apiRoot}/auths/login`, credentials).pipe(
       tap((response) => {
         console.log('logging in...');
 
@@ -83,7 +83,7 @@ export class AuthService {
   register(userData: RegisterData): Observable<AuthResponse> {
     this.#isRegisteringSignal.set(true);
 
-    return this.http.post<AuthResponse>(`${this.env.apiRoot}/auth/register`, userData).pipe(
+    return this.http.post<AuthResponse>(`${this.env.apiRoot}/auths/register`, userData).pipe(
       tap((response) => {
         console.log('Signing up user, please wait...');
 
@@ -97,7 +97,7 @@ export class AuthService {
   }
 
   logout(): Observable<void | object> {
-    return this.http.post(`${this.env.apiRoot}/auth/logout`, null).pipe(
+    return this.http.post(`${this.env.apiRoot}/auths/logout`, null).pipe(
       tap(() => {
         console.log('Signing out user...');
 
@@ -110,15 +110,17 @@ export class AuthService {
   }
 
   refreshUserToken(refreshData: RefreshTokenRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.env.apiRoot}/auth/refresh-token`, refreshData).pipe(
-      tap((response) => {
-        console.log('Refreshing token...');
-        this.setAuth(response);
-      }),
-      catchError((error) => {
-        return throwError(() => error);
-      }),
-    );
+    return this.http
+      .post<AuthResponse>(`${this.env.apiRoot}/auths/refresh-token`, refreshData)
+      .pipe(
+        tap((response) => {
+          console.log('Refreshing token...');
+          this.setAuth(response);
+        }),
+        catchError((error) => {
+          return throwError(() => error);
+        }),
+      );
   }
 
   private initializeTokens(): void {
