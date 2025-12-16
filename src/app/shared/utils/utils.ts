@@ -69,6 +69,7 @@ export function getStrategyFromPath(path: string): PostLoadingStrategy {
     '/popular': 'popular',
     '/explore': 'explore',
     '/drafts': 'drafts',
+    '/archives': 'archives',
   };
 
   const strategy = strategyMap[path];
@@ -89,6 +90,7 @@ export function getActiveTabFromPath(path: string): string {
   if (path.startsWith('/explore')) return 'explore';
   if (path.startsWith('/about')) return 'about';
   if (path.startsWith('/drafts')) return 'drafts';
+  if (path.startsWith('/archives')) return 'archives';
 
   return 'home';
 }

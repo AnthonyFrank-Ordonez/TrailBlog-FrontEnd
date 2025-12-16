@@ -4,7 +4,7 @@ import { ReactionSummary } from './reactions';
 
 export type ReactionType = 'like' | 'dislike';
 
-export type PostLoadingStrategy = 'regular' | 'popular' | 'explore' | 'drafts';
+export type PostLoadingStrategy = 'regular' | 'popular' | 'explore' | 'drafts' | 'archives';
 
 export type PostDeleteType = 'home' | 'saved' | 'drafts' | 'detail';
 

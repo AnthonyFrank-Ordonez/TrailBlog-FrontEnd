@@ -98,7 +98,10 @@
     </div>
   }
 
-  <div class="flex items-center mt-3.5 space-x-2" [class.hidden]="currentPath() === '/drafts'">
+  <div
+    class="flex items-center mt-3.5 space-x-2"
+    [class.hidden]="currentPath() === '/drafts' || 'archives'"
+  >
     <!-- React Button -->
     <div class="relative" #reactionContainer>
       <button

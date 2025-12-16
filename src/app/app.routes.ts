@@ -13,6 +13,7 @@ import { PageNotFound } from '@pages/page-not-found/page-not-found';
 import { Explore } from '@pages/explore/explore';
 import { About } from '@pages/about/about';
 import { Drafts } from '@pages/drafts/drafts';
+import { Archives } from '@pages/archives/archives';
 
 export const routes: Routes = [
   {
@@ -45,6 +46,11 @@ export const routes: Routes = [
       {
         path: 'drafts',
         component: Drafts,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'archives',
+        component: Archives,
         canActivate: [authGuard],
       },
       {

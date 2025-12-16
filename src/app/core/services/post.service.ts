@@ -22,6 +22,7 @@ import { ModalService } from './modal.service';
 import { OperationResult } from '@core/models/interface/operations';
 import { CurrentRouteService } from './current-route.service';
 import { CommentAction, PostAction, PostMenuItems } from '@core/models/interface/menus';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +31,7 @@ export class PostService {
   env = environment;
   private http = inject(HttpClient);
   private authService = inject(AuthService);
+  private userService = inject(UserService);
   private modalService = inject(ModalService);
   private currentRouteService = inject(CurrentRouteService);
   private readonly apiUrl = `${this.env.apiRoot}/posts`;
@@ -86,6 +88,10 @@ export class PostService {
       endpoint: `${this.apiUrl}/drafts`,
       useSessionId: true,
     },
+    archives: {
+      endpoint: `${this.apiUrl}/archives`,
+      useSessionId: false,
+    },
   };
 
   private readonly deletePostConfig: Record<PostDeleteType, PostDeleteConfig> = {
@@ -136,6 +142,7 @@ export class PostService {
   >([['initial-delete', (comment) => this.deleteCommentInitial(comment)]]);
 
   loadInitialPosts(strategy: PostLoadingStrategy = 'regular') {
+    console.log('strategy', strategy);
     this.#postSignal.set([]);
     this.#currentPageSignal.set(0);
     this.#sessionIdSignal.set('');
@@ -265,7 +272,7 @@ export class PostService {
 
   getMenuItems(post: Post): PostMenuItems[] {
     var isSaved = post.isSaved;
-    const isDraftsPage = this.currentRouteService.currentPath().startsWith('/drafts');
+    const activeUserTab = this.userService.activeUserTab();
 
     const allMenuItems: PostMenuItems[] = [
       {
@@ -347,8 +354,8 @@ export class PostService {
       },
     ];
 
-    // Filter menu items based on whether user is on drafts page
-    if (isDraftsPage) {
+    // Filter menu items based on whether user is on drafts page or archives page
+    if (activeUserTab === 'drafts' || activeUserTab === 'archives') {
       return allMenuItems.filter((item) => item.action === 'delete');
     }
 
@@ -418,8 +425,6 @@ export class PostService {
     const publishedPost = post;
     const oldIndex = this.#postSignal().findIndex((p) => p.id === post.id);
     this.removePostOptimistic(post.id);
-
-    console.log('post===>', post);
 
     return this.http.patch<Post>(`${this.apiUrl}/drafts/${post.id}/publish`, null).pipe(
       tap(() => {
@@ -516,9 +521,7 @@ export class PostService {
   }
 
   deletePost(post: Post, type?: PostDeleteType): Observable<OperationResult> {
-    console.log('🚀 ~ PostService ~ deletePost ~ type:', type);
     const config = this.deletePostConfig[type || 'home'];
-    console.log('🚀 ~ PostService ~ deletePost ~ config:', config);
 
     const deletedPost = post;
     const oldIndex = this.#postSignal().findIndex((p) => p.id === post.id);
