@@ -204,7 +204,7 @@ export class PostList implements OnInit {
             const message = SUCCESS_MESSAGES.get(data.action);
             this.messageService.showMessage('success', message);
           },
-          error: (error) => {
+          error: (error: HttpErrorResponse) => {
             handleHttpError(error, this.messageService);
           },
         });
@@ -233,6 +233,20 @@ export class PostList implements OnInit {
     this.communityService.toggleCommunityMembership(communityId, this.isAuthenticated());
   }
 
+  handlePublishDraftPost(post: Post) {
+    this.postService
+      .publishDraftPost(post)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.messageService.showMessage('success', 'Succesfully publish post');
+        },
+        error: (error: HttpErrorResponse) => {
+          handleHttpError(error, this.messageService);
+        },
+      });
+  }
+
   @HostListener('window:scroll')
   onScroll(): void {
     const scrollPosition = window.pageYOffset + window.innerHeight;
@@ -246,7 +260,7 @@ export class PostList implements OnInit {
         .loadMorePosts()
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
-          error: (error) => {
+          error: (error: HttpErrorResponse) => {
             handleHttpError(error, this.messageService);
           },
         });

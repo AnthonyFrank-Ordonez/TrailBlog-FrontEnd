@@ -38,6 +38,7 @@ export class PostCard {
   copyAction = output<string>();
   shareAction = output<PostActionPayload>();
   menuAction = output<PostActionPayload>();
+  publishAction = output<Post>();
   postDetailAction = output<string>();
   toggleJoinAction = output<string>();
 
@@ -99,6 +100,12 @@ export class PostCard {
     };
 
     this.postService.selectReaction(reactionRequest);
+  }
+
+  handlePublishPost(event: MouseEvent) {
+    event.stopPropagation();
+
+    this.publishAction.emit(this.post());
   }
 
   toggleJoin(event?: MouseEvent): void {

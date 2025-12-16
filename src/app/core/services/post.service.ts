@@ -414,6 +414,24 @@ export class PostService {
     );
   }
 
+  publishDraftPost(post: Post): Observable<Post> {
+    const publishedPost = post;
+    const oldIndex = this.#postSignal().findIndex((p) => p.id === post.id);
+    this.removePostOptimistic(post.id);
+
+    console.log('post===>', post);
+
+    return this.http.patch<Post>(`${this.apiUrl}/drafts/${post.id}/publish`, null).pipe(
+      tap(() => {
+        console.log('Publishing post...');
+      }),
+      catchError((error) => {
+        this.rollbackRemovePostOptimistic(oldIndex, publishedPost);
+        return throwError(() => error);
+      }),
+    );
+  }
+
   addPostComment(commentData: AddCommentRequest): Observable<Comment> {
     this.#isSubmittingSignal.set(true);
 
