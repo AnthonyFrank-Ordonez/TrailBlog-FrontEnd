@@ -118,7 +118,7 @@ export class PostService {
 
   private readonly reactionList = signal<ReactionList[]>([
     { id: 1, type: '😂', value: 'laughReact' },
-    { id: 2, type: '🥲', value: 'sadReact' },
+    { id: 2, type: '😢', value: 'sadReact' },
     { id: 3, type: '😡', value: 'angryReact' },
     { id: 4, type: '😍', value: 'loveReact' },
     { id: 5, type: '🚀', value: 'rocketReact' },
@@ -166,6 +166,7 @@ export class PostService {
     }
 
     this.#isPostLoadingSignal.set(true);
+    this.#errorMessageSignal.set(null);
 
     const nextPage = this.#currentPageSignal() + 1;
     const strategy = this.#postLoadingStrategySignal();
@@ -203,6 +204,7 @@ export class PostService {
           this.#currentPageSignal.set(nextPage);
         }),
         catchError((error: HttpErrorResponse) => {
+          this.#errorMessageSignal.set(error);
           return throwError(() => error);
         }),
         finalize(() => {
@@ -213,6 +215,7 @@ export class PostService {
 
   loadMostPopularPost(): Observable<PageResult<Post>> {
     this.#isMostPopularPostsLoading.set(true);
+    this.#errorMessageSignal.set(null);
 
     let params = new HttpParams().set('page', 1).set('pageSize', 5);
 
@@ -222,6 +225,7 @@ export class PostService {
         this.#mostPopularPostsSignal.set(result.data);
       }),
       catchError((error) => {
+        this.#errorMessageSignal.set(error);
         return throwError(() => error);
       }),
       finalize(() => {
@@ -232,6 +236,7 @@ export class PostService {
 
   loadPostDetail(slug: string): Observable<Post> {
     this.#isPostLoadingSignal.set(true);
+    this.#errorMessageSignal.set(null);
     const encodedSlug = encodeURIComponent(slug);
 
     return this.http.get<Post>(`${this.apiUrl}/slug/${encodedSlug}`).pipe(
@@ -250,6 +255,7 @@ export class PostService {
 
   loadRecentViewedPosts(): Observable<RecentViewedPost[]> {
     this.#isRecentPostsLoadingSignal.set(true);
+    this.#errorMessageSignal.set(null);
 
     return this.http.get<RecentViewedPost[]>(`${this.apiUrl}/recent-viewed-posts`).pipe(
       tap((response) => {
@@ -257,6 +263,7 @@ export class PostService {
         this.#recentViewedPostsSignal.set(response);
       }),
       catchError((error) => {
+        this.#errorMessageSignal.set(error);
         return throwError(() => error);
       }),
       finalize(() => {

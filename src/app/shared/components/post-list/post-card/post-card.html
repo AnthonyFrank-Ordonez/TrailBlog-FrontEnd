@@ -100,7 +100,7 @@
 
   <div
     class="flex items-center mt-3.5 space-x-2"
-    [class.hidden]="currentPath() === '/drafts' || 'archives'"
+    [class.hidden]="currentPath() === '/drafts' || currentPath() === '/archives'"
   >
     <!-- React Button -->
     <div class="relative" #reactionContainer>
