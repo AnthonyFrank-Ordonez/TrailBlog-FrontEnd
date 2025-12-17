@@ -1,3 +1,8 @@
+import { Post, PostDeleteType } from './posts';
+import { CommentAction, PostAction } from './menus';
+
+export type MenuModalStrategy = 'delete' | 'archive';
+
 interface BaseModalConfig {
   title: string;
   description: string;
@@ -11,6 +16,12 @@ export interface CommunityModalConfig extends BaseModalConfig {
   type: 'community';
   data: { communityId: string };
   onConfirm?: (communityId: string) => void;
+}
+
+export interface PostMenuModalConfig extends BaseModalConfig {
+  type: 'menu';
+  data: { post: Post; action: PostAction | CommentAction; activeTab?: PostDeleteType };
+  onConfirm?: (post: Post, activeTab?: PostDeleteType) => void;
 }
 
 export interface CommunityFormModalConfig extends BaseModalConfig {
@@ -42,10 +53,20 @@ export interface ErrorModalConfig extends BaseModalConfig {
 export type ModalConfig =
   | CommunityModalConfig
   | CommunityFormModalConfig
+  | PostMenuModalConfig
   | InfoModalConfig
   | GenericModalConfig
   | ErrorModalConfig;
 
 export interface ModalData {
   communityId?: string;
+}
+
+export interface MenuModalConfig {
+  title: string;
+  description: string;
+  content?: string;
+  subcontent?: string;
+  confirmBtnText?: string;
+  cancelBtnText?: string;
 }

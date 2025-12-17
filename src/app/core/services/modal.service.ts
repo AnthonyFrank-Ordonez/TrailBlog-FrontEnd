@@ -1,5 +1,12 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { ModalConfig, ModalData } from '@core/models/interface/modal';
+import {
+  CommunityModalConfig,
+  MenuModalConfig,
+  MenuModalStrategy,
+  ModalConfig,
+  ModalData,
+  PostMenuModalConfig,
+} from '@core/models/interface/modal';
 import { CurrentRouteService } from './current-route.service';
 
 @Injectable({
@@ -11,6 +18,50 @@ export class ModalService {
     type: 'generic',
     title: '',
     description: '',
+  };
+  private readonly confirmHandlers = new Map<string, (config: ModalConfig) => void>([
+    [
+      'community',
+      (config) => {
+        if (config.type === 'community') {
+          config.onConfirm?.(config.data.communityId);
+        }
+      },
+    ],
+    [
+      'menu',
+      (config) => {
+        if (config.type === 'menu') {
+          config.onConfirm?.(config.data.post, config.data.activeTab);
+        }
+      },
+    ],
+    [
+      'generic',
+      (config) => {
+        if (config.type === 'generic') {
+          config.onConfirm?.();
+        }
+      },
+    ],
+  ]);
+  readonly menuModalConfig: Record<MenuModalStrategy, MenuModalConfig> = {
+    archive: {
+      title: 'Archive Post',
+      description: 'Are you sure you want to archive this post?',
+      confirmBtnText: 'Archive',
+      cancelBtnText: 'Cancel',
+      subcontent:
+        'Once you archive this post, it cannot be undone. Are you sure you want to archive this post?',
+    },
+    delete: {
+      title: 'Delete Post',
+      description: 'Are you sure you want to delete this post?',
+      confirmBtnText: 'Delete',
+      cancelBtnText: 'Cancel',
+      subcontent:
+        'Once you delete this post, it cannot be undone. Are you sure you want to delete this post?',
+    },
   };
 
   #isOpenSignal = signal<boolean>(false);
@@ -42,10 +93,12 @@ export class ModalService {
     const currentModalConfig = this.#modalConfigSignal();
 
     if (currentModalConfig.onConfirm) {
-      if (currentModalConfig?.type === 'community') {
-        currentModalConfig.onConfirm(currentModalConfig.data.communityId);
+      const handler = this.confirmHandlers.get(currentModalConfig.type!);
+
+      if (handler) {
+        handler(currentModalConfig);
       } else {
-        currentModalConfig.onConfirm();
+        console.error('No handler found for type: ' + currentModalConfig.type);
       }
     }
     this.closeModal();

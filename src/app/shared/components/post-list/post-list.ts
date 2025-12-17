@@ -17,6 +17,7 @@ import {
   isExploreMetadata,
   setupReactionSubject,
   SUCCESS_MESSAGES,
+  toMenuModalStrategy,
   toPostDeleteType,
 } from '@shared/utils/utils';
 import { MessageService } from '@core/services/message.service';
@@ -29,6 +30,8 @@ import { PostMetadata } from '@core/models/interface/page-result';
 import { NgOptimizedImage } from '@angular/common';
 import { MenuItems, PostMenuItems } from '@core/models/interface/menus';
 import { UserService } from '@core/services/user.service';
+import { ModalService } from '@core/services/modal.service';
+import { MenuModalStrategy, PostMenuModalConfig } from '@core/models/interface/modal';
 
 @Component({
   selector: 'app-post-list',
@@ -43,6 +46,7 @@ export class PostList implements OnInit {
   private currentRouteService = inject(CurrentRouteService);
   private communityService = inject(CommunityService);
   private userService = inject(UserService);
+  private modalService = inject(ModalService);
   private destroyRef = inject(DestroyRef);
 
   posts = input.required<Post[]>();
@@ -194,20 +198,48 @@ export class PostList implements OnInit {
 
   handlePostMenuAction(data: PostActionPayload) {
     const activeTab = toPostDeleteType(this.userService.activeUserTab());
+    const menuConfig = this.modalService.menuModalConfig[toMenuModalStrategy(data.action)];
     const handler = this.postService.postMenuActionHandlers.get(data.action);
 
-    if (handler) {
-      handler(data.post, activeTab)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            const message = SUCCESS_MESSAGES.get(data.action);
-            this.messageService.showMessage('success', message);
-          },
-          error: (error: HttpErrorResponse) => {
-            handleHttpError(error, this.messageService);
-          },
-        });
+    if (handler && (data.action === 'delete' || data.action === 'archive')) {
+      this.postService.closeDropdown();
+
+      this.modalService.openModal({
+        type: 'menu',
+        title: menuConfig.title,
+        description: menuConfig.description,
+        confirmBtnText: menuConfig.confirmBtnText,
+        cancelBtnText: menuConfig.cancelBtnText,
+        subcontent: menuConfig.subcontent,
+        content: 'confirmation-modal',
+        data: { post: data.post, action: data.action, activeTab: activeTab },
+        onConfirm: (post: Post, activeTab?: PostDeleteType) =>
+          handler(post, activeTab)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: () => {
+                const message = SUCCESS_MESSAGES.get(data.action);
+                this.messageService.showMessage('success', message);
+              },
+              error: (error: HttpErrorResponse) => {
+                handleHttpError(error, this.messageService);
+              },
+            }),
+      });
+    } else {
+      if (handler) {
+        handler(data.post, activeTab)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () => {
+              const message = SUCCESS_MESSAGES.get(data.action);
+              this.messageService.showMessage('success', message);
+            },
+            error: (error: HttpErrorResponse) => {
+              handleHttpError(error, this.messageService);
+            },
+          });
+      }
     }
   }
 
