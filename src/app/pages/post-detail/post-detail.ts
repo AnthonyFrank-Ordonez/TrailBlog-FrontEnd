@@ -125,6 +125,7 @@ export class PostDetail implements OnInit {
   activeDropdown = this.postService.activeDropdown;
   isPostLoading = this.postService.isPostLoading;
   isAuthenticated = this.authService.isAuthenticated;
+  errorMessage = this.postService.errorMessage;
   token = this.authService.token;
   isCommentSelected = signal<boolean>(false);
   isAdmin = this.userService.isAdmin;

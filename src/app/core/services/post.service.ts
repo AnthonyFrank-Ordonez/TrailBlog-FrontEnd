@@ -11,7 +11,7 @@ import {
   PostStrategyConfig,
   RecentViewedPost,
 } from '@core/models/interface/posts';
-import { catchError, EMPTY, finalize, Observable, Subject, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, finalize, Observable, of, Subject, tap, throwError } from 'rxjs';
 import { POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
 import { PageResult, PostMetadata } from '@core/models/interface/page-result';
@@ -54,6 +54,7 @@ export class PostService {
   #postMenuModalIdSignal = signal<string | null>(null);
   #activeDropdown = signal<PostDropdown>({ type: null, id: null });
   #metadataSignal = signal<PostMetadata | undefined>(undefined);
+  #errorMessageSignal = signal<HttpErrorResponse | null>(null);
   reaction$ = new Subject<ReactionRequest>();
 
   posts = this.#postSignal.asReadonly();
@@ -67,6 +68,7 @@ export class PostService {
   isSubmitting = this.#isSubmittingSignal.asReadonly();
   postMenuModalId = this.#postMenuModalIdSignal.asReadonly();
   activeDropdown = this.#activeDropdown.asReadonly();
+  errorMessage = this.#errorMessageSignal.asReadonly();
   metadata = this.#metadataSignal.asReadonly();
 
   readonly hasMore = computed(() => this.#currentPageSignal() < this.#totalPagesSignal());
@@ -239,6 +241,7 @@ export class PostService {
         this.#postDetailSignal.set(response);
       }),
       catchError((error) => {
+        this.#errorMessageSignal.set(error);
         return throwError(() => error);
       }),
       finalize(() => this.#isPostLoadingSignal.set(false)),

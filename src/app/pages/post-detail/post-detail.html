@@ -31,156 +31,22 @@
     </div>
   </div>
 } @else {
-  <div class="px-3 lg:px-5 2xl:px-23 py-10">
-    <!-- Community and back section -->
-    <div class="flex justify-between mb-5">
-      <!-- Community Title -->
-      <div class="flex items-center space-x-2 text-white">
-        <button
-          (click)="toggleBack()"
-          class="cursor-pointer mr-3 hover:text-white/80 duration-200 transition-colors"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            class="icon icon-tabler icons-tabler-filled icon-tabler-circle-arrow-left w-7 h-7"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M12 2a10 10 0 0 1 .324 19.995l-.324 .005l-.324 -.005a10 10 0 0 1 .324 -19.995zm.707 5.293a1 1 0 0 0 -1.414 0l-4 4a1.048 1.048 0 0 0 -.083 .094l-.064 .092l-.052 .098l-.044 .11l-.03 .112l-.017 .126l-.003 .075l.004 .09l.007 .058l.025 .118l.035 .105l.054 .113l.043 .07l.071 .095l.054 .058l4 4l.094 .083a1 1 0 0 0 1.32 -1.497l-2.292 -2.293h5.585l.117 -.007a1 1 0 0 0 -.117 -1.993h-5.586l2.293 -2.293l.083 -.094a1 1 0 0 0 -.083 -1.32z"
-            />
-          </svg>
-        </button>
-
-        <div class="w-7 h-7 bg-secondary rounded-full flex items-center justify-center">
-          <span class="text-white text-sm font-bold">{{ post().communityName | initials }}</span>
-        </div>
-
-        <p class="text-gray-500 font-medium tracking-wider">{{ post().communityName }}</p>
-      </div>
-
-      <!-- Three dots -->
-      <div class="relative" #menuContainer>
-        <button
-          (click)="openPostMenu()"
-          class="action-btn text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-three-dots"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"
-            />
-          </svg>
-        </button>
-
-        @if (isPostMenuOpen()) {
-          <app-dropdown-menu
-            animate.enter="dropdown-fade-in"
-            animate.leave="dropdown-fade-out"
-            styles="w-32 right-0"
-            [isOwner]="post().isOwner"
-            [dropdownItems]="handleGetPostMenuItems()"
-            modalType="menu"
-            (menuItemClicked)="handlePostMenuActions($event)"
-          />
-        }
+  @if (errorMessage()?.error && errorMessage()?.error.status === 404) {
+    <div class="px-3 lg:px-5 2xl:px-23 py-10">
+      <div class="flex flex-col justify-center items-center h-full">
+        <img ngSrc="assets/empty.png" alt="empty" width="300" height="300" class="mt-15" priority />
+        <h1 class="text-3xl font-bold text-white">Post Not Found</h1>
       </div>
     </div>
-
-    <div class="lg:pl-10">
-      <!-- Post Title, Author, content, and Date -->
-      <div class="flex flex-col text-gray-500 mb-1">
-        <!-- Author -->
-        <p class="text-sm font-light mb-1">
-          Posted by <strong>{{ post().author }}</strong
-          >, {{ post().createdAt | timeago }}
-        </p>
-
-        <!-- Title -->
-        <p class="text-white text-3xl font-bold tracking-wide mb-2">{{ post().title }}</p>
-
-        <!-- Content -->
-        <div class="text-gray-500 font-light text-justify mb-3">
-          <p>{{ post().content }}</p>
-        </div>
-
-        <!-- Reactions -->
-        @if (post().reactions && post().reactions.length > 0) {
-          <div class="flex items-center space-x-1.5 mt-2">
-            @for (reaction of post().reactions; track $index) {
-              <button
-                (click)="selectReaction(getReactionById(reaction.reactionId)!.id)"
-                class="flex items-center space-x-1 px-2 py-1 text-white rounded-full cursor-pointer transition-colors duration-200"
-                [ngClass]="
-                  hasReaction(reaction.reactionId)
-                    ? 'bg-gray-500/60 hover:bg-gray-500/40'
-                    : 'bg-black border border-white/30 hover:border-white/50'
-                "
-              >
-                <span class="text-sm">{{ getReactionById(reaction.reactionId)?.type }}</span>
-                <span class="text-sm">{{ reaction.count }}</span>
-              </button>
-            }
-          </div>
-        }
-
-        <!-- Reaction List -->
-        <div class="flex items-center mt-3.5 space-x-2">
-          <!-- React Button -->
-          <div class="relative" #reactionContainer>
-            <button
-              (click)="openReactModal()"
-              class="action-btn flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="icon icon-tabler icons-tabler-filled icon-tabler-mood-happy"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path
-                  d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-2 9.66h-6a1 1 0 0 0 -1 1v.05a3.975 3.975 0 0 0 3.777 3.97l.227 .005a4.026 4.026 0 0 0 3.99 -3.79l.006 -.206a1 1 0 0 0 -1 -1.029zm-5.99 -5l-.127 .007a1 1 0 0 0 .117 1.993l.127 -.007a1 1 0 0 0 -.117 -1.993zm6 0l-.127 .007a1 1 0 0 0 .117 1.993l.127 -.007a1 1 0 0 0 -.117 -1.993z"
-                />
-              </svg>
-
-              <span>React</span>
-            </button>
-
-            <!-- Reaction Modal -->
-            @if (isPostReactModalOpen()) {
-              <div
-                animate.enter="dropdown-fade-in"
-                animate.leave="dropdown-fade-out"
-                class="absolute flex items-center mt-2 left-0 space-x-2 bg-black border border-white/30 rounded-full px-3 py-2 z-50"
-                data-modal-type="react"
-              >
-                @for (reaction of reactionList; track reaction.id) {
-                  <button
-                    (click)="selectReaction(reaction.id)"
-                    class="text-xl cursor-pointer hover:scale-125 transition-transform duration-200"
-                  >
-                    {{ reaction.type }}
-                  </button>
-                }
-              </div>
-            }
-          </div>
-
-          <!-- Comment button -->
+  } @else {
+    <div class="px-3 lg:px-5 2xl:px-23 py-10">
+      <!-- Community and back section -->
+      <div class="flex justify-between mb-5">
+        <!-- Community Title -->
+        <div class="flex items-center space-x-2 text-white">
           <button
-            class="flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+            (click)="toggleBack()"
+            class="cursor-pointer mr-3 hover:text-white/80 duration-200 transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -188,22 +54,141 @@
               height="24"
               viewBox="0 0 24 24"
               fill="currentColor"
-              class="icon icon-tabler icons-tabler-filled icon-tabler-message-circle"
+              class="icon icon-tabler icons-tabler-filled icon-tabler-circle-arrow-left w-7 h-7"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
               <path
-                d="M5.821 4.91c3.899 -2.765 9.468 -2.539 13.073 .535c3.667 3.129 4.168 8.238 1.152 11.898c-2.841 3.447 -7.965 4.583 -12.231 2.805l-.233 -.101l-4.374 .931l-.04 .006l-.035 .007h-.018l-.022 .005h-.038l-.033 .004l-.021 -.001l-.023 .001l-.033 -.003h-.035l-.022 -.004l-.022 -.002l-.035 -.007l-.034 -.005l-.016 -.004l-.024 -.005l-.049 -.016l-.024 -.005l-.011 -.005l-.022 -.007l-.045 -.02l-.03 -.012l-.011 -.006l-.014 -.006l-.031 -.018l-.045 -.024l-.016 -.011l-.037 -.026l-.04 -.027l-.002 -.004l-.013 -.009l-.043 -.04l-.025 -.02l-.006 -.007l-.056 -.062l-.013 -.014l-.011 -.014l-.039 -.056l-.014 -.019l-.005 -.01l-.042 -.073l-.007 -.012l-.004 -.008l-.007 -.012l-.014 -.038l-.02 -.042l-.004 -.016l-.004 -.01l-.017 -.061l-.007 -.018l-.002 -.015l-.005 -.019l-.005 -.033l-.008 -.042l-.002 -.031l-.003 -.01v-.016l-.004 -.054l.001 -.036l.001 -.023l.002 -.053l.004 -.025v-.019l.008 -.035l.005 -.034l.005 -.02l.004 -.02l.018 -.06l.003 -.013l1.15 -3.45l-.022 -.037c-2.21 -3.747 -1.209 -8.391 2.413 -11.119z"
+                d="M12 2a10 10 0 0 1 .324 19.995l-.324 .005l-.324 -.005a10 10 0 0 1 .324 -19.995zm.707 5.293a1 1 0 0 0 -1.414 0l-4 4a1.048 1.048 0 0 0 -.083 .094l-.064 .092l-.052 .098l-.044 .11l-.03 .112l-.017 .126l-.003 .075l.004 .09l.007 .058l.025 .118l.035 .105l.054 .113l.043 .07l.071 .095l.054 .058l4 4l.094 .083a1 1 0 0 0 1.32 -1.497l-2.292 -2.293h5.585l.117 -.007a1 1 0 0 0 -.117 -1.993h-5.586l2.293 -2.293l.083 -.094a1 1 0 0 0 -.083 -1.32z"
               />
             </svg>
-
-            <span>{{ post().totalComment }}</span>
           </button>
 
-          <!-- Share button -->
-          <div class="relative" #shareContainer>
+          <div class="w-7 h-7 bg-secondary rounded-full flex items-center justify-center">
+            <span class="text-white text-sm font-bold">{{ post().communityName | initials }}</span>
+          </div>
+
+          <p class="text-gray-500 font-medium tracking-wider">{{ post().communityName }}</p>
+        </div>
+
+        <!-- Three dots -->
+        <div class="relative" #menuContainer>
+          <button
+            (click)="openPostMenu()"
+            class="action-btn text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-three-dots"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"
+              />
+            </svg>
+          </button>
+
+          @if (isPostMenuOpen()) {
+            <app-dropdown-menu
+              animate.enter="dropdown-fade-in"
+              animate.leave="dropdown-fade-out"
+              styles="w-32 right-0"
+              [isOwner]="post().isOwner"
+              [dropdownItems]="handleGetPostMenuItems()"
+              modalType="menu"
+              (menuItemClicked)="handlePostMenuActions($event)"
+            />
+          }
+        </div>
+      </div>
+
+      <div class="lg:pl-10">
+        <!-- Post Title, Author, content, and Date -->
+        <div class="flex flex-col text-gray-500 mb-1">
+          <!-- Author -->
+          <p class="text-sm font-light mb-1">
+            Posted by <strong>{{ post().author }}</strong
+            >, {{ post().createdAt | timeago }}
+          </p>
+
+          <!-- Title -->
+          <p class="text-white text-3xl font-bold tracking-wide mb-2">{{ post().title }}</p>
+
+          <!-- Content -->
+          <div class="text-gray-500 font-light text-justify mb-3">
+            <p>{{ post().content }}</p>
+          </div>
+
+          <!-- Reactions -->
+          @if (post().reactions && post().reactions.length > 0) {
+            <div class="flex items-center space-x-1.5 mt-2">
+              @for (reaction of post().reactions; track $index) {
+                <button
+                  (click)="selectReaction(getReactionById(reaction.reactionId)!.id)"
+                  class="flex items-center space-x-1 px-2 py-1 text-white rounded-full cursor-pointer transition-colors duration-200"
+                  [ngClass]="
+                    hasReaction(reaction.reactionId)
+                      ? 'bg-gray-500/60 hover:bg-gray-500/40'
+                      : 'bg-black border border-white/30 hover:border-white/50'
+                  "
+                >
+                  <span class="text-sm">{{ getReactionById(reaction.reactionId)?.type }}</span>
+                  <span class="text-sm">{{ reaction.count }}</span>
+                </button>
+              }
+            </div>
+          }
+
+          <!-- Reaction List -->
+          <div class="flex items-center mt-3.5 space-x-2">
+            <!-- React Button -->
+            <div class="relative" #reactionContainer>
+              <button
+                (click)="openReactModal()"
+                class="action-btn flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-mood-happy"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path
+                    d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-2 9.66h-6a1 1 0 0 0 -1 1v.05a3.975 3.975 0 0 0 3.777 3.97l.227 .005a4.026 4.026 0 0 0 3.99 -3.79l.006 -.206a1 1 0 0 0 -1 -1.029zm-5.99 -5l-.127 .007a1 1 0 0 0 .117 1.993l.127 -.007a1 1 0 0 0 -.117 -1.993zm6 0l-.127 .007a1 1 0 0 0 .117 1.993l.127 -.007a1 1 0 0 0 -.117 -1.993z"
+                  />
+                </svg>
+
+                <span>React</span>
+              </button>
+
+              <!-- Reaction Modal -->
+              @if (isPostReactModalOpen()) {
+                <div
+                  animate.enter="dropdown-fade-in"
+                  animate.leave="dropdown-fade-out"
+                  class="absolute flex items-center mt-2 left-0 space-x-2 bg-black border border-white/30 rounded-full px-3 py-2 z-50"
+                  data-modal-type="react"
+                >
+                  @for (reaction of reactionList; track reaction.id) {
+                    <button
+                      (click)="selectReaction(reaction.id)"
+                      class="text-xl cursor-pointer hover:scale-125 transition-transform duration-200"
+                    >
+                      {{ reaction.type }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Comment button -->
             <button
-              (click)="openShareModal()"
-              class="action-btn flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+              class="flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -211,184 +196,210 @@
                 height="24"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                class="icon icon-tabler icons-tabler-filled icon-tabler-chart-dots-3"
+                class="icon icon-tabler icons-tabler-filled icon-tabler-message-circle"
               >
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path
-                  d="M18 2a4 4 0 1 1 -3.843 5.114l-6.295 .786a3 3 0 0 1 -.094 .257l6.446 4.431a3 3 0 1 1 -.695 4.099l-3.527 1.058q .008 .127 .008 .255a4 4 0 1 1 -8 0l.005 -.2a4 4 0 0 1 7.366 -1.954l3.64 -1.094l.01 -.102q .023 -.204 .074 -.4l-6.688 -4.6a3 3 0 0 1 -4.407 -2.65l.005 -.176a3 3 0 0 1 5.784 -.931l6.312 -.79a4 4 0 0 1 3.899 -3.103"
+                  d="M5.821 4.91c3.899 -2.765 9.468 -2.539 13.073 .535c3.667 3.129 4.168 8.238 1.152 11.898c-2.841 3.447 -7.965 4.583 -12.231 2.805l-.233 -.101l-4.374 .931l-.04 .006l-.035 .007h-.018l-.022 .005h-.038l-.033 .004l-.021 -.001l-.023 .001l-.033 -.003h-.035l-.022 -.004l-.022 -.002l-.035 -.007l-.034 -.005l-.016 -.004l-.024 -.005l-.049 -.016l-.024 -.005l-.011 -.005l-.022 -.007l-.045 -.02l-.03 -.012l-.011 -.006l-.014 -.006l-.031 -.018l-.045 -.024l-.016 -.011l-.037 -.026l-.04 -.027l-.002 -.004l-.013 -.009l-.043 -.04l-.025 -.02l-.006 -.007l-.056 -.062l-.013 -.014l-.011 -.014l-.039 -.056l-.014 -.019l-.005 -.01l-.042 -.073l-.007 -.012l-.004 -.008l-.007 -.012l-.014 -.038l-.02 -.042l-.004 -.016l-.004 -.01l-.017 -.061l-.007 -.018l-.002 -.015l-.005 -.019l-.005 -.033l-.008 -.042l-.002 -.031l-.003 -.01v-.016l-.004 -.054l.001 -.036l.001 -.023l.002 -.053l.004 -.025v-.019l.008 -.035l.005 -.034l.005 -.02l.004 -.02l.018 -.06l.003 -.013l1.15 -3.45l-.022 -.037c-2.21 -3.747 -1.209 -8.391 2.413 -11.119z"
                 />
               </svg>
 
-              <span>Share</span>
+              <span>{{ post().totalComment }}</span>
             </button>
 
-            @if (isPostShareModalOpen()) {
-              <app-dropdown-menu
-                animate.enter="dropdown-fade-in"
-                animate.leave="dropdown-fade-out"
-                styles="w-32 mt-1 left-0"
-                [dropdownItems]="shareItems"
-                modalType="share"
-                (menuItemClicked)="handleShareActions($event)"
-              />
-            }
-          </div>
-        </div>
-
-        <z-divider zSpacing="default" class="bg-white/20"></z-divider>
-
-        @if (isAuthenticated()) {
-          <button
-            #toggleCommentBtn
-            (click)="showCommentSection()"
-            class="comment-action-btn text-left px-5 py-2 text-gray-600 font-light border border-white/20 rounded-xl cursor-text hover:bg-gray-500/10 focus:outline-none focus:ring-1 focus:ring-gray-500 transition-colors duration-200"
-            [class.hidden]="isCommentSelected()"
-            aria-label="commentBtn"
-          >
-            Place your comment here
-          </button>
-
-          <form
-            [formGroup]="commentForm"
-            #commentFormContainer
-            class="comment-form border border-white/20 rounded-xl p-3"
-            [class.hidden]="!isCommentSelected()"
-            (ngSubmit)="onCommentSubmit()"
-          >
-            <textarea
-              #commentArea
-              id="content"
-              rows="6"
-              formControlName="content"
-              placeholder="What's on your mind?"
-              class="form-control text-sm w-full text-white focus:outline-none focus:border-transparent font-light placeholder:text-gray-600"
-            ></textarea>
-
-            <div class="flex space-x-2 items-center justify-end">
+            <!-- Share button -->
+            <div class="relative" #shareContainer>
               <button
-                type="button"
-                class="text-white text-sm px-5 py-1.5 font-medium rounded-md cursor-pointer duration-200 transition-colors bg-gray-700 hover:bg-gray-600"
-                (click)="cancelCommentSection()"
+                (click)="openShareModal()"
+                class="action-btn flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
               >
-                Cancel
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-chart-dots-3"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path
+                    d="M18 2a4 4 0 1 1 -3.843 5.114l-6.295 .786a3 3 0 0 1 -.094 .257l6.446 4.431a3 3 0 1 1 -.695 4.099l-3.527 1.058q .008 .127 .008 .255a4 4 0 1 1 -8 0l.005 -.2a4 4 0 0 1 7.366 -1.954l3.64 -1.094l.01 -.102q .023 -.204 .074 -.4l-6.688 -4.6a3 3 0 0 1 -4.407 -2.65l.005 -.176a3 3 0 0 1 5.784 -.931l6.312 -.79a4 4 0 0 1 3.899 -3.103"
+                  />
+                </svg>
+
+                <span>Share</span>
               </button>
 
-              <button
-                type="submit"
-                class="bg-secondary text-white text-sm px-3 py-1.5 font-medium rounded-md cursor-pointer duration-200 transition-colors hover:bg-secondary/80"
-              >
-                Comment
-              </button>
+              @if (isPostShareModalOpen()) {
+                <app-dropdown-menu
+                  animate.enter="dropdown-fade-in"
+                  animate.leave="dropdown-fade-out"
+                  styles="w-32 mt-1 left-0"
+                  [dropdownItems]="shareItems"
+                  modalType="share"
+                  (menuItemClicked)="handleShareActions($event)"
+                />
+              }
             </div>
-          </form>
-        }
-
-        @if (post().comments?.length === 0) {
-          <div class="flex flex-col items-center justify-center mt-10">
-            <img ngSrc="assets/dog.png" alt="dog" width="300" height="300" />
-            <p>There are no comments for this post</p>
           </div>
-        } @else {
-          <!-- Search Comments -->
-          <div class="relative mb-5 mt-5">
-            <div
-              class="absolute inset-y-0 left-0 pl-3 flex items-center bottom-[3px] pointer-events-none"
+
+          <z-divider zSpacing="default" class="bg-white/20"></z-divider>
+
+          @if (isAuthenticated()) {
+            <button
+              #toggleCommentBtn
+              (click)="showCommentSection()"
+              class="comment-action-btn text-left px-5 py-2 text-gray-600 font-light border border-white/20 rounded-xl cursor-text hover:bg-gray-500/10 focus:outline-none focus:ring-1 focus:ring-gray-500 transition-colors duration-200"
+              [class.hidden]="isCommentSelected()"
+              aria-label="commentBtn"
             >
-              <svg
-                class="h-5 w-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              Place your comment here
+            </button>
+
+            <form
+              [formGroup]="commentForm"
+              #commentFormContainer
+              class="comment-form border border-white/20 rounded-xl p-3"
+              [class.hidden]="!isCommentSelected()"
+              (ngSubmit)="onCommentSubmit()"
+            >
+              <textarea
+                #commentArea
+                id="content"
+                rows="6"
+                formControlName="content"
+                placeholder="What's on your mind?"
+                class="form-control text-sm w-full text-white focus:outline-none focus:border-transparent font-light placeholder:text-gray-600"
+              ></textarea>
+
+              <div class="flex space-x-2 items-center justify-end">
+                <button
+                  type="button"
+                  class="text-white text-sm px-5 py-1.5 font-medium rounded-md cursor-pointer duration-200 transition-colors bg-gray-700 hover:bg-gray-600"
+                  (click)="cancelCommentSection()"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  class="bg-secondary text-white text-sm px-3 py-1.5 font-medium rounded-md cursor-pointer duration-200 transition-colors hover:bg-secondary/80"
+                >
+                  Comment
+                </button>
+              </div>
+            </form>
+          }
+
+          @if (post().comments?.length === 0) {
+            <div class="flex flex-col items-center justify-center mt-10">
+              <img ngSrc="assets/dog.png" alt="dog" width="300" height="300" />
+              <p>There are no comments for this post</p>
+            </div>
+          } @else {
+            <!-- Search Comments -->
+            <div class="relative mb-5 mt-5">
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center bottom-[3px] pointer-events-none"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                ></path>
-              </svg>
+                <svg
+                  class="h-5 w-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  ></path>
+                </svg>
+              </div>
+
+              <input
+                #searchInput
+                type="text"
+                placeholder="Search Comments"
+                class="block border-gray-500/80 border rounded-xl max-w-xs w-full pl-10 pr-3 py-2 text-gray-500 hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 text-sm transition-colors"
+              />
             </div>
 
-            <input
-              #searchInput
-              type="text"
-              placeholder="Search Comments"
-              class="block border-gray-500/80 border rounded-xl max-w-xs w-full pl-10 pr-3 py-2 text-gray-500 hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 text-sm transition-colors"
-            />
-          </div>
+            <!-- Display Comments -->
+            <div class="flex flex-col">
+              @for (comment of post().comments; track comment.id) {
+                <!-- User Comment Detail -->
+                <div class="flex justify-between">
+                  <div class="flex items-center space-x-2">
+                    <div
+                      class="w-7 h-7 rounded-full flex items-center justify-center"
+                      [ngClass]="comment.isDeleted ? 'bg-gray-500/50' : 'bg-secondary'"
+                    >
+                      <span
+                        class="text-white text-sm font-bold"
+                        [class.hidden]="comment.isDeleted"
+                        >{{ comment.username | initials }}</span
+                      >
+                    </div>
 
-          <!-- Display Comments -->
-          <div class="flex flex-col">
-            @for (comment of post().comments; track comment.id) {
-              <!-- User Comment Detail -->
-              <div class="flex justify-between">
-                <div class="flex items-center space-x-2">
-                  <div
-                    class="w-7 h-7 rounded-full flex items-center justify-center"
-                    [ngClass]="comment.isDeleted ? 'bg-gray-500/50' : 'bg-secondary'"
-                  >
-                    <span class="text-white text-sm font-bold" [class.hidden]="comment.isDeleted">{{
-                      comment.username | initials
-                    }}</span>
+                    <p
+                      class="font-medium text-sm tracking-wider"
+                      [ngClass]="comment.isDeleted ? 'text-gray-500' : 'text-white'"
+                    >
+                      {{ comment.username }}
+                    </p>
+
+                    <p class="text-xs">{{ comment.commentedAt | timeago }}</p>
                   </div>
 
-                  <p
-                    class="font-medium text-sm tracking-wider"
-                    [ngClass]="comment.isDeleted ? 'text-gray-500' : 'text-white'"
+                  <!-- Three dots (comment) -->
+                  <div
+                    class="comment-menu-container relative"
+                    [class.hidden]="comment.isDeleted && !isAdmin()"
+                    #commentMenuContainers
                   >
-                    {{ comment.username }}
-                  </p>
-
-                  <p class="text-xs">{{ comment.commentedAt | timeago }}</p>
-                </div>
-
-                <!-- Three dots (comment) -->
-                <div
-                  class="comment-menu-container relative"
-                  [class.hidden]="comment.isDeleted && !isAdmin()"
-                  #commentMenuContainers
-                >
-                  <button
-                    (click)="toggleCommentMenu($event, comment.id)"
-                    class="text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      class="bi bi-three-dots"
-                      viewBox="0 0 16 16"
+                    <button
+                      (click)="toggleCommentMenu($event, comment.id)"
+                      class="text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
                     >
-                      <path
-                        d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-three-dots"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"
+                        />
+                      </svg>
+                    </button>
+
+                    @if (getActiveCommentMenuId() === comment.id) {
+                      <app-dropdown-menu
+                        animate.enter="dropdown-fade-in"
+                        animate.leave="dropdown-fade-out"
+                        styles="w-32 right-0"
+                        [isOwner]="comment.isOwner"
+                        [dropdownItems]="commentMenuItems"
+                        (menuItemClicked)="handleCommentMenuActions($event, comment)"
                       />
-                    </svg>
-                  </button>
-
-                  @if (getActiveCommentMenuId() === comment.id) {
-                    <app-dropdown-menu
-                      animate.enter="dropdown-fade-in"
-                      animate.leave="dropdown-fade-out"
-                      styles="w-32 right-0"
-                      [isOwner]="comment.isOwner"
-                      [dropdownItems]="commentMenuItems"
-                      (menuItemClicked)="handleCommentMenuActions($event, comment)"
-                    />
-                  }
+                    }
+                  </div>
                 </div>
-              </div>
 
-              <!-- Content -->
-              <div class="pl-9 mb-5">
-                <div class="text-[15px]" [ngClass]="comment.isDeleted ? 'text-gray-500/50' : ''">
-                  {{ comment.content }}
+                <!-- Content -->
+                <div class="pl-9 mb-5">
+                  <div class="text-[15px]" [ngClass]="comment.isDeleted ? 'text-gray-500/50' : ''">
+                    {{ comment.content }}
+                  </div>
                 </div>
-              </div>
-            }
-          </div>
-        }
+              }
+            </div>
+          }
+        </div>
       </div>
     </div>
-  </div>
+  }
 }
