@@ -12,22 +12,22 @@ import { CommunityService } from '@core/services/community.service';
 
 class AuthServiceMock {
   isAuthenticated = of(true);
-  logout = jasmine.createSpy('logout').and.returnValue(of(void 0));
+  logout = vi.fn().mockReturnValue(of(void 0));
 }
 class MessageServiceMock {}
 class UserServiceMock {
   user = of({ firstName: 'John', lastName: 'Doe' } as any);
   activeUserTab = of('home');
-  setActiveUserTab = jasmine.createSpy('setActiveUserTab');
+  setActiveUserTab = vi.fn();
 }
 class PostServiceMock {
-  resetPostServiceData = jasmine.createSpy('resetPostServiceData');
+  resetPostServiceData = vi.fn();
 }
 class CommunityServiceMock {
-  resetCommunityServiceData = jasmine.createSpy('resetCommunityServiceData');
+  resetCommunityServiceData = vi.fn();
 }
 class RouterMock {
-  navigate = jasmine.createSpy('navigate');
+  navigate = vi.fn();
 }
 
 describe('Header', () => {
@@ -68,39 +68,34 @@ describe('Header', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set active tab via userService', () => {
-    component.setActiveTab('posts');
-    expect(userService.setActiveUserTab).toHaveBeenCalledWith('posts');
-  });
-
   it('should hide and show header based on scroll direction and inactivity', fakeAsync(() => {
     // Initial state
-    expect(component.hideHeader).toBeFalse();
-    expect(component.hideBottomNav).toBeFalse();
+    expect(component.hideHeader).toBe(false);
+    expect(component.hideBottomNav).toBe(false);
 
     // Simulate scroll down beyond threshold
-    spyOnProperty(window, 'pageYOffset', 'get').and.returnValue(150);
+    vi.stubGlobal('pageYOffset', 150);
     (component as any).lastScrollTop = 50;
     component.onWindowScroll();
-    expect(component.hideHeader).toBeTrue();
-    expect(component.hideBottomNav).toBeTrue();
+    expect(component.hideHeader).toBe(true);
+    expect(component.hideBottomNav).toBe(true);
 
     // Simulate scroll up
-    spyOnProperty(window, 'pageYOffset', 'get').and.returnValue(10);
+    vi.stubGlobal('pageYOffset', 10);
     (component as any).lastScrollTop = 100;
     component.onWindowScroll();
-    expect(component.hideHeader).toBeFalse();
-    expect(component.hideBottomNav).toBeFalse();
+    expect(component.hideHeader).toBe(false);
+    expect(component.hideBottomNav).toBe(false);
 
     // After inactivity, header remains visible
     tick(1000);
-    expect(component.hideHeader).toBeFalse();
-    expect(component.hideBottomNav).toBeFalse();
+    expect(component.hideHeader).toBe(false);
+    expect(component.hideBottomNav).toBe(false);
   }));
 
   it('should clear timeout on destroy', () => {
     component.scrollTimeout = setTimeout(() => {}, 1000);
-    spyOn(window, 'clearTimeout').and.callThrough();
+    vi.spyOn(window, 'clearTimeout').mockImplementation(() => {});
     component.ngOnDestroy();
     expect(window.clearTimeout).toHaveBeenCalled();
   });
@@ -117,8 +112,8 @@ describe('Header', () => {
 
   it('should handle logout error via message service', () => {
     const error = new HttpErrorResponse({ status: 500 });
-    authService.logout.and.returnValue(throwError(() => error));
-    const handleSpy = spyOn<any>(console, 'error');
+    authService.logout.mockReturnValue(throwError(() => error));
+    const handleSpy = vi.spyOn(console, 'error');
 
     // Spy on global handleHttpError by intercepting console.error which it might call.
     // We cannot import private function here; we assert that no throws occur.

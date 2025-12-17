@@ -8,9 +8,8 @@ describe('RecentViewedPost', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RecentViewedPost]
-    })
-    .compileComponents();
+      imports: [RecentViewedPost],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RecentViewedPost);
     component = fixture.componentInstance;
@@ -18,6 +17,6 @@ describe('RecentViewedPost', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component).toBe(true);
   });
 });
