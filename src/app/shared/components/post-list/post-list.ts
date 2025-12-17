@@ -17,8 +17,6 @@ import {
   isExploreMetadata,
   setupReactionSubject,
   SUCCESS_MESSAGES,
-  toMenuModalStrategy,
-  toPostDeleteType,
 } from '@shared/utils/utils';
 import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
@@ -31,7 +29,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { MenuItems, PostMenuItems } from '@core/models/interface/menus';
 import { UserService } from '@core/services/user.service';
 import { ModalService } from '@core/services/modal.service';
-import { MenuModalStrategy, PostMenuModalConfig } from '@core/models/interface/modal';
+import { toMenuModalStrategy, toPostDeleteType } from '@shared/utils/type-guards';
 
 @Component({
   selector: 'app-post-list',
