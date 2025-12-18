@@ -87,6 +87,7 @@ export class PostCard {
 
   handlePostDetailNavigate(event: MouseEvent) {
     event.stopPropagation();
+    if (this.currentPath() === '/archives') return;
 
     this.postDetailAction.emit(this.post().slug);
   }
