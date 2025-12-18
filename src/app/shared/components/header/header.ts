@@ -13,6 +13,7 @@ import { CommunityService } from '@core/services/community.service';
 import { Tooltip } from '../tooltip/tooltip';
 import { NgOptimizedImage } from '@angular/common';
 import { CurrentRouteService } from '@core/services/current-route.service';
+import { ModalService } from '@core/services/modal.service';
 
 @Component({
   selector: 'app-header',
@@ -27,6 +28,7 @@ export class Header implements OnDestroy {
   private postService = inject(PostService);
   private communityService = inject(CommunityService);
   private currentRouteService = inject(CurrentRouteService);
+  private modalService = inject(ModalService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
@@ -105,6 +107,20 @@ export class Header implements OnDestroy {
 
   toggleProfileMenu(action: string) {
     const handler = this.profileMenuMap.get(action);
+
+    if (handler && action === 'signout') {
+      return this.modalService.openModal({
+        type: 'generic',
+        title: 'Sign out',
+        description: 'Are you sure you want to sign out?',
+        content: 'confirmation-modal',
+        subcontent:
+          'Are you sure you want to sign out? Please save your work before signing out, or you will lose all your work.',
+        confirmBtnText: 'Sign out',
+        cancelBtnText: 'Cancel',
+        onConfirm: () => this.onSignOut(),
+      });
+    }
 
     if (handler) {
       handler();
