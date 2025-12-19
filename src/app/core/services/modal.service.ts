@@ -1,12 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import {
-  CommunityModalConfig,
-  MenuModalConfig,
-  MenuModalStrategy,
-  ModalConfig,
-  ModalData,
-  PostMenuModalConfig,
-} from '@core/models/interface/modal';
+import { MenuModalConfig, MenuModalStrategy, ModalConfig } from '@core/models/interface/modal';
 import { CurrentRouteService } from './current-route.service';
 
 @Injectable({

@@ -1,12 +1,4 @@
-import {
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  input,
-  linkedSignal,
-  signal,
-} from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, linkedSignal } from '@angular/core';
 import { CommunityCard } from './community-card/community-card';
 import { CommunityService } from '@core/services/community.service';
 import { Communities } from '@core/models/interface/community';
