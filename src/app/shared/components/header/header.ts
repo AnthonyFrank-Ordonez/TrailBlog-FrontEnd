@@ -154,6 +154,10 @@ export class Header implements OnDestroy {
     this.currentRouteService.handleRedirection(['archives']);
   }
 
+  onSearch(query: string) {
+    this.postService.enteredSearchQuery.set(query);
+  }
+
   @HostListener('window:scroll')
   onWindowScroll() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;

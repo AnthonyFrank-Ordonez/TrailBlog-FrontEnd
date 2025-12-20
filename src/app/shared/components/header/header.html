@@ -204,6 +204,7 @@
         <input
           type="text"
           placeholder="Search Trail"
+          (input)="onSearch($event.target.value)"
           class="block w-full pl-10 pr-3 py-2 rounded-full bg-gray-500/30 text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm transition-colors"
         />
       </div>

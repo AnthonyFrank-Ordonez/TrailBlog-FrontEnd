@@ -1,4 +1,10 @@
-import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+  httpResource,
+  HttpResponse,
+} from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import {
   CreatePostRequest,
@@ -12,7 +18,7 @@ import {
   RecentViewedPost,
 } from '@core/models/interface/posts';
 import { catchError, EMPTY, finalize, Observable, of, Subject, tap, throwError } from 'rxjs';
-import { POST_PLACEHOLDER } from '@shared/utils/utils';
+import { debounceSignal, POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
 import { PageResult, PostMetadata } from '@core/models/interface/page-result';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
@@ -23,6 +29,7 @@ import { OperationResult } from '@core/models/interface/operations';
 import { CurrentRouteService } from './current-route.service';
 import { CommentAction, PostAction, PostMenuItems } from '@core/models/interface/menus';
 import { UserService } from './user.service';
+import { UnifiedSearchResults } from '@core/models/interface/search-results';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +43,7 @@ export class PostService {
   private currentRouteService = inject(CurrentRouteService);
   private readonly apiUrl = `${this.env.apiRoot}/posts`;
 
+  enteredSearchQuery = signal<string>('');
   #postSignal = signal<Post[]>([]);
   #draftPostSignal = signal<Post[]>([]);
   #mostPopularPostsSignal = signal<Post[]>([]);
@@ -55,6 +63,7 @@ export class PostService {
   #activeDropdown = signal<PostDropdown>({ type: null, id: null });
   #metadataSignal = signal<PostMetadata | undefined>(undefined);
   #errorMessageSignal = signal<HttpErrorResponse | null>(null);
+  #searchQuery = debounceSignal(this.enteredSearchQuery);
   reaction$ = new Subject<ReactionRequest>();
 
   posts = this.#postSignal.asReadonly();
@@ -70,6 +79,14 @@ export class PostService {
   activeDropdown = this.#activeDropdown.asReadonly();
   errorMessage = this.#errorMessageSignal.asReadonly();
   metadata = this.#metadataSignal.asReadonly();
+
+  private unifiedSearch = httpResource<UnifiedSearchResults[]>(() =>
+    this.#searchQuery()?.trim() ? `${this.apiUrl}/search?query=${this.#searchQuery()}` : undefined,
+  );
+
+  readonly unifiedSearchResults = computed(
+    () => this.unifiedSearch.value() ?? ([] as UnifiedSearchResults[]),
+  );
 
   readonly hasMore = computed(() => this.#currentPageSignal() < this.#totalPagesSignal());
 

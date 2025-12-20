@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { DestroyRef } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef, Signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ApiError } from '@core/models/interface/api-error';
 import { CommentAction, PostAction } from '@core/models/interface/menus';
 import { ExploreMetadata, PostMetadata } from '@core/models/interface/page-result';
@@ -44,6 +44,12 @@ export function debounce<T>(
   debounceMs: number = 400,
 ): OperatorFunction<T, T> {
   return pipe(debounceTime(debounceMs), distinctUntilChanged(), takeUntilDestroyed(destroyRef));
+}
+
+export function debounceSignal<T>(signal: Signal<T>, time: number = 300): Signal<T | undefined> {
+  let debounceObservable$ = toObservable(signal).pipe(debounceTime(time), distinctUntilChanged());
+
+  return toSignal(debounceObservable$);
 }
 
 export function handleHttpError(error: HttpErrorResponse, messageService: MessageService) {
