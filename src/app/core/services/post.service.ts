@@ -80,13 +80,11 @@ export class PostService {
   errorMessage = this.#errorMessageSignal.asReadonly();
   metadata = this.#metadataSignal.asReadonly();
 
-  private unifiedSearch = httpResource<UnifiedSearchResults[]>(() =>
+  private unifiedSearch = httpResource<UnifiedSearchResults>(() =>
     this.#searchQuery()?.trim() ? `${this.apiUrl}/search?query=${this.#searchQuery()}` : undefined,
   );
 
-  readonly unifiedSearchResults = computed(
-    () => this.unifiedSearch.value() ?? ([] as UnifiedSearchResults[]),
-  );
+  unifiedSearchResults = computed(() => this.unifiedSearch.value());
 
   readonly hasMore = computed(() => this.#currentPageSignal() < this.#totalPagesSignal());
 

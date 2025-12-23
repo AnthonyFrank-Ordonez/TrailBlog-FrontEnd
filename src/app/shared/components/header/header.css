@@ -1,0 +1,52 @@
+.hide-scrollbar {
+  scrollbar-width: 8px;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  background: transparent;
+}
+
+.hide-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.scrollbar-container:hover .hide-scrollbar,
+.scrollbar-container.scrolling .hide-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.6) transparent;
+}
+
+.scrollbar-container:hover .hide-scrollbar::-webkit-scrollbar,
+.scrollbar-container.scrolling .hide-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Same width as hidden state */
+  background: transparent;
+}
+
+.scrollbar-container:hover .hide-scrollbar::-webkit-scrollbar-track,
+.scrollbar-container.scrolling .hide-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.scrollbar-container:hover .hide-scrollbar::-webkit-scrollbar-thumb,
+.scrollbar-container.scrolling .hide-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.6);
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.scrollbar-container:hover .hide-scrollbar::-webkit-scrollbar-thumb:hover,
+.scrollbar-container.scrolling .hide-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.9);
+}
+
+.scrollbar-container {
+  transition: all 0.2s ease;
+}

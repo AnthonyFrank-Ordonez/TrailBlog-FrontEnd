@@ -35,6 +35,8 @@ export class Header implements OnDestroy {
   isAuthenticated = this.authService.isAuthenticated;
   user = this.userService.user;
   activeTab = this.userService.activeUserTab;
+  unifiedSearchResults = this.postService.unifiedSearchResults;
+  searchQuery = this.postService.enteredSearchQuery;
 
   hideHeader = false;
   hideBottomNav = false;
@@ -156,6 +158,25 @@ export class Header implements OnDestroy {
 
   onSearch(query: string) {
     this.postService.enteredSearchQuery.set(query);
+  }
+
+  onClearSearch() {
+    this.postService.enteredSearchQuery.set('');
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutsideSearch(event: MouseEvent): void {
+    if (!this.searchQuery()) return;
+
+    const target = event.target as HTMLElement;
+
+    const insideDropdown = target.closest('[data-search-dropdown]');
+    const insideSearchInput = target.closest('input[placeholder="Search Trail"]');
+    const isClearButton = target.closest('.clear-search-btn');
+
+    if (!insideDropdown && !insideSearchInput && !isClearButton) {
+      this.onClearSearch();
+    }
   }
 
   @HostListener('window:scroll')
