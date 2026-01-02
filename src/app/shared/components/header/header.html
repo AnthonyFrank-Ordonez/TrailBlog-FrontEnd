@@ -1,7 +1,7 @@
 <!-- Mobile Header -->
 <!-- Top Header -->
 <header
-  class="fixed top-0 left-0 right-0 text-secondary z-999 transition-transform duration-300 ease-in-out border-white/30 border-b lg:hidden bg-black"
+  class="text-secondary fixed top-0 right-0 left-0 z-999 border-b border-white/30 bg-black transition-transform duration-300 ease-in-out lg:hidden"
   [class.transform]="true"
   [class.-translate-y-full]="hideHeader"
 >
@@ -9,7 +9,7 @@
     <div class="flex items-center space-x-2">
       <!-- Hamburger Menu -->
       <button class="p-1">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -22,7 +22,7 @@
       <!-- Logo and Filter -->
       <div class="flex items-center space-x-2">
         <span class="text-lg font-bold">Trail</span>
-        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -36,7 +36,7 @@
     <div class="flex items-center">
       <!-- Search Icon -->
       <button class="flex items-center">
-        <svg class="h-5 w-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="text-secondary h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -51,11 +51,11 @@
 
 <!-- Bottom Nav -->
 <nav
-  class="fixed bottom-0 right-0 left-0 bg-black border-t border-t-white/30 z-50 transition-transform duration-300 ease-in-out lg:hidden"
+  class="fixed right-0 bottom-0 left-0 z-50 border-t border-t-white/30 bg-black transition-transform duration-300 ease-in-out lg:hidden"
   [class.transform]="true"
   [class.translate-y-full]="hideBottomNav"
 >
-  <div class="flex justify-around items-center py-1">
+  <div class="flex items-center justify-around py-1">
     <button
       class="flex flex-col items-center justify-center space-y-1 p-2"
       [class.text-secondary]="activeTab() === 'home'"
@@ -105,7 +105,7 @@
       [class.text-gray-500]="activeTab() !== 'create'"
     >
       <svg
-        class="w-6 h-6"
+        class="h-6 w-6"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
@@ -178,20 +178,20 @@
 
 <!-- Dektop Header -->
 <header
-  class="hidden lg:block fixed right-0 bg-primary border-b border-white/30 z-998 top-0 left-1/2 transform -translate-x-1/2 w-full sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[110rem]"
+  class="bg-primary fixed top-0 right-0 left-1/2 z-998 hidden w-full -translate-x-1/2 transform border-b border-white/30 sm:max-w-xl md:max-w-3xl lg:block lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[110rem]"
 >
-  <div class="flex items-center justify-between px-5 py-2 mx-auto">
+  <div class="mx-auto flex items-center justify-between px-5 py-2">
     <!-- Logo -->
     <div class="flex items-center space-x-2">
       <img ngSrc="assets/logo.png" alt="trail-logo" width="35" height="35" priority="high" />
-      <span class="text-xl font-bold text-secondary">Trail</span>
+      <span class="text-secondary text-xl font-bold">Trail</span>
     </div>
 
     <!-- Center: Search Bar -->
-    <div class="flex-1 max-w-lg mx-8">
+    <div class="mx-8 max-w-lg flex-1">
       <div class="relative">
         <!-- Search Icon (Left) -->
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -204,10 +204,10 @@
 
         <!-- Clear Button (Right) -->
         @if (searchQuery()) {
-          <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+          <div class="absolute inset-y-0 right-0 flex items-center pr-3">
             <button
               (click)="onClearSearch()"
-              class="clear-search-btn hover:bg-gray-700 rounded-full p-1 transition-colors cursor-pointer"
+              class="clear-search-btn cursor-pointer rounded-full p-1 transition-colors hover:bg-gray-700"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -234,7 +234,7 @@
           placeholder="Search Trail"
           [value]="searchQuery()"
           (input)="onSearch($event.target.value)"
-          class="block w-full pl-10 pr-3 py-2 rounded-full bg-gray-500/30 text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm transition-colors"
+          class="block w-full rounded-full bg-gray-500/30 py-2 pr-3 pl-10 text-sm text-gray-500 transition-colors hover:border-gray-400 focus:border-transparent focus:ring-2 focus:ring-gray-500 focus:outline-none"
         />
 
         <!-- Dropdown for search results -->
@@ -244,30 +244,30 @@
         ) {
           <div
             data-search-dropdown
-            class="scrollbar-container absolute top-full left-0 right-0 mt-1 bg-black border border-white/30 rounded-lg shadow-lg z-50"
+            class="scrollbar-container absolute top-full right-0 left-0 z-50 mt-1 rounded-lg border border-white/30 bg-black shadow-lg"
           >
-            <div class="hide-scrollbar overflow-y-auto max-h-96">
+            <div class="hide-scrollbar max-h-96 overflow-y-auto">
               <!-- Communities Section -->
               @if (unifiedSearchResults()?.communities?.length) {
-                <div class="px-3 py-2 border-b border-white/10">
+                <div class="border-b border-white/10 px-3 py-2">
                   <h3 class="text-xs font-semibold text-gray-400/50 uppercase">Communities</h3>
                 </div>
                 @for (community of unifiedSearchResults()?.communities; track community.id) {
                   <button
-                    class="w-full px-4 py-3 text-left hover:bg-gray-800/40 transition-colors cursor-pointer border-b border-white/10"
+                    class="w-full cursor-pointer border-b border-white/10 px-4 py-3 text-left transition-colors hover:bg-gray-800/40"
                   >
                     <div class="flex items-center space-x-3">
                       <div
-                        class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center"
+                        class="bg-secondary flex h-8 w-8 items-center justify-center rounded-full"
                       >
-                        <span class="text-white text-xs font-bold">{{
+                        <span class="text-xs font-bold text-white">{{
                           community.communityName | initials
                         }}</span>
                       </div>
                       <div>
-                        <p class="text-white text-sm font-medium">{{ community.communityName }}</p>
+                        <p class="text-sm font-medium text-white">{{ community.communityName }}</p>
                         @if (community.description) {
-                          <p class="text-gray-400 text-xs truncate">{{ community.description }}</p>
+                          <p class="truncate text-xs text-gray-400">{{ community.description }}</p>
                         }
                       </div>
                     </div>
@@ -277,15 +277,15 @@
 
               <!-- Posts Section -->
               @if (unifiedSearchResults()?.posts?.length) {
-                <div class="px-3 py-2 border-b border-white/10">
+                <div class="border-b border-white/10 px-3 py-2">
                   <h3 class="text-xs font-semibold text-gray-400/50 uppercase">Posts</h3>
                 </div>
                 @for (post of unifiedSearchResults()?.posts; track post.id) {
                   <button
-                    class="w-full px-4 py-3 text-left hover:bg-gray-800/40 transition-colors cursor-pointer border-b border-white/10"
+                    class="w-full cursor-pointer border-b border-white/10 px-4 py-3 text-left transition-colors hover:bg-gray-800/40"
                   >
-                    <p class="text-white text-sm font-medium">{{ post.title }}</p>
-                    <p class="text-gray-400 text-xs">By {{ post.author }}</p>
+                    <p class="text-sm font-medium text-white">{{ post.title }}</p>
+                    <p class="text-xs text-gray-400">By {{ post.author }}</p>
                   </button>
                 }
               }
@@ -301,10 +301,10 @@
         <!-- Create Btn -->
         <app-tooltip toolTipText="Create a new post">
           <button
-            class="flex items-center space-x-1.5 px-2 py-2 text-white rounded-full text-sm font-medium transition-colors hover:bg-gray-800/40 cursor-pointer"
+            class="flex cursor-pointer items-center space-x-1.5 rounded-full px-2 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800/40"
             routerLink="/create"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -319,7 +319,7 @@
         <!-- Notification -->
         <app-tooltip toolTipText="Notification">
           <button
-            class="p-2 text-white hover:bg-gray-800/40 rounded-full transition-colors cursor-pointer"
+            class="cursor-pointer rounded-full p-2 text-white transition-colors hover:bg-gray-800/40"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -336,22 +336,22 @@
         </app-tooltip>
 
         <!-- Profile -->
-        <div class="relative inline-block group">
+        <div class="group relative inline-block">
           <button
-            class="flex items-center space-x-2 p-1 hover:bg-gray-800/40 rounded-full transition-colors cursor-pointer"
+            class="flex cursor-pointer items-center space-x-2 rounded-full p-1 transition-colors hover:bg-gray-800/40"
           >
-            <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
-              <span class="text-white text-sm font-bold">{{ user()?.username | initials }}</span>
+            <div class="bg-secondary flex h-8 w-8 items-center justify-center rounded-full">
+              <span class="text-sm font-bold text-white">{{ user()?.username | initials }}</span>
             </div>
           </button>
 
           <div
-            class="bg-black absolute right-0 transition-all duration-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible -translate-y-2 group-hover:translate-y-0 border border-white/30 w-36 mt-1 rounded-md overflow-hidden"
+            class="invisible absolute right-0 mt-1 w-36 -translate-y-2 overflow-hidden rounded-md border border-white/30 bg-black opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100"
           >
             @for (item of profileMenuItems; track $index) {
               <button
                 (click)="toggleProfileMenu(item.action)"
-                class="text-white text-sm py-2 px-3 whitespace-nowrap w-full text-left flex items-center cursor-pointer hover:bg-white/20 transition-colors focus:outline-none focus:bg-gray-700"
+                class="flex w-full cursor-pointer items-center px-3 py-2 text-left text-sm whitespace-nowrap text-white transition-colors hover:bg-white/20 focus:bg-gray-700 focus:outline-none"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -360,7 +360,7 @@
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   [attr.fill]="item.fill ? 'currentColor' : 'none'"
-                  class="icon icon-tabler icons-tabler-filled w-5 h-5"
+                  class="icon icon-tabler icons-tabler-filled h-5 w-5"
                   [class]="item.iconClass"
                 >
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -377,7 +377,7 @@
         <!-- Login Button -->
         <button
           routerLink="/login"
-          class="bg-secondary px-5 py-2 rounded-full text-xs font-medium text-white tracking-wide cursor-pointer transition-colors duration-300 hover:bg-secondary/80"
+          class="bg-secondary hover:bg-secondary/80 cursor-pointer rounded-full px-5 py-2 text-xs font-medium tracking-wide text-white transition-colors duration-300"
         >
           Login
         </button>

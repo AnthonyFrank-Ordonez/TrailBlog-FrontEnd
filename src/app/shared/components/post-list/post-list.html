@@ -18,56 +18,56 @@
     (postDetailAction)="handlePostDetail($event)"
     (toggleJoinAction)="handleToggleJoin($event)"
   />
-  <div class="border-b border-b-white/20 mb-3 mt-3"></div>
+  <div class="mt-3 mb-3 border-b border-b-white/20"></div>
 }
 
 <!-- Skeleton Loading -->
 @if (isPostLoading()) {
   @for (skeleton of skeletonArray; track $index) {
-    <div class="rounded-lg px-4 py-3 hover:bg-gray-800/30 cursor-pointer">
+    <div class="cursor-pointer rounded-lg px-4 py-3 hover:bg-gray-800/30">
       <div class="animate-pulse">
-        <div class="flex items-center justify-between mb-3">
+        <div class="mb-3 flex items-center justify-between">
           <div class="flex items-center space-x-2">
-            <div class="h-4 bg-gray-600 rounded w-24"></div>
-            <div class="h-4 bg-gray-600 rounded w-20"></div>
+            <div class="h-4 w-24 rounded bg-gray-600"></div>
+            <div class="h-4 w-20 rounded bg-gray-600"></div>
           </div>
           <div class="flex items-center space-x-1">
-            <div class="h-6 bg-gray-600 rounded-full w-12"></div>
-            <div class="h-8 w-8 bg-gray-600 rounded-full"></div>
+            <div class="h-6 w-12 rounded-full bg-gray-600"></div>
+            <div class="h-8 w-8 rounded-full bg-gray-600"></div>
           </div>
         </div>
 
-        <div class="flex flex-col space-y-2 mb-4">
-          <div class="h-6 bg-gray-600 rounded w-3/4"></div>
-          <div class="h-4 bg-gray-600 rounded w-full"></div>
-          <div class="h-4 bg-gray-600 rounded w-2/3"></div>
+        <div class="mb-4 flex flex-col space-y-2">
+          <div class="h-6 w-3/4 rounded bg-gray-600"></div>
+          <div class="h-4 w-full rounded bg-gray-600"></div>
+          <div class="h-4 w-2/3 rounded bg-gray-600"></div>
         </div>
 
         <div class="flex items-center space-x-2">
-          <div class="h-8 bg-gray-600 rounded-full w-16"></div>
-          <div class="h-8 bg-gray-600 rounded-full w-16"></div>
-          <div class="h-8 bg-gray-600 rounded-full w-16"></div>
+          <div class="h-8 w-16 rounded-full bg-gray-600"></div>
+          <div class="h-8 w-16 rounded-full bg-gray-600"></div>
+          <div class="h-8 w-16 rounded-full bg-gray-600"></div>
         </div>
       </div>
     </div>
-    <div class="border-b border-b-white/20 mb-3"></div>
+    <div class="mb-3 border-b border-b-white/20"></div>
   }
 }
 
 @if (!isPostLoading() && !hasMore() && posts().length > 0) {
-  <div class="text-center py-8 text-gray-400">You've reached the end!</div>
+  <div class="py-8 text-center text-gray-400">You've reached the end!</div>
 }
 
 @if (!isPostLoading() && metadata(); as meta) {
   @if (isExploreMetadata(meta)) {
-    <div class="flex flex-col items-center justify-center mt-12 lg:mt-15">
+    <div class="mt-12 flex flex-col items-center justify-center lg:mt-15">
       <img ngSrc="assets/empty.png" alt="empty" width="300" height="300" priority />
-      <p class="text-white font-medium text-center">{{ meta.message }}</p>
-      <p class="text-gray-700 text-sm mt-1">{{ meta.code }}</p>
+      <p class="text-center font-medium text-white">{{ meta.message }}</p>
+      <p class="mt-1 text-sm text-gray-700">{{ meta.code }}</p>
     </div>
   }
 } @else {
   @if (posts().length === 0 && !isPostLoading()) {
-    <div class="text-center py-12 text-gray-400">No posts found</div>
+    <div class="py-12 text-center text-gray-400">No posts found</div>
   }
 }

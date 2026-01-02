@@ -1,11 +1,11 @@
-<aside class="sticky top-14.5 bg-primary text-white border-r border-r-white/30 scrollbar-container">
-  <div class="h-[calc(100vh-4rem)] overflow-y-auto hide-scrollbar">
+<aside class="bg-primary scrollbar-container sticky top-14.5 border-r border-r-white/30 text-white">
+  <div class="hide-scrollbar h-[calc(100vh-4rem)] overflow-y-auto">
     <div class="p-4">
       <!-- Navigation -->
       <nav class="space-y-1 border-b border-b-white/10">
         <!-- Home -->
         <button
-          class="flex w-full items-center space-x-2 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800/40 cursor-pointer"
+          class="flex w-full cursor-pointer items-center space-x-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-800/40"
           [class.text-secondary]="activeTab() === 'home'"
           [class.text-white]="activeTab() !== 'home'"
           (click)="toggleNavigation('/')"
@@ -28,7 +28,7 @@
 
         <!-- Popular -->
         <button
-          class="flex w-full cursor-pointer items-center space-x-2 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800/40"
+          class="flex w-full cursor-pointer items-center space-x-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-800/40"
           [class.text-secondary]="activeTab() === 'popular'"
           [class.text-white]="activeTab() !== 'popular'"
           (click)="toggleNavigation('/popular')"
@@ -52,7 +52,7 @@
 
         <!-- Explore Communities -->
         <button
-          class="flex items-center w-full cursor-pointer space-x-2 px-3 py-2 rounded-lg hover:bg-gray-800/40 transition-colors"
+          class="flex w-full cursor-pointer items-center space-x-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-800/40"
           [class.text-secondary]="activeTab() === 'explore'"
           [class.text-white]="activeTab() !== 'explore'"
           (click)="toggleNavigation('/explore')"
@@ -75,7 +75,7 @@
 
         <!-- About -->
         <button
-          class="flex items-center w-full cursor-pointer space-x-2 px-3 py-2 mb-3 rounded-lg hover:bg-gray-800/40 transition-colors"
+          class="mb-3 flex w-full cursor-pointer items-center space-x-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-800/40"
           [class.text-secondary]="activeTab() === 'about'"
           [class.text-white]="activeTab() !== 'about'"
           routerLink="/about"
@@ -101,12 +101,12 @@
       <div class="border-b border-b-white/10 py-3">
         <button
           (click)="toggleCommunities()"
-          class="flex items-center justify-between w-full px-3 py-2 text-gray-500 transition-colors cursor-pointer hover:bg-gray-800/40 rounded-lg"
+          class="flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-gray-500 transition-colors hover:bg-gray-800/40"
         >
-          <span class="tracking-widest uppercase text-sm">Communities</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <span class="text-sm tracking-widest uppercase">Communities</span>
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
-              class="w-4 h-4 transition-transform duration-300 ease-in-out"
+              class="h-4 w-4 transition-transform duration-300 ease-in-out"
               [attr.transform]="isCommunitiesExpanded ? 'rotate(180 12 12)' : ''"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -121,11 +121,11 @@
             <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
               <!-- Create -->
               <button
-                class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
+                class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
                 (click)="showCommunityForm()"
               >
                 <svg
-                  class="w-5 h-5"
+                  class="h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -140,16 +140,16 @@
                     d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
                   />
                 </svg>
-                <span class="text-sm tracking-wide font-light">Create Community</span>
+                <span class="text-sm font-light tracking-wide">Create Community</span>
               </button>
 
               <!-- Manage -->
               <button
                 routerLink="/communities"
-                class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
+                class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
               >
                 <svg
-                  class="w-5 h-5"
+                  class="h-5 w-5"
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
@@ -162,25 +162,25 @@
                     d="M19.85 8.75l4.15.83v4.84l-4.15.83 2.35 3.52-3.43 3.43-3.52-2.35-.83 4.15H9.58l-.83-4.15-3.52 2.35-3.43-3.43 2.35-3.52L0 14.42V9.58l4.15-.83L1.8 5.23 5.23 1.8l3.52 2.35L9.58 0h4.84l.83 4.15 3.52-2.35 3.43 3.43-2.35 3.52zm-1.57 5.07l4-.81v-2l-4-.81-.54-1.3 2.29-3.43-1.43-1.43-3.43 2.29-1.3-.54-.81-4h-2l-.81 4-1.3.54-3.43-2.29-1.43 1.43L6.38 8.9l-.54 1.3-4 .81v2l4 .81.54 1.3-2.29 3.43 1.43 1.43 3.43-2.29 1.3.54.81 4h2l.81-4 1.3-.54 3.43 2.29 1.43-1.43-2.29-3.43.54-1.3zm-8.186-4.672A3.43 3.43 0 0 1 12 8.57 3.44 3.44 0 0 1 15.43 12a3.43 3.43 0 1 1-5.336-2.852zm.956 4.274c.281.188.612.288.95.288A1.7 1.7 0 0 0 13.71 12a1.71 1.71 0 1 0-2.66 1.422z"
                   />
                 </svg>
-                <span class="text-sm tracking-wide font-light">Manage Community</span>
+                <span class="text-sm font-light tracking-wide">Manage Community</span>
               </button>
 
               @if (userCommunitiesLoading()) {
                 @for (skeleton of skeletonArray; track $index) {
                   <div class="flex flex-col gap-1 px-5 py-1">
-                    <div class="flex items-center space-x-3 animate-pulse">
-                      <div class="w-7 h-7 bg-gray-700 rounded-full"></div>
-                      <div class="h-5 w-40 bg-gray-700 rounded"></div>
+                    <div class="flex animate-pulse items-center space-x-3">
+                      <div class="h-7 w-7 rounded-full bg-gray-700"></div>
+                      <div class="h-5 w-40 rounded bg-gray-700"></div>
                     </div>
                   </div>
                 }
               } @else {
                 @for (community of displayedCommunities(); track community.id) {
                   <button
-                    class="flex items-center w-full cursor-pointer space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
+                    class="group flex w-full cursor-pointer items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
                   >
-                    <div class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center">
-                      <span class="text-white text-xs font-bold">{{
+                    <div class="bg-secondary flex h-6 w-6 items-center justify-center rounded-full">
+                      <span class="text-xs font-bold text-white">{{
                         community.communityName | initials
                       }}</span>
                     </div>
@@ -197,11 +197,11 @@
               animate.enter="slide-enter"
               animate.leave="slide-leave"
             >
-              <p class="text-gray-500 text-sm">
+              <p class="text-sm text-gray-500">
                 Please
                 <button
                   routerLink="/login"
-                  class="text-secondary hover:underline font-medium inline px-0 py-0 bg-transparent border-none cursor-pointer"
+                  class="text-secondary inline cursor-pointer border-none bg-transparent px-0 py-0 font-medium hover:underline"
                 >
                   log in
                 </button>
@@ -216,12 +216,12 @@
       <div class="py-3">
         <button
           (click)="toggleResources()"
-          class="flex items-center justify-between w-full px-3 py-2 text-gray-500 transition-colors cursor-pointer hover:bg-gray-800/40 rounded-lg"
+          class="flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-gray-500 transition-colors hover:bg-gray-800/40"
         >
-          <span class="tracking-widest uppercase text-sm">Resources</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <span class="text-sm tracking-widest uppercase">Resources</span>
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
-              class="w-4 h-4 transition-transform duration-300 ease-in-out"
+              class="h-4 w-4 transition-transform duration-300 ease-in-out"
               [attr.transform]="isResourcesExpanded ? 'rotate(180 12 12)' : ''"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -236,10 +236,10 @@
             <!-- News and Updates -->
             <button
               href="#"
-              class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
+              class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
             >
               <svg
-                class="w-5 h-5"
+                class="h-5 w-5"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -250,20 +250,20 @@
                   d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120zm0-80h640v-560H160zm80-80h480v-80H240zm0-160h160v-240H240zm240 0h240v-80H480zm0-160h240v-80H480zM160-200v-560z"
                 />
               </svg>
-              <span class="text-sm tracking-wide font-light">News and Updates</span>
+              <span class="text-sm font-light tracking-wide">News and Updates</span>
             </button>
 
             <!-- Rules -->
             <a
               href="#"
-              class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
+              class="group flex items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
                 viewBox="0 -960 960 960"
-                class="w-5 h-5"
+                class="h-5 w-5"
                 fill="currentColor"
               >
                 <path
@@ -276,10 +276,10 @@
             <!-- Help -->
             <button
               href="#"
-              class="flex items-center space-x-3 px-5 py-2.5 rounded-lg w-full hover:bg-gray-800/40 transition-colors cursor-pointer"
+              class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
             >
               <svg
-                class="w-5 h-5"
+                class="h-5 w-5"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -296,10 +296,10 @@
             <!-- Faqs -->
             <a
               href="#"
-              class="flex items-center space-x-3 px-5 py-2.5 hover:bg-gray-800/40 rounded-lg transition-colors group"
+              class="group flex items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
             >
               <svg
-                class="w-5 h-5"
+                class="h-5 w-5"
                 width="16"
                 height="16"
                 viewBox="0 0 16 16"

@@ -1,21 +1,21 @@
 @if (communitiesLoading()) {
   @for (item of skeletonArray; track $index) {
-    <div class="flex justify-between items-center animate-pulse px-4 py-3">
+    <div class="flex animate-pulse items-center justify-between px-4 py-3">
       <div class="flex items-center space-x-2">
         <!-- skeleton avatar -->
-        <div class="w-10 h-10 bg-gray-700 rounded-full"></div>
+        <div class="h-10 w-10 rounded-full bg-gray-700"></div>
 
         <!-- skeleton text -->
         <div class="flex flex-col">
-          <div class="h-4 w-40 bg-gray-700 rounded mb-2"></div>
-          <div class="h-3 w-56 bg-gray-700 rounded"></div>
+          <div class="mb-2 h-4 w-40 rounded bg-gray-700"></div>
+          <div class="h-3 w-56 rounded bg-gray-700"></div>
         </div>
       </div>
 
       <!-- skeleton actions -->
       <div class="flex items-center space-x-3">
-        <div class="w-6 h-6 bg-gray-700 rounded"></div>
-        <div class="w-20 h-8 bg-gray-700 rounded-full"></div>
+        <div class="h-6 w-6 rounded bg-gray-700"></div>
+        <div class="h-8 w-20 rounded-full bg-gray-700"></div>
       </div>
     </div>
   }

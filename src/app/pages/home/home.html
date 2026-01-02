@@ -1,15 +1,15 @@
-<div class="lg:px-5 2xl:px-16 py-5">
-  <div class="border-b border-b-white/20 hidden lg:block mb-3">
+<div class="py-5 lg:px-5 2xl:px-16">
+  <div class="mb-3 hidden border-b border-b-white/20 lg:block">
     <!-- Filtering of Post -->
     <app-tooltip toolTipText="Filter Post">
       <div class="relative">
         <button
           (click)="togglePostMenuFilter()"
-          class="action-btn mb-2 text-white font-light text-sm items-center space-x-1 rounded-full hover:bg-gray-800/50 px-3 py-1.5 cursor-pointer flex"
+          class="action-btn mb-2 flex cursor-pointer items-center space-x-1 rounded-full px-3 py-1.5 text-sm font-light text-white hover:bg-gray-800/50"
         >
           <span>{{ activePostFilter() }}</span>
           <svg
-            class="w-5 h-5 duration-300 transition-transform"
+            class="h-5 w-5 transition-transform duration-300"
             [class.rotate-180]="isPostMenuFilterOpen()"
             width="24"
             height="24"
@@ -29,18 +29,18 @@
 
         @if (isPostMenuFilterOpen()) {
           <div
-            class="absolute top-9 flex flex-col z-50 bg-black border border-white/30 p-0.5 w-24 rounded-md"
+            class="absolute top-9 z-50 flex w-24 flex-col rounded-md border border-white/30 bg-black p-0.5"
             animate.enter="dropdown-fade-in"
             animate.leave="dropdown-fade-out"
             data-modal-type="post-filter"
           >
-            <span class="text-gray-500 text-sm flex gap-1 text-left w-full px-2 py-1.5 font-medium"
+            <span class="flex w-full gap-1 px-2 py-1.5 text-left text-sm font-medium text-gray-500"
               >Filter by</span
             >
             @for (item of postFilterType(); track $index) {
               <button
                 (click)="togglePostFilter(item)"
-                class="text-white text-sm flex gap-1 text-left cursor-pointer hover:bg-white/20 duration-300 transition-colors w-full px-2 py-1.5"
+                class="flex w-full cursor-pointer gap-1 px-2 py-1.5 text-left text-sm text-white transition-colors duration-300 hover:bg-white/20"
               >
                 <span>{{ item }}</span>
               </button>

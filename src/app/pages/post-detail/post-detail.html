@@ -1,52 +1,52 @@
 @if (isPostLoading()) {
-  <div class="px-3 lg:px-5 2xl:px-23 py-10">
-    <div class="flex justify-between mb-5">
+  <div class="px-3 py-10 lg:px-5 2xl:px-23">
+    <div class="mb-5 flex justify-between">
       <div class="flex items-center space-x-2">
-        <div class="w-7 h-7 bg-gray-800 rounded-full animate-pulse"></div>
-        <div class="w-7 h-7 bg-gray-800 rounded-full animate-pulse"></div>
-        <div class="w-32 h-4 bg-gray-800 rounded animate-pulse"></div>
+        <div class="h-7 w-7 animate-pulse rounded-full bg-gray-800"></div>
+        <div class="h-7 w-7 animate-pulse rounded-full bg-gray-800"></div>
+        <div class="h-4 w-32 animate-pulse rounded bg-gray-800"></div>
       </div>
 
       <div class="flex items-center space-x-2">
-        <div class="w-7 h-7 bg-gray-800 rounded-full animate-pulse"></div>
+        <div class="h-7 w-7 animate-pulse rounded-full bg-gray-800"></div>
       </div>
     </div>
 
     <div class="pl-10">
-      <div class="w-48 h-4 bg-gray-800 rounded animate-pulse mb-3"></div>
+      <div class="mb-3 h-4 w-48 animate-pulse rounded bg-gray-800"></div>
 
-      <div class="w-3/4 h-8 bg-gray-800 rounded animate-pulse mb-4"></div>
+      <div class="mb-4 h-8 w-3/4 animate-pulse rounded bg-gray-800"></div>
 
       <div class="space-y-2">
-        <div class="w-full h-4 bg-gray-800 rounded animate-pulse"></div>
-        <div class="w-full h-4 bg-gray-800 rounded animate-pulse"></div>
-        <div class="w-3/4 h-4 bg-gray-800 rounded animate-pulse"></div>
+        <div class="h-4 w-full animate-pulse rounded bg-gray-800"></div>
+        <div class="h-4 w-full animate-pulse rounded bg-gray-800"></div>
+        <div class="h-4 w-3/4 animate-pulse rounded bg-gray-800"></div>
       </div>
 
-      <div class="flex items-center space-x-2 mt-4">
-        <div class="w-20 h-8 bg-gray-800 rounded-full animate-pulse"></div>
-        <div class="w-20 h-8 bg-gray-800 rounded-full animate-pulse"></div>
-        <div class="w-20 h-8 bg-gray-800 rounded-full animate-pulse"></div>
+      <div class="mt-4 flex items-center space-x-2">
+        <div class="h-8 w-20 animate-pulse rounded-full bg-gray-800"></div>
+        <div class="h-8 w-20 animate-pulse rounded-full bg-gray-800"></div>
+        <div class="h-8 w-20 animate-pulse rounded-full bg-gray-800"></div>
       </div>
     </div>
   </div>
 } @else {
   @if (errorMessage()?.error && errorMessage()?.error.status === 404) {
-    <div class="px-3 lg:px-5 2xl:px-23 py-10">
-      <div class="flex flex-col justify-center items-center h-full">
+    <div class="px-3 py-10 lg:px-5 2xl:px-23">
+      <div class="flex h-full flex-col items-center justify-center">
         <img ngSrc="assets/empty.png" alt="empty" width="300" height="300" class="mt-15" priority />
         <h1 class="text-3xl font-bold text-white">Post Not Found</h1>
       </div>
     </div>
   } @else {
-    <div class="px-3 lg:px-5 2xl:px-23 py-10">
+    <div class="px-3 py-10 lg:px-5 2xl:px-23">
       <!-- Community and back section -->
-      <div class="flex justify-between mb-5">
+      <div class="mb-5 flex justify-between">
         <!-- Community Title -->
         <div class="flex items-center space-x-2 text-white">
           <button
             (click)="toggleBack()"
-            class="cursor-pointer mr-3 hover:text-white/80 duration-200 transition-colors"
+            class="mr-3 cursor-pointer transition-colors duration-200 hover:text-white/80"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +54,7 @@
               height="24"
               viewBox="0 0 24 24"
               fill="currentColor"
-              class="icon icon-tabler icons-tabler-filled icon-tabler-circle-arrow-left w-7 h-7"
+              class="icon icon-tabler icons-tabler-filled icon-tabler-circle-arrow-left h-7 w-7"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
               <path
@@ -63,18 +63,18 @@
             </svg>
           </button>
 
-          <div class="w-7 h-7 bg-secondary rounded-full flex items-center justify-center">
-            <span class="text-white text-sm font-bold">{{ post().communityName | initials }}</span>
+          <div class="bg-secondary flex h-7 w-7 items-center justify-center rounded-full">
+            <span class="text-sm font-bold text-white">{{ post().communityName | initials }}</span>
           </div>
 
-          <p class="text-gray-500 font-medium tracking-wider">{{ post().communityName }}</p>
+          <p class="font-medium tracking-wider text-gray-500">{{ post().communityName }}</p>
         </div>
 
         <!-- Three dots -->
         <div class="relative" #menuContainer>
           <button
             (click)="openPostMenu()"
-            class="action-btn text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
+            class="action-btn cursor-pointer rounded-full px-2 py-2 text-white hover:bg-gray-800"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -106,32 +106,32 @@
 
       <div class="lg:pl-10">
         <!-- Post Title, Author, content, and Date -->
-        <div class="flex flex-col text-gray-500 mb-1">
+        <div class="mb-1 flex flex-col text-gray-500">
           <!-- Author -->
-          <p class="text-sm font-light mb-1">
+          <p class="mb-1 text-sm font-light">
             Posted by <strong>{{ post().author }}</strong
             >, {{ post().createdAt | timeago }}
           </p>
 
           <!-- Title -->
-          <p class="text-white text-3xl font-bold tracking-wide mb-2">{{ post().title }}</p>
+          <p class="mb-2 text-3xl font-bold tracking-wide text-white">{{ post().title }}</p>
 
           <!-- Content -->
-          <div class="text-gray-500 font-light text-justify mb-3">
+          <div class="mb-3 text-justify font-light text-gray-500">
             <p>{{ post().content }}</p>
           </div>
 
           <!-- Reactions -->
           @if (post().reactions && post().reactions.length > 0) {
-            <div class="flex items-center space-x-1.5 mt-2">
+            <div class="mt-2 flex items-center space-x-1.5">
               @for (reaction of post().reactions; track $index) {
                 <button
                   (click)="selectReaction(getReactionById(reaction.reactionId)!.id)"
-                  class="flex items-center space-x-1 px-2 py-1 text-white rounded-full cursor-pointer transition-colors duration-200"
+                  class="flex cursor-pointer items-center space-x-1 rounded-full px-2 py-1 text-white transition-colors duration-200"
                   [ngClass]="
                     hasReaction(reaction.reactionId)
                       ? 'bg-gray-500/60 hover:bg-gray-500/40'
-                      : 'bg-black border border-white/30 hover:border-white/50'
+                      : 'border border-white/30 bg-black hover:border-white/50'
                   "
                 >
                   <span class="text-sm">{{ getReactionById(reaction.reactionId)?.type }}</span>
@@ -142,12 +142,12 @@
           }
 
           <!-- Reaction List -->
-          <div class="flex items-center mt-3.5 space-x-2">
+          <div class="mt-3.5 flex items-center space-x-2">
             <!-- React Button -->
             <div class="relative" #reactionContainer>
               <button
                 (click)="openReactModal()"
-                class="action-btn flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+                class="action-btn flex cursor-pointer items-center space-x-1 rounded-full bg-gray-500/40 px-2 py-1 text-white transition-colors duration-200 hover:bg-white/20"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -171,13 +171,13 @@
                 <div
                   animate.enter="dropdown-fade-in"
                   animate.leave="dropdown-fade-out"
-                  class="absolute flex items-center mt-2 left-0 space-x-2 bg-black border border-white/30 rounded-full px-3 py-2 z-50"
+                  class="absolute left-0 z-50 mt-2 flex items-center space-x-2 rounded-full border border-white/30 bg-black px-3 py-2"
                   data-modal-type="react"
                 >
                   @for (reaction of reactionList; track reaction.id) {
                     <button
                       (click)="selectReaction(reaction.id)"
-                      class="text-xl cursor-pointer hover:scale-125 transition-transform duration-200"
+                      class="cursor-pointer text-xl transition-transform duration-200 hover:scale-125"
                     >
                       {{ reaction.type }}
                     </button>
@@ -188,7 +188,7 @@
 
             <!-- Comment button -->
             <button
-              class="flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+              class="flex cursor-pointer items-center space-x-1 rounded-full bg-gray-500/40 px-2 py-1 text-white transition-colors duration-200 hover:bg-white/20"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -211,7 +211,7 @@
             <div class="relative" #shareContainer>
               <button
                 (click)="openShareModal()"
-                class="action-btn flex items-center space-x-1 px-2 py-1 text-white bg-gray-500/40 rounded-full cursor-pointer hover:bg-white/20 transition-colors duration-200"
+                class="action-btn flex cursor-pointer items-center space-x-1 rounded-full bg-gray-500/40 px-2 py-1 text-white transition-colors duration-200 hover:bg-white/20"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -249,7 +249,7 @@
             <button
               #toggleCommentBtn
               (click)="showCommentSection()"
-              class="comment-action-btn text-left px-5 py-2 text-gray-600 font-light border border-white/20 rounded-xl cursor-text hover:bg-gray-500/10 focus:outline-none focus:ring-1 focus:ring-gray-500 transition-colors duration-200"
+              class="comment-action-btn cursor-text rounded-xl border border-white/20 px-5 py-2 text-left font-light text-gray-600 transition-colors duration-200 hover:bg-gray-500/10 focus:ring-1 focus:ring-gray-500 focus:outline-none"
               [class.hidden]="isCommentSelected()"
               aria-label="commentBtn"
             >
@@ -259,7 +259,7 @@
             <form
               [formGroup]="commentForm"
               #commentFormContainer
-              class="comment-form border border-white/20 rounded-xl p-3"
+              class="comment-form rounded-xl border border-white/20 p-3"
               [class.hidden]="!isCommentSelected()"
               (ngSubmit)="onCommentSubmit()"
             >
@@ -269,13 +269,13 @@
                 rows="6"
                 formControlName="content"
                 placeholder="What's on your mind?"
-                class="form-control text-sm w-full text-white focus:outline-none focus:border-transparent font-light placeholder:text-gray-600"
+                class="form-control w-full text-sm font-light text-white placeholder:text-gray-600 focus:border-transparent focus:outline-none"
               ></textarea>
 
-              <div class="flex space-x-2 items-center justify-end">
+              <div class="flex items-center justify-end space-x-2">
                 <button
                   type="button"
-                  class="text-white text-sm px-5 py-1.5 font-medium rounded-md cursor-pointer duration-200 transition-colors bg-gray-700 hover:bg-gray-600"
+                  class="cursor-pointer rounded-md bg-gray-700 px-5 py-1.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-gray-600"
                   (click)="cancelCommentSection()"
                 >
                   Cancel
@@ -283,7 +283,7 @@
 
                 <button
                   type="submit"
-                  class="bg-secondary text-white text-sm px-3 py-1.5 font-medium rounded-md cursor-pointer duration-200 transition-colors hover:bg-secondary/80"
+                  class="bg-secondary hover:bg-secondary/80 cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium text-white transition-colors duration-200"
                 >
                   Comment
                 </button>
@@ -292,15 +292,15 @@
           }
 
           @if (post().comments?.length === 0) {
-            <div class="flex flex-col items-center justify-center mt-10">
+            <div class="mt-10 flex flex-col items-center justify-center">
               <img ngSrc="assets/dog.png" alt="dog" width="300" height="300" />
               <p>There are no comments for this post</p>
             </div>
           } @else {
             <!-- Search Comments -->
-            <div class="relative mb-5 mt-5">
+            <div class="relative mt-5 mb-5">
               <div
-                class="absolute inset-y-0 left-0 pl-3 flex items-center bottom-[3px] pointer-events-none"
+                class="pointer-events-none absolute inset-y-0 bottom-[3px] left-0 flex items-center pl-3"
               >
                 <svg
                   class="h-5 w-5 text-gray-400"
@@ -321,7 +321,7 @@
                 #searchInput
                 type="text"
                 placeholder="Search Comments"
-                class="block border-gray-500/80 border rounded-xl max-w-xs w-full pl-10 pr-3 py-2 text-gray-500 hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 text-sm transition-colors"
+                class="block w-full max-w-xs rounded-xl border border-gray-500/80 py-2 pr-3 pl-10 text-sm text-gray-500 transition-colors hover:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
               />
             </div>
 
@@ -332,18 +332,18 @@
                 <div class="flex justify-between">
                   <div class="flex items-center space-x-2">
                     <div
-                      class="w-7 h-7 rounded-full flex items-center justify-center"
+                      class="flex h-7 w-7 items-center justify-center rounded-full"
                       [ngClass]="comment.isDeleted ? 'bg-gray-500/50' : 'bg-secondary'"
                     >
                       <span
-                        class="text-white text-sm font-bold"
+                        class="text-sm font-bold text-white"
                         [class.hidden]="comment.isDeleted"
                         >{{ comment.username | initials }}</span
                       >
                     </div>
 
                     <p
-                      class="font-medium text-sm tracking-wider"
+                      class="text-sm font-medium tracking-wider"
                       [ngClass]="comment.isDeleted ? 'text-gray-500' : 'text-white'"
                     >
                       {{ comment.username }}
@@ -360,7 +360,7 @@
                   >
                     <button
                       (click)="toggleCommentMenu($event, comment.id)"
-                      class="text-white hover:bg-gray-800 px-2 py-2 rounded-full cursor-pointer"
+                      class="cursor-pointer rounded-full px-2 py-2 text-white hover:bg-gray-800"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -390,7 +390,7 @@
                 </div>
 
                 <!-- Content -->
-                <div class="pl-9 mb-5">
+                <div class="mb-5 pl-9">
                   <div class="text-[15px]" [ngClass]="comment.isDeleted ? 'text-gray-500/50' : ''">
                     {{ comment.content }}
                   </div>

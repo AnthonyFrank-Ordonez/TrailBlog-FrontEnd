@@ -1,16 +1,16 @@
 <main
-  class="w-full h-screen mx-auto sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[110rem]"
+  class="mx-auto h-screen w-full sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[110rem]"
 >
   <app-header />
 
-  <div class="h-screen grid grid-cols-12 gap-0">
-    <app-side-navigation class="hidden lg:block lg:col-span-3 2xl:col-span-2"></app-side-navigation>
+  <div class="grid h-screen grid-cols-12 gap-0">
+    <app-side-navigation class="hidden lg:col-span-3 lg:block 2xl:col-span-2"></app-side-navigation>
 
-    <div class="col-span-12 lg:col-span-6 2xl:col-span-8 pt-13">
+    <div class="col-span-12 pt-13 lg:col-span-6 2xl:col-span-8">
       <router-outlet />
     </div>
 
-    <app-right-sidebar class="hidden lg:block lg:col-span-3 2xl:col-span-2"></app-right-sidebar>
+    <app-right-sidebar class="hidden lg:col-span-3 lg:block 2xl:col-span-2"></app-right-sidebar>
   </div>
 
   <app-modal

@@ -1,11 +1,11 @@
 <div
-  class="absolute flex flex-col z-50 bg-black border border-white/30 p-0.5 rounded-md"
+  class="absolute z-50 flex flex-col rounded-md border border-white/30 bg-black p-0.5"
   [ngClass]="styles()"
   [attr.data-modal-type]="modalType()"
 >
   @for (item of filteredMenuItems(); track item.label) {
     <button
-      class="text-white flex gap-1 text-left cursor-pointer hover:bg-white/20 duration-300 transition-colors w-full rounded-md px-2 py-1.5"
+      class="flex w-full cursor-pointer gap-1 rounded-md px-2 py-1.5 text-left text-white transition-colors duration-300 hover:bg-white/20"
       (click)="onItemClick(item, $event)"
     >
       <svg
@@ -18,7 +18,7 @@
         stroke-width="1"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="icon icon-tabler icons-tabler-outlined w-5 h-5"
+        class="icon icon-tabler icons-tabler-outlined h-5 w-5"
         [class]="item.iconClass"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />

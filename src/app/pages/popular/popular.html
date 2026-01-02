@@ -1,14 +1,14 @@
-<div class="lg:px-5 2xl:px-16 py-5">
-  <div class="border-b border-b-white/20 hidden lg:block">
+<div class="py-5 lg:px-5 2xl:px-16">
+  <div class="hidden border-b border-b-white/20 lg:block">
     <!-- Filtering of Post -->
     <button
-      class="mb-2 text-white font-light text-sm items-center space-x-1 rounded-full hover:bg-gray-800/50 px-3 py-1.5 cursor-pointer flex"
+      class="mb-2 flex cursor-pointer items-center space-x-1 rounded-full px-3 py-1.5 text-sm font-light text-white hover:bg-gray-800/50"
       z-dropdown
       [zDropdownMenu]="sort"
     >
       <span>Best</span>
       <svg
-        class="w-5 h-5"
+        class="h-5 w-5"
         width="24"
         height="24"
         viewBox="0 0 24 24"
@@ -27,7 +27,7 @@
 
     <z-dropdown-menu-content
       #sort="zDropdownMenuContent"
-      class="bg-primary text-white border-white/30 hidden lg:block"
+      class="bg-primary hidden border-white/30 text-white lg:block"
     >
       <z-dropdown-menu-label>Sort By</z-dropdown-menu-label>
       <z-dropdown-menu-item class="hover:bg-gray-800/50">

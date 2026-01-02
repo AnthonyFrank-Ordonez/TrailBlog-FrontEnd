@@ -1,11 +1,11 @@
-<div class="p-5 flex items-center justify-center mx-auto max-w-md h-screen">
-  <div class="border border-gray-600 w-full rounded-xl p-7 flex flex-col justify-center">
-    <div class="flex flex-col items-center space-y-2 mb-8">
-      <p class="text-secondary font-semibold text-[1.7rem] lg:text-3xl tracking-wide">
+<div class="mx-auto flex h-screen max-w-md items-center justify-center p-5">
+  <div class="flex w-full flex-col justify-center rounded-xl border border-gray-600 p-7">
+    <div class="mb-8 flex flex-col items-center space-y-2">
+      <p class="text-secondary text-[1.7rem] font-semibold tracking-wide lg:text-3xl">
         Welcome back to Trail
       </p>
       <span
-        class="text-white/30 font-light tracking-wider text-center max-w-[18rem] lg:max-w-xs text-xs lg:text-sm"
+        class="max-w-[18rem] text-center text-xs font-light tracking-wider text-white/30 lg:max-w-xs lg:text-sm"
         >Sign in to post, comment, and explore the latest on Trail.</span
       >
     </div>
@@ -13,47 +13,47 @@
     <form
       [formGroup]="loginForm"
       (ngSubmit)="onLogin()"
-      class="flex flex-col w-full max-w-90 mx-auto mb-3"
+      class="mx-auto mb-3 flex w-full max-w-90 flex-col"
     >
       <!-- Username -->
       <div
-        class="flex flex-col w-full bg-gray-700/10 border border-gray-600/30 px-3.5 py-1 rounded-md gap-1 mb-3"
+        class="mb-3 flex w-full flex-col gap-1 rounded-md border border-gray-600/30 bg-gray-700/10 px-3.5 py-1"
       >
-        <label for="username" class="text-gray-500 font-light text-sm form-label">Username</label>
+        <label for="username" class="form-label text-sm font-light text-gray-500">Username</label>
         <input
           id="username"
           formControlName="username"
           type="text"
-          class="form-control text-white focus:outline-none focus:border-transparent text-sm font-light"
+          class="form-control text-sm font-light text-white focus:border-transparent focus:outline-none"
         />
       </div>
 
       <!-- Password -->
       <div
-        class="flex flex-col w-full bg-gray-700/10 border border-gray-600/30 px-3.5 py-1 rounded-md gap-1 mb-2"
+        class="mb-2 flex w-full flex-col gap-1 rounded-md border border-gray-600/30 bg-gray-700/10 px-3.5 py-1"
       >
-        <label for="password" class="text-gray-500 font-light text-sm form-label">Password</label>
+        <label for="password" class="form-label text-sm font-light text-gray-500">Password</label>
         <input
           id="password"
           formControlName="password"
           type="password"
-          class="form-control text-white focus:outline-none focus:border-transparent text-sm font-light"
+          class="form-control text-sm font-light text-white focus:border-transparent focus:outline-none"
         />
       </div>
 
       <!-- Forgot Password -->
-      <a href="#" class="text-gray-600 cursor-pointer text-sm font-semibold tracking-wide mb-4">
+      <a href="#" class="mb-4 cursor-pointer text-sm font-semibold tracking-wide text-gray-600">
         Forgot Password?
       </a>
 
       <button
         type="submit"
         [disabled]="loginForm.invalid || this.isLoggingIn()"
-        class="w-full rounded-lg bg-secondary text-white py-3 tracking-wider text-sm cursor-pointer transition-colors duration-300 hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent disabled:cursor-not-allowed"
+        class="bg-secondary hover:bg-secondary/80 w-full cursor-pointer rounded-lg py-3 text-sm tracking-wider text-white transition-colors duration-300 focus:border-transparent focus:ring-2 focus:ring-orange-300 focus:outline-none disabled:cursor-not-allowed"
       >
         @if (this.isLoggingIn()) {
           <div class="flex items-center justify-center py-2.5">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="w-8 h-8 absolute">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="absolute h-8 w-8">
               <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="40" cy="100">
                 <animate
                   attributeName="opacity"
@@ -95,14 +95,14 @@
       </button>
     </form>
 
-    <div class="flex items-center w-full max-w-xs mx-auto mb-3">
+    <div class="mx-auto mb-3 flex w-full max-w-xs items-center">
       <div class="flex-grow border-t border-gray-600"></div>
-      <span class="mx-3 text-white/50 text-sm">or</span>
+      <span class="mx-3 text-sm text-white/50">or</span>
       <div class="flex-grow border-t border-gray-600"></div>
     </div>
 
     <button
-      class="flex items-center justify-center space-x-2 max-w-90 mx-auto w-full rounded-lg bg-secondary text-white py-3 tracking-wider text-sm cursor-pointer transition-colors duration-300 hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent mb-5"
+      class="bg-secondary hover:bg-secondary/80 mx-auto mb-5 flex w-full max-w-90 cursor-pointer items-center justify-center space-x-2 rounded-lg py-3 text-sm tracking-wider text-white transition-colors duration-300 focus:border-transparent focus:ring-2 focus:ring-orange-300 focus:outline-none"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +111,7 @@
         fill="currentColor"
         class="bi bi-google"
         viewBox="0 0 16 16"
-        class="h-4 w-4 -mt-0.5"
+        class="-mt-0.5 h-4 w-4"
       >
         <path
           d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z"
@@ -122,10 +122,10 @@
     </button>
 
     <!-- Create an Account -->
-    <div class="text-white flex space-x-1.5 items-center justify-center">
-      <p class="font-light text-sm text-gray-400">Dont Have an Account?</p>
+    <div class="flex items-center justify-center space-x-1.5 text-white">
+      <p class="text-sm font-light text-gray-400">Dont Have an Account?</p>
       <p
-        class="text-sm text-secondary cursor-pointer hover:underline transition duration-300"
+        class="text-secondary cursor-pointer text-sm transition duration-300 hover:underline"
         routerLink="/register"
       >
         Sign Up
