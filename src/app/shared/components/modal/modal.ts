@@ -2,9 +2,9 @@ import {
   Component,
   EventEmitter,
   inject,
-  Input,
+  input,
   OnChanges,
-  Output,
+  output,
   signal,
   SimpleChanges,
 } from '@angular/core';
@@ -17,10 +17,10 @@ import { CommunityService } from '@core/services/community.service';
   styleUrl: './modal.css',
 })
 export class Modal implements OnChanges {
-  @Input() isOpen = false;
-  @Input() title = '';
-  @Input() description = '';
-  @Output() closeModal = new EventEmitter<void>();
+  isOpen = input<boolean>();
+  title = input<string>();
+  description = input<string>();
+  closeModal = output<void>();
 
   private communityService = inject(CommunityService);
 
@@ -29,7 +29,7 @@ export class Modal implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen']) {
-      if (this.isOpen) {
+      if (this.isOpen()) {
         document.body.classList.add('overflow-hidden');
       } else if (!this.isClosing) {
         document.body.classList.remove('overflow-hidden');
@@ -54,7 +54,7 @@ export class Modal implements OnChanges {
   }
 
   onEscapeKey(event: KeyboardEvent) {
-    if (event.key === 'Escape' && this.isOpen) {
+    if (event.key === 'Escape' && this.isOpen()) {
       this.onClose();
     }
   }

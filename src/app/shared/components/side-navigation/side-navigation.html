@@ -107,7 +107,7 @@
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               class="h-4 w-4 transition-transform duration-300 ease-in-out"
-              [attr.transform]="isCommunitiesExpanded ? 'rotate(180 12 12)' : ''"
+              [attr.transform]="isCommunitiesExpanded() ? 'rotate(180 12 12)' : ''"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
@@ -116,7 +116,7 @@
           </svg>
         </button>
 
-        @if (isCommunitiesExpanded) {
+        @if (isCommunitiesExpanded()) {
           @if (isAuthenticated()) {
             <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
               <!-- Create -->
@@ -222,7 +222,7 @@
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               class="h-4 w-4 transition-transform duration-300 ease-in-out"
-              [attr.transform]="isResourcesExpanded ? 'rotate(180 12 12)' : ''"
+              [attr.transform]="isResourcesExpanded() ? 'rotate(180 12 12)' : ''"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
@@ -231,7 +231,7 @@
           </svg>
         </button>
 
-        @if (isResourcesExpanded) {
+        @if (isResourcesExpanded()) {
           <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
             <!-- News and Updates -->
             <button

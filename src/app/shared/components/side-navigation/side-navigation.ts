@@ -54,6 +54,14 @@ export class SideNavigation {
     return communities.slice(0, this.MAX_COMMUNITIES_DISPLAY);
   });
 
+  isCommunitiesExpanded = computed(() => {
+    return this.currentSettings()?.communityExpanded;
+  });
+
+  isResourcesExpanded = computed(() => {
+    return this.currentSettings()?.resourcesExpanded;
+  });
+
   constructor() {
     effect(() => {
       if (this.isAuthenticated()) {
@@ -101,14 +109,6 @@ export class SideNavigation {
     } else {
       this.router.navigate([targetPath]);
     }
-  }
-
-  get isCommunitiesExpanded(): boolean | undefined {
-    return this.currentSettings()?.communityExpanded;
-  }
-
-  get isResourcesExpanded(): boolean | undefined {
-    return this.currentSettings()?.resourcesExpanded;
   }
 
   private loadCommunities(): void {

@@ -1,4 +1,4 @@
-@if (this.isOpen) {
+@if (this.isOpen()) {
   <div
     class="fixed inset-0 z-999 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
     (click)="onBackdropClick($event)"
@@ -11,14 +11,14 @@
       class="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-white/50 bg-black shadow-2xl"
       role="dialog"
       aria-modal="true"
-      [attr.aria-labelledby]="title ? 'modal-title' : null"
+      [attr.aria-labelledby]="title() ? 'modal-title' : null"
       (click)="$event.stopPropagation()"
     >
       <div class="px-6 py-4 dark:border-gray-700">
         <div class="flex flex-col">
           <div class="flex items-center justify-between">
             <h2 id="modal-title" class="mb-1 text-2xl font-semibold text-gray-500">
-              {{ title }}
+              {{ title() }}
             </h2>
 
             <button
@@ -46,7 +46,7 @@
               </svg>
             </button>
           </div>
-          <p class="text-sm text-white/50">{{ description }}</p>
+          <p class="text-sm text-white/50">{{ description() }}</p>
         </div>
       </div>
 
