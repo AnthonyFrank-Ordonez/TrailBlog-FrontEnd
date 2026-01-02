@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([tokenInterceptor])),
     provideHotToastConfig({
-      stacking: 'depth',
+      stacking: 'vertical',
       visibleToasts: 5,
     }),
   ],
