@@ -74,12 +74,6 @@ export class SideNavigation {
     });
   }
 
-  toggleCustomFeed(): void {
-    this.userSettingsService.updateUserSettings({
-      customFeedExpanded: !this.currentSettings()?.customFeedExpanded,
-    });
-  }
-
   showCommunityForm() {
     this.modalService.openModal({
       title: 'Tell us about your community',
@@ -115,10 +109,6 @@ export class SideNavigation {
 
   get isResourcesExpanded(): boolean | undefined {
     return this.currentSettings()?.resourcesExpanded;
-  }
-
-  get isCustomFeedExpanded(): boolean | undefined {
-    return this.currentSettings()?.customFeedExpanded;
   }
 
   private loadCommunities(): void {

@@ -14,5 +14,4 @@ export interface User {
 export interface UserSettings {
   communityExpanded: boolean;
   resourcesExpanded: boolean;
-  customFeedExpanded: boolean;
 }

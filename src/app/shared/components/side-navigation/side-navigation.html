@@ -2,7 +2,7 @@
   <div class="h-[calc(100vh-4rem)] overflow-y-auto hide-scrollbar">
     <div class="p-4">
       <!-- Navigation -->
-      <nav class="space-y-1">
+      <nav class="space-y-1 border-b border-b-white/10">
         <!-- Home -->
         <button
           class="flex w-full items-center space-x-2 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800/40 cursor-pointer"
@@ -75,7 +75,7 @@
 
         <!-- About -->
         <button
-          class="flex items-center w-full cursor-pointer space-x-2 px-3 py-2 rounded-lg hover:bg-gray-800/40 transition-colors"
+          class="flex items-center w-full cursor-pointer space-x-2 px-3 py-2 mb-3 rounded-lg hover:bg-gray-800/40 transition-colors"
           [class.text-secondary]="activeTab() === 'about'"
           [class.text-white]="activeTab() !== 'about'"
           routerLink="/about"
@@ -96,71 +96,6 @@
           <span class="font-light">About</span>
         </button>
       </nav>
-
-      <!-- Custom Feed -->
-      <div class="mt-6 border-t border-t-white/10 border-b border-b-white/10 py-3">
-        <button
-          (click)="toggleCustomFeed()"
-          class="flex items-center justify-between w-full px-3 py-2 text-gray-500 transition-colors cursor-pointer hover:bg-gray-800/40 rounded-lg"
-        >
-          <span class="tracking-widest uppercase text-sm">Custom Feed</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              class="w-4 h-4 transition-transform duration-300 ease-in-out"
-              [attr.transform]="isCustomFeedExpanded ? 'rotate(180 12 12)' : ''"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 9l-7 7-7-7"
-            ></path>
-          </svg>
-        </button>
-
-        @if (isCustomFeedExpanded) {
-          @if (isAuthenticated()) {
-            <button
-              class="flex items-center cursor-pointer w-full space-x-3 px-5 py-2.5 rounded-lg hover:bg-gray-800/40 transition-colors"
-              animate.enter="slide-enter"
-              animate.leave="slide-leave"
-            >
-              <svg
-                class="w-5 h-5"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
-                />
-              </svg>
-              <span class="text-sm tracking-wide font-light">Create Custom Feed</span>
-            </button>
-          } @else {
-            <div
-              class="mt-2 space-y-1 px-5 py-2.5"
-              animate.enter="slide-enter"
-              animate.leave="slide-leave"
-            >
-              <p class="text-gray-500 text-sm">
-                Please
-                <button
-                  routerLink="/login"
-                  class="text-secondary hover:underline font-medium inline px-0 py-0 bg-transparent border-none cursor-pointer"
-                >
-                  log in
-                </button>
-                first to create custom feed for yourself
-              </p>
-            </div>
-          }
-        }
-      </div>
 
       <!-- Communities Section -->
       <div class="border-b border-b-white/10 py-3">

@@ -10,7 +10,6 @@ export class UserSettingsService {
   private readonly DEFAULT_USER_SETTINGS: UserSettings = {
     communityExpanded: true,
     resourcesExpanded: true,
-    customFeedExpanded: true,
   };
   private readonly USER_SETTINGS_KEY = 'userSettings';
   userSettings = this.#userSettingsSignal.asReadonly();
