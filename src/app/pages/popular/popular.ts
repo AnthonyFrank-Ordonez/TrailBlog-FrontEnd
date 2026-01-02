@@ -1,25 +1,32 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { PostService } from '@core/services/post.service';
-import { ZardDropdownMenuItemComponent } from '@shared/components/dropdown/dropdown-item.component';
-import { ZardDropdownMenuLabelComponent } from '@shared/components/dropdown/dropdown-label.component';
-import { ZardDropdownMenuContentComponent } from '@shared/components/dropdown/dropdown-menu-content.component';
-import { ZardDropdownDirective } from '@shared/components/dropdown/dropdown-trigger.directive';
 import { PostList } from '@shared/components/post-list/post-list';
+import { Tooltip } from '@shared/components/tooltip/tooltip';
 
 @Component({
   selector: 'app-popular',
-  imports: [
-    PostList,
-    ZardDropdownDirective,
-    ZardDropdownMenuContentComponent,
-    ZardDropdownMenuLabelComponent,
-    ZardDropdownMenuItemComponent,
-  ],
+  imports: [PostList, Tooltip],
   templateUrl: './popular.html',
   styleUrl: './popular.css',
 })
 export class Popular {
   private postService = inject(PostService);
 
+  activePostFilter = signal<string>('Best');
+  postFilterType = signal<string[]>(['Best', 'New', 'Top']);
   popularPosts = this.postService.posts;
+
+  togglePostMenuFilter() {
+    this.postService.toggleDropdown('filter', 'filter');
+  }
+
+  togglePostFilter(filter: string) {
+    // TODO: implement togglePostFilter
+    this.postService.closeDropdown();
+    console.log('🚀 ~ Home ~ togglePostFilter ~ filter:', filter);
+  }
+
+  isPostMenuFilterOpen(): boolean {
+    return this.postService.isDropDownOpen('filter', 'filter');
+  }
 }
