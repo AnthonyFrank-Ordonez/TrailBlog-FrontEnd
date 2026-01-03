@@ -14,6 +14,7 @@ import { Explore } from '@pages/explore/explore';
 import { About } from '@pages/about/about';
 import { Drafts } from '@pages/drafts/drafts';
 import { Archives } from '@pages/archives/archives';
+import { Profile } from '@pages/profile/profile';
 
 export const routes: Routes = [
   {
@@ -56,6 +57,11 @@ export const routes: Routes = [
       {
         path: 'about',
         component: About,
+      },
+      {
+        path: 'profile',
+        component: Profile,
+        canActivate: [authGuard],
       },
       {
         path: 'post/:slug',
