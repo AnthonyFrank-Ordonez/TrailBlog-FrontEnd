@@ -44,9 +44,10 @@ export class Header implements OnDestroy {
   lastScrollTop = 0;
 
   profileMenuMap = new Map<string, () => void>([
-    ['signout', () => this.onSignOut()],
+    ['profile', () => this.onProfile()],
     ['drafts', () => this.onDrafts()],
     ['archives', () => this.onArchives()],
+    ['signout', () => this.onSignOut()],
   ]);
 
   readonly profileMenuItems = [
@@ -129,6 +130,18 @@ export class Header implements OnDestroy {
     }
   }
 
+  onProfile() {
+    this.currentRouteService.handleRedirection(['profile']);
+  }
+
+  onDrafts() {
+    this.currentRouteService.handleRedirection(['drafts']);
+  }
+
+  onArchives() {
+    this.currentRouteService.handleRedirection(['archives']);
+  }
+
   onSignOut() {
     this.authService
       .logout()
@@ -146,14 +159,6 @@ export class Header implements OnDestroy {
           handleHttpError(error, this.messageService);
         },
       });
-  }
-
-  onDrafts() {
-    this.currentRouteService.handleRedirection(['drafts']);
-  }
-
-  onArchives() {
-    this.currentRouteService.handleRedirection(['archives']);
   }
 
   onSearch(query: string) {

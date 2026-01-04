@@ -95,6 +95,7 @@ export function getActiveTabFromPath(path: string): string {
   if (path.startsWith('/about')) return 'about';
   if (path.startsWith('/drafts')) return 'drafts';
   if (path.startsWith('/archives')) return 'archives';
+  if (path.startsWith('/profile')) return 'profile';
 
   return 'home';
 }
