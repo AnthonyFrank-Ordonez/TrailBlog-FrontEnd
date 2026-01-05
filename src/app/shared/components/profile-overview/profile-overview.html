@@ -1,11 +1,97 @@
 <div>
   <div class="flex flex-col gap-1">
-    <div class="flex items-center gap-3">
-      <h3 class="text-2xl font-semibold tracking-wider text-gray-600/80">Profile</h3>
+    <div class="flex items-center gap-2">
+      <h3 class="text-2xl font-semibold tracking-wider text-white">Profile</h3>
+      <button
+        class="cursor-pointer rounded-lg border border-gray-600/80 px-2 py-1 text-sm font-medium text-gray-600 hover:bg-gray-600/10"
+        (click)="toggleEditMode()"
+        >{{ editMode() ? 'Cancel' : 'Edit' }}</button
+      >
     </div>
 
     <p class="text-sm font-light text-gray-400/40"
       >This is where the profile overview will be displayed</p
     >
+
+    <form [formGroup]="profileForm" class="mt-3 grid grid-cols-1 lg:grid-cols-2">
+      <div class="col-span-1 max-w-sm space-y-3">
+        <!-- Username -->
+        <div>
+          <label for="username" class="text-base font-bold tracking-wide text-gray-500/30"
+            >Username:</label
+          >
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="mt-1 w-full rounded-lg border border-gray-600/30 px-2 py-1.5 text-sm text-gray-600 focus:ring-0 disabled:cursor-not-allowed disabled:bg-gray-600/10 disabled:text-white/20"
+          />
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label for="email" class="text-base font-bold tracking-wide text-gray-500/30"
+            >Email:</label
+          >
+          <input
+            type="text"
+            id="email"
+            formControlName="email"
+            class="mt-1 w-full rounded-lg border border-gray-600/30 px-2 py-1.5 text-sm text-gray-600 focus:ring-0 disabled:cursor-not-allowed disabled:bg-gray-600/10 disabled:text-white/20"
+          />
+        </div>
+
+        <!-- Bio -->
+        <div>
+          <label for="bio" class="text-base font-bold tracking-wide text-gray-500/30">Bio:</label>
+          <textarea
+            id="bio"
+            rows="6"
+            formControlName="bio"
+            class="mt-1 w-full rounded-lg border border-gray-600/30 px-2 py-1.5 text-sm text-gray-600 focus:ring-0 disabled:cursor-not-allowed disabled:bg-gray-600/10 disabled:text-white/20"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="col-span-1 max-w-sm space-y-3">
+        <!-- Avatar -->
+        <label for="avatar" class="text-base font-bold tracking-wide text-gray-500/30"
+          >Avatar:</label
+        >
+        <div class="mt-1 flex items-center gap-3">
+          <div class="bg-secondary flex h-10 w-10 items-center justify-center rounded-full">
+            <span class="text-base font-bold text-white">{{
+              currentUser()?.username | initials
+            }}</span>
+          </div>
+
+          <input
+            type="file"
+            id="avatar"
+            #fileInput
+            (change)="onFileSelected($event)"
+            class="hidden"
+            accept="image/*"
+          />
+
+          <button
+            type="button"
+            [disabled]="!editMode()"
+            (click)="fileInput.click()"
+            class="cursor-pointer rounded-lg border border-gray-600/30 px-4 py-1.5 text-sm text-gray-400 hover:bg-gray-600/10 disabled:cursor-not-allowed disabled:bg-gray-600/10 disabled:text-white/20"
+          >
+            {{ selectedFileName() || 'Choose file' }}
+          </button>
+        </div>
+
+        <!-- Role -->
+        <!-- <div>
+          <p class="text-base font-bold tracking-wide text-gray-500/30">Role: </p>
+          <span class="text-sm font-bold text-gray-400/50">
+            @if (currentUser()?.roles?.length) {}
+          </span>
+        </div> -->
+      </div>
+    </form>
   </div>
 </div>

@@ -17,7 +17,7 @@
       <div class="mb-3 flex min-w-max items-center gap-1 px-3">
         @for (btn of profileBtns(); track $index) {
           <button
-            class="cursor-pointer rounded-full px-5 py-3 text-sm font-medium text-white capitalize"
+            class="cursor-pointer rounded-full px-5 py-3 text-sm font-medium text-white capitalize focus:outline-none focus-visible:ring-0"
             [ngClass]="
               activeProfileBtn() === btn ? 'bg-gray-600/30 hover:no-underline' : 'hover:underline'
             "
