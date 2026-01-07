@@ -74,6 +74,7 @@ export function getStrategyFromPath(path: string): PostLoadingStrategy {
     '/explore': 'explore',
     '/drafts': 'drafts',
     '/archives': 'archives',
+    '/profile#posts': 'profile-posts',
   };
 
   const strategy = strategyMap[path];
