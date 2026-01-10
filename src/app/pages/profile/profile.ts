@@ -5,11 +5,12 @@ import { ProfileTabConfig } from '@core/models/interface/pages';
 import { UserService } from '@core/services/user.service';
 import { ProfileOverview } from '@shared/components/profile-overview/profile-overview';
 import { ProfilePosts } from '@shared/components/profile-posts/profile-posts';
+import { ProfileSaved } from '@shared/components/profile-saved/profile-saved';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 
 @Component({
   selector: 'app-profile',
-  imports: [InitialsPipe, NgClass, ProfileOverview, ProfilePosts],
+  imports: [InitialsPipe, NgClass, ProfileOverview, ProfilePosts, ProfileSaved],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
