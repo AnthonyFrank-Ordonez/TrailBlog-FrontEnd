@@ -110,7 +110,7 @@ export class PostService {
       useSessionId: false,
     },
     'profile-posts': {
-      endpoint: `${this.apiUrl}/user/published`,
+      endpoint: `${this.apiUrl}/published`,
       useSessionId: false,
     },
   };
