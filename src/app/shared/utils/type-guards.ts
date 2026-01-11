@@ -2,7 +2,7 @@ import { MenuModalStrategy } from '@core/models/interface/modal';
 import { PostDeleteType } from '@core/models/interface/posts';
 
 const postDeleteTypeSet = new Set<string>(['home', 'saved', 'drafts', 'detail']);
-const menuModalStrategySet = new Set<string>(['delete', 'archive']);
+const menuModalStrategySet = new Set<string>(['delete', 'archive', 'unsave', 'save']);
 
 export function isPostDeleteType(activeTab: string | undefined): activeTab is PostDeleteType {
   return typeof activeTab === 'string' && postDeleteTypeSet.has(activeTab);

@@ -10,7 +10,8 @@ export type PostLoadingStrategy =
   | 'explore'
   | 'drafts'
   | 'archives'
-  | 'profile-posts';
+  | 'profile-posts'
+  | 'profile-saved';
 
 export type PostDeleteType = 'home' | 'saved' | 'drafts' | 'detail';
 

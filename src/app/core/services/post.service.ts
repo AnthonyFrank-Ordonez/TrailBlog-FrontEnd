@@ -113,6 +113,10 @@ export class PostService {
       endpoint: `${this.apiUrl}/published`,
       useSessionId: false,
     },
+    'profile-saved': {
+      endpoint: `${this.apiUrl}/saved`,
+      useSessionId: false,
+    },
   };
 
   private readonly deletePostConfig: Record<PostDeleteType, PostDeleteConfig> = {
