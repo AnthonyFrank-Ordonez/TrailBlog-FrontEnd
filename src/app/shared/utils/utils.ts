@@ -76,6 +76,7 @@ export function getStrategyFromPath(path: string): PostLoadingStrategy {
     '/archives': 'archives',
     '/profile#posts': 'profile-posts',
     '/profile#saved': 'profile-saved',
+    '/profile#view-history': 'profile-view-history',
   };
 
   const strategy = strategyMap[path];

@@ -6,11 +6,12 @@ import { UserService } from '@core/services/user.service';
 import { ProfileOverview } from '@shared/components/profile-overview/profile-overview';
 import { ProfilePosts } from '@shared/components/profile-posts/profile-posts';
 import { ProfileSaved } from '@shared/components/profile-saved/profile-saved';
+import { ProfileViewHistory } from '@shared/components/profile-view-history/profile-view-history';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 
 @Component({
   selector: 'app-profile',
-  imports: [InitialsPipe, NgClass, ProfileOverview, ProfilePosts, ProfileSaved],
+  imports: [InitialsPipe, NgClass, ProfileOverview, ProfilePosts, ProfileSaved, ProfileViewHistory],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
@@ -24,7 +25,7 @@ export class Profile implements OnInit {
     posts: { component: 'profile-posts' },
     saved: { component: 'profile-saved' },
     comments: { component: 'profile-comments' },
-    history: { component: 'profile-history' },
+    history: { component: 'profile-view-history' },
   };
   currentUser = this.userService.user;
   activeProfileBtn = signal<string>('overview');
