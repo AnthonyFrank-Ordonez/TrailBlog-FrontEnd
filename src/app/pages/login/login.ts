@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -22,6 +22,7 @@ export class Login {
   private destroyRef = inject(DestroyRef);
 
   isLoggingIn = this.authService.isLoggingIn;
+  showPassword = signal(false);
 
   loginForm: FormGroup = this.createForm();
 
@@ -32,13 +33,20 @@ export class Login {
     });
   }
 
+  togglePassword() {
+    this.showPassword.set(!this.showPassword());
+  }
+
   async onLogin() {
     if (this.loginForm.invalid || this.isLoggingIn()) {
       this.markFormGroupTouched(this.loginForm);
       return;
     }
 
-    const credentials: Credentials = this.loginForm.value;
+    const credentials: Credentials = {
+      username: this.loginForm.value.username.trim().toLowerCase(),
+      password: this.loginForm.value.password.trim(),
+    };
 
     this.authService
       .login(credentials)
