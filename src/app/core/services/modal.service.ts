@@ -37,6 +37,14 @@ export class ModalService {
         }
       },
     ],
+    [
+      'error',
+      (config) => {
+        if (config.type === 'error') {
+          config.onConfirm?.();
+        }
+      },
+    ],
   ]);
   readonly menuModalConfig: Record<MenuModalStrategy, MenuModalConfig> = {
     archive: {
@@ -112,7 +120,7 @@ export class ModalService {
       confirmBtnText: 'Login',
 
       cancelBtnText: 'Cancel',
-      onConfirm: () => this.currentRouteService.handleRedirection('/login'),
+      onConfirm: () => this.currentRouteService.handleRedirection('login'),
     });
   }
 }
