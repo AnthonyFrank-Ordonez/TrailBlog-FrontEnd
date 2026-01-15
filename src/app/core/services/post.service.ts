@@ -79,6 +79,7 @@ export class PostService {
   activeDropdown = this.#activeDropdown.asReadonly();
   errorMessage = this.#errorMessageSignal.asReadonly();
   metadata = this.#metadataSignal.asReadonly();
+  currentPath = this.currentRouteService.currentPath;
 
   private unifiedSearch = httpResource<UnifiedSearchResults>(() =>
     this.#searchQuery()?.trim() ? `${this.apiUrl}/search?query=${this.#searchQuery()}` : undefined,
@@ -521,10 +522,16 @@ export class PostService {
   unsavePost(post: Post, type?: string): Observable<OperationResult> {
     this.closeDropdown();
 
+    const unsavePost = post;
+    const oldIndex = this.#postSignal().findIndex((p) => p.id === post.id);
     const previousSavedState = post.isSaved;
     const optimisticPost = { ...post, isSaved: false };
 
     this.updatePostsWithOptimisticData(post.id, optimisticPost);
+
+    if (this.currentPath() === '/profile#saved') {
+      this.removePostOptimistic(post.id);
+    }
 
     return this.http.delete<OperationResult>(`${this.apiUrl}/saved/${post.id}`).pipe(
       tap(() => {
@@ -533,6 +540,7 @@ export class PostService {
       catchError((error) => {
         console.error('Unsave post failed, rolling back', error);
         const rollbackPost = { ...post, isSaved: previousSavedState };
+        this.rollbackRemovePostOptimistic(oldIndex, unsavePost);
         this.updatePostsWithOptimisticData(post.id, rollbackPost);
         return throwError(() => error);
       }),
