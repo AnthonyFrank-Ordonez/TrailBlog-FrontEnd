@@ -527,10 +527,11 @@ export class PostService {
     const previousSavedState = post.isSaved;
     const optimisticPost = { ...post, isSaved: false };
 
-    this.updatePostsWithOptimisticData(post.id, optimisticPost);
-
+    // Remove post from list if user is on saved posts page
     if (this.currentPath() === '/profile#saved') {
       this.removePostOptimistic(post.id);
+    } else {
+      this.updatePostsWithOptimisticData(post.id, optimisticPost);
     }
 
     return this.http.delete<OperationResult>(`${this.apiUrl}/saved/${post.id}`).pipe(
@@ -540,8 +541,14 @@ export class PostService {
       catchError((error) => {
         console.error('Unsave post failed, rolling back', error);
         const rollbackPost = { ...post, isSaved: previousSavedState };
-        this.rollbackRemovePostOptimistic(oldIndex, unsavePost);
-        this.updatePostsWithOptimisticData(post.id, rollbackPost);
+
+        // Rollback post to previous state
+        if (this.currentPath() === '/profile#saved') {
+          this.rollbackRemovePostOptimistic(oldIndex, unsavePost);
+        } else {
+          this.updatePostsWithOptimisticData(post.id, rollbackPost);
+        }
+
         return throwError(() => error);
       }),
     );
@@ -789,13 +796,18 @@ export class PostService {
   }
 
   private rollbackRemovePostOptimistic(index: number, post: Post) {
+    const isPostInRecentView = this.#recentViewedPostsSignal().some((p) => p.postId === post.id);
     this.#postSignal.update((posts) => [...posts.slice(0, index), post, ...posts.slice(index)]);
 
-    this.#recentViewedPostsSignal.update((rp) => [
-      ...rp.slice(0, index),
-      { postId: post.id, ...post },
-      ...rp.slice(index),
-    ]);
+    if (!isPostInRecentView) {
+      return;
+    } else {
+      this.#recentViewedPostsSignal.update((rp) => [
+        ...rp.slice(0, index),
+        { postId: post.id, ...post },
+        ...rp.slice(index),
+      ]);
+    }
   }
 
   private updatePostCommentOptimisticData(commentId: string, updatedComment: Comment) {
