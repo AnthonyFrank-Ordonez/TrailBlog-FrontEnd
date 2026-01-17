@@ -5,13 +5,14 @@ import { Post, PostActionPayload } from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { PostService } from '@core/services/post.service';
+import { Button } from '@shared/components/button/button';
 import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 
 @Component({
   selector: 'app-post-card',
-  imports: [TimeagoPipe, InitialsPipe, NgClass, DropdownMenu],
+  imports: [TimeagoPipe, InitialsPipe, NgClass, DropdownMenu, Button],
   templateUrl: './post-card.html',
   styleUrl: './post-card.css',
 })

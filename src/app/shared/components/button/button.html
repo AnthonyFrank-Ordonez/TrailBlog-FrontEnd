@@ -1,4 +1,10 @@
-<button [type]="btnType()" [disabled]="isDisabled()" [class]="getButtonClass()">
+<button
+  [type]="btnType()"
+  [disabled]="isDisabled()"
+  [class]="getButtonClass()"
+  [class.hidden]="isHidden()"
+  (click)="handlebtnClick($event)"
+>
   @if (isLoading()) {
     <div class="flex items-center justify-center px-8 py-2.5">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="absolute h-8 w-8">
