@@ -7,10 +7,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
 import { Credentials } from '@core/models/interface/auth';
+import { Button } from '@shared/components/button/button';
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, Button],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

@@ -91,53 +91,14 @@
         Forgot Password?
       </a>
 
-      <button
-        type="submit"
-        [disabled]="loginForm.invalid || this.isLoggingIn()"
-        class="bg-secondary hover:bg-secondary/80 w-full cursor-pointer rounded-lg py-3 text-sm tracking-wider text-white transition-colors duration-300 focus:border-transparent focus:ring-2 focus:ring-orange-300 focus:outline-none disabled:cursor-not-allowed"
-      >
-        @if (this.isLoggingIn()) {
-          <div class="flex items-center justify-center py-2.5">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="absolute h-8 w-8">
-              <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="40" cy="100">
-                <animate
-                  attributeName="opacity"
-                  calcMode="spline"
-                  dur="2"
-                  values="1;0;1;"
-                  keySplines=".5 0 .5 1;.5 0 .5 1"
-                  repeatCount="indefinite"
-                  begin="-.4"
-                ></animate>
-              </circle>
-              <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="100" cy="100">
-                <animate
-                  attributeName="opacity"
-                  calcMode="spline"
-                  dur="2"
-                  values="1;0;1;"
-                  keySplines=".5 0 .5 1;.5 0 .5 1"
-                  repeatCount="indefinite"
-                  begin="-.2"
-                ></animate>
-              </circle>
-              <circle fill="#FFEAC4" stroke="#FFEAC4" stroke-width="12" r="15" cx="160" cy="100">
-                <animate
-                  attributeName="opacity"
-                  calcMode="spline"
-                  dur="2"
-                  values="1;0;1;"
-                  keySplines=".5 0 .5 1;.5 0 .5 1"
-                  repeatCount="indefinite"
-                  begin="0"
-                ></animate>
-              </circle>
-            </svg>
-          </div>
-        } @else {
-          Sign In
-        }
-      </button>
+      <app-button
+        btnText="Sign in"
+        size="full"
+        fontSize="sm"
+        btnType="submit"
+        [isDisabled]="loginForm.invalid || this.isLoggingIn()"
+        [isLoading]="this.isLoggingIn()"
+      />
     </form>
 
     <div class="mx-auto mb-3 flex w-full max-w-xs items-center">
@@ -146,8 +107,12 @@
       <div class="flex-grow border-t border-gray-600"></div>
     </div>
 
-    <button
-      class="bg-secondary hover:bg-secondary/80 mx-auto mb-5 flex w-full max-w-90 cursor-pointer items-center justify-center space-x-2 rounded-lg py-3 text-sm tracking-wider text-white transition-colors duration-300 focus:border-transparent focus:ring-2 focus:ring-orange-300 focus:outline-none"
+    <app-button
+      btnText="Continue With Google"
+      btnCustomClass="mx-auto flex max-w-90 items-center justify-center space-x-2 mb-5"
+      size="full"
+      fontSize="sm"
+      btnType="button"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -162,9 +127,7 @@
           d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z"
         />
       </svg>
-
-      <span>Continue with Google</span>
-    </button>
+    </app-button>
 
     <!-- Create an Account -->
     <div class="mb-2 flex items-center justify-center space-x-1.5 text-white">

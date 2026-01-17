@@ -16,10 +16,11 @@ import {
 } from '@shared/components/popover/popover.component';
 import { handleHttpError } from '@shared/utils/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Button } from '@shared/components/button/button';
 
 @Component({
   selector: 'app-register',
-  imports: [RouterLink, ReactiveFormsModule, ZardPopoverDirective, ZardPopoverComponent],
+  imports: [RouterLink, ReactiveFormsModule, ZardPopoverDirective, ZardPopoverComponent, Button],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
