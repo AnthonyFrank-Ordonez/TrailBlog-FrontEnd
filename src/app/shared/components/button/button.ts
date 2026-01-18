@@ -15,7 +15,7 @@ export class Button {
   isLoading = input<boolean>(false);
   btnType = input<'button' | 'submit' | 'reset'>('button');
   size = input<'xs' | 'sm' | 'md' | 'lg' | 'full'>('md');
-  variant = input<'primary' | 'secondary' | 'outline'>('primary');
+  variant = input<'primary' | 'secondary' | 'outline' | 'transparent'>('primary');
   fontSize = input<'xs' | 'sm' | 'md' | 'lg' | 'base'>('base');
   roundSize = input<'sm' | 'md' | 'lg' | 'full'>('md');
 
@@ -39,6 +39,7 @@ export class Button {
     primary: 'bg-secondary hover:bg-secondary/80 text-white',
     secondary: 'bg-gray-500 hover:bg-gray-500/80 text-white',
     outline: 'border border-gray-500 bg-transparent text-gray-500 hover:bg-white/5',
+    transparent: 'hover:bg-gray-800/40 text-white',
   };
 
   btnRoundSize: Record<string, string> = {
