@@ -14,10 +14,11 @@ import { Tooltip } from '../tooltip/tooltip';
 import { NgOptimizedImage } from '@angular/common';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { ModalService } from '@core/services/modal.service';
+import { Button } from '../button/button';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, InitialsPipe, Tooltip, NgOptimizedImage],
+  imports: [RouterLink, InitialsPipe, Tooltip, NgOptimizedImage, Button],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })

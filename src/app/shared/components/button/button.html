@@ -4,6 +4,7 @@
   [class]="getButtonClass()"
   [class.hidden]="isHidden()"
   (click)="handlebtnClick($event)"
+  [routerLink]="routeLocation()"
 >
   @if (isLoading()) {
     <div class="flex items-center justify-center px-8 py-2.5">

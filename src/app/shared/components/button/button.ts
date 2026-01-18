@@ -1,26 +1,29 @@
 import { Component, computed, input, output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-button',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './button.html',
   styleUrl: './button.css',
 })
 export class Button {
   btnText = input.required<string>();
   btnCustomClass = input<string>();
-  btnClick = output<MouseEvent>();
+  routeLocation = input<string>();
   isDisabled = input<boolean>(false);
   isHidden = input<boolean>(false);
   isLoading = input<boolean>(false);
   btnType = input<'button' | 'submit' | 'reset'>('button');
-  size = input<'xs' | 'sm' | 'md' | 'lg' | 'full'>('md');
+  size = input<'xs' | 'base' | 'sm' | 'md' | 'lg' | 'full'>('md');
   variant = input<'primary' | 'secondary' | 'outline' | 'transparent'>('primary');
   fontSize = input<'xs' | 'sm' | 'md' | 'lg' | 'base'>('base');
   roundSize = input<'sm' | 'md' | 'lg' | 'full'>('md');
+  btnClick = output<MouseEvent>();
 
   btnSize: Record<string, string> = {
-    xs: 'py-1 px-3',
+    xs: 'py-1 px-2',
+    base: 'py-2 px-2',
     sm: 'py-2 px-4',
     md: 'py-3 px-5',
     lg: 'py-3 px-6',
