@@ -31,6 +31,7 @@ import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 import { handleHttpError, setupReactionSubject, SUCCESS_MESSAGES } from '@shared/utils/utils';
+import { Button } from '@shared/components/button/button';
 
 @Component({
   selector: 'app-post-detail',
@@ -42,6 +43,7 @@ import { handleHttpError, setupReactionSubject, SUCCESS_MESSAGES } from '@shared
     DropdownMenu,
     ReactiveFormsModule,
     ZardDividerComponent,
+    Button,
   ],
   templateUrl: './post-detail.html',
   styleUrl: './post-detail.css',

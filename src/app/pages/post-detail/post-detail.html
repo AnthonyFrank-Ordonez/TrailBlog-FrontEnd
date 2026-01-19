@@ -145,9 +145,14 @@
           <div class="mt-3.5 flex items-center space-x-2">
             <!-- React Button -->
             <div class="relative" #reactionContainer>
-              <button
-                (click)="openReactModal()"
-                class="action-btn flex cursor-pointer items-center space-x-1 rounded-full bg-gray-500/40 px-2 py-1 text-white transition-colors duration-200 hover:bg-white/20"
+              <app-button
+                btnType="button"
+                btnText="React"
+                (btnClick)="openReactModal()"
+                btnCustomClass="action-btn flex items-center space-x-1 bg-gray-500/40 hover:bg-white/20"
+                size="xs"
+                roundSize="full"
+                variant="custom"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -162,9 +167,7 @@
                     d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-2 9.66h-6a1 1 0 0 0 -1 1v.05a3.975 3.975 0 0 0 3.777 3.97l.227 .005a4.026 4.026 0 0 0 3.99 -3.79l.006 -.206a1 1 0 0 0 -1 -1.029zm-5.99 -5l-.127 .007a1 1 0 0 0 .117 1.993l.127 -.007a1 1 0 0 0 -.117 -1.993zm6 0l-.127 .007a1 1 0 0 0 .117 1.993l.127 -.007a1 1 0 0 0 -.117 -1.993z"
                   />
                 </svg>
-
-                <span>React</span>
-              </button>
+              </app-button>
 
               <!-- Reaction Modal -->
               @if (isPostReactModalOpen()) {
@@ -186,9 +189,14 @@
               }
             </div>
 
-            <!-- Comment button -->
-            <button
-              class="flex cursor-pointer items-center space-x-1 rounded-full bg-gray-500/40 px-2 py-1 text-white transition-colors duration-200 hover:bg-white/20"
+            <!-- Comment Button -->
+            <app-button
+              [btnText]="post().totalComment"
+              btnType="button"
+              btnCustomClass="action-btn flex items-center space-x-1 bg-gray-500/40 hover:bg-white/20"
+              size="xs"
+              roundSize="full"
+              variant="custom"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -203,15 +211,18 @@
                   d="M5.821 4.91c3.899 -2.765 9.468 -2.539 13.073 .535c3.667 3.129 4.168 8.238 1.152 11.898c-2.841 3.447 -7.965 4.583 -12.231 2.805l-.233 -.101l-4.374 .931l-.04 .006l-.035 .007h-.018l-.022 .005h-.038l-.033 .004l-.021 -.001l-.023 .001l-.033 -.003h-.035l-.022 -.004l-.022 -.002l-.035 -.007l-.034 -.005l-.016 -.004l-.024 -.005l-.049 -.016l-.024 -.005l-.011 -.005l-.022 -.007l-.045 -.02l-.03 -.012l-.011 -.006l-.014 -.006l-.031 -.018l-.045 -.024l-.016 -.011l-.037 -.026l-.04 -.027l-.002 -.004l-.013 -.009l-.043 -.04l-.025 -.02l-.006 -.007l-.056 -.062l-.013 -.014l-.011 -.014l-.039 -.056l-.014 -.019l-.005 -.01l-.042 -.073l-.007 -.012l-.004 -.008l-.007 -.012l-.014 -.038l-.02 -.042l-.004 -.016l-.004 -.01l-.017 -.061l-.007 -.018l-.002 -.015l-.005 -.019l-.005 -.033l-.008 -.042l-.002 -.031l-.003 -.01v-.016l-.004 -.054l.001 -.036l.001 -.023l.002 -.053l.004 -.025v-.019l.008 -.035l.005 -.034l.005 -.02l.004 -.02l.018 -.06l.003 -.013l1.15 -3.45l-.022 -.037c-2.21 -3.747 -1.209 -8.391 2.413 -11.119z"
                 />
               </svg>
-
-              <span>{{ post().totalComment }}</span>
-            </button>
+            </app-button>
 
             <!-- Share button -->
             <div class="relative" #shareContainer>
-              <button
-                (click)="openShareModal()"
-                class="action-btn flex cursor-pointer items-center space-x-1 rounded-full bg-gray-500/40 px-2 py-1 text-white transition-colors duration-200 hover:bg-white/20"
+              <app-button
+                btnText="Share"
+                btnType="button"
+                btnCustomClass="action-btn flex items-center space-x-1 bg-gray-500/40 hover:bg-white/20"
+                size="xs"
+                roundSize="full"
+                variant="custom"
+                (btnClick)="openShareModal()"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -226,9 +237,7 @@
                     d="M18 2a4 4 0 1 1 -3.843 5.114l-6.295 .786a3 3 0 0 1 -.094 .257l6.446 4.431a3 3 0 1 1 -.695 4.099l-3.527 1.058q .008 .127 .008 .255a4 4 0 1 1 -8 0l.005 -.2a4 4 0 0 1 7.366 -1.954l3.64 -1.094l.01 -.102q .023 -.204 .074 -.4l-6.688 -4.6a3 3 0 0 1 -4.407 -2.65l.005 -.176a3 3 0 0 1 5.784 -.931l6.312 -.79a4 4 0 0 1 3.899 -3.103"
                   />
                 </svg>
-
-                <span>Share</span>
-              </button>
+              </app-button>
 
               @if (isPostShareModalOpen()) {
                 <app-dropdown-menu

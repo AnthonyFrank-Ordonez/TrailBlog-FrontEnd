@@ -8,26 +8,27 @@ import { RouterLink } from '@angular/router';
   styleUrl: './button.css',
 })
 export class Button {
-  btnText = input.required<string>();
+  btnText = input.required<string | number>();
   btnCustomClass = input<string>();
   routeLocation = input<string>();
   isDisabled = input<boolean>(false);
   isHidden = input<boolean>(false);
   isLoading = input<boolean>(false);
   btnType = input<'button' | 'submit' | 'reset'>('button');
-  size = input<'xs' | 'base' | 'sm' | 'md' | 'lg' | 'full'>('md');
-  variant = input<'primary' | 'secondary' | 'outline' | 'transparent'>('primary');
-  fontSize = input<'xs' | 'sm' | 'md' | 'lg' | 'base'>('base');
+  size = input<'xs' | 'base' | 'sm' | 'md' | 'lg' | 'xl' | 'full'>('md');
+  variant = input<'primary' | 'secondary' | 'outline' | 'transparent' | 'custom'>('primary');
+  fontSize = input<'xs' | 'sm' | 'md' | 'lg' | 'base' | 'xl'>('base');
   roundSize = input<'sm' | 'md' | 'lg' | 'full'>('md');
   btnClick = output<MouseEvent>();
 
   btnSize: Record<string, string> = {
     base: 'py-2 px-2',
-    xs: 'py-1 px-3',
-    sm: 'py-2 px-4',
-    md: 'py-3 px-5',
-    lg: 'py-3 px-6',
-    full: 'w-full py-3',
+    xs: 'py-1 px-2',
+    sm: 'py-1 px-3',
+    md: 'py-2 px-4',
+    lg: 'py-3 px-5',
+    xl: 'py-4 px-6',
+    full: 'py-3 w-full',
   };
 
   btnFontSize: Record<string, string> = {
@@ -35,6 +36,7 @@ export class Button {
     sm: 'text-sm',
     md: 'text-base',
     lg: 'text-lg',
+    xl: 'text-xl',
     base: 'text-base',
   };
 
@@ -43,6 +45,7 @@ export class Button {
     secondary: 'bg-gray-500 hover:bg-gray-500/80 text-white',
     outline: 'border border-gray-500 bg-transparent text-gray-500 hover:bg-white/5',
     transparent: 'hover:bg-gray-800/40 text-white',
+    custom: 'text-white',
   };
 
   btnRoundSize: Record<string, string> = {
