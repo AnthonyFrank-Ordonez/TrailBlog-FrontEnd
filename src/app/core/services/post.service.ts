@@ -478,7 +478,7 @@ export class PostService {
   addPostComment(commentData: AddCommentRequest): Observable<Comment> {
     this.#isSubmittingSignal.set(true);
 
-    return this.http.post<Comment>(`${this.env.apiRoot}/comment`, commentData).pipe(
+    return this.http.post<Comment>(`${this.env.apiRoot}/comments`, commentData).pipe(
       tap((newComment) => {
         console.log('Adding Comment...');
 
@@ -608,16 +608,18 @@ export class PostService {
 
     this.updatePostCommentOptimisticData(comment.id, optimisticComment);
 
-    return this.http.patch<OperationResult>(`${this.env.apiRoot}/comment/${comment.id}`, null).pipe(
-      tap(() => {
-        console.log('Comment deleted successfully');
-      }),
-      catchError((error) => {
-        console.error('Delete comment failed, rolling back', error);
-        this.updatePostCommentOptimisticData(comment.id, previousCommentState);
-        return throwError(() => error);
-      }),
-    );
+    return this.http
+      .patch<OperationResult>(`${this.env.apiRoot}/comments/${comment.id}`, null)
+      .pipe(
+        tap(() => {
+          console.log('Comment deleted successfully');
+        }),
+        catchError((error) => {
+          console.error('Delete comment failed, rolling back', error);
+          this.updatePostCommentOptimisticData(comment.id, previousCommentState);
+          return throwError(() => error);
+        }),
+      );
   }
 
   clearRecentViewedPosts(): Observable<OperationResult> {

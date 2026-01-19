@@ -8,6 +8,7 @@ export interface Comment {
   isOwner: boolean;
   userId: string | null;
   postId: string | null;
+  postSlug: string | null;
 }
 
 export interface AddCommentRequest {
