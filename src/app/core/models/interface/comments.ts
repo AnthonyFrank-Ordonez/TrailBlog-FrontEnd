@@ -1,4 +1,4 @@
-export type CommentLoadingStrategy = 'profile';
+export type CommentLoadingStrategy = 'profile-comments';
 
 export interface Comment {
   id: string;

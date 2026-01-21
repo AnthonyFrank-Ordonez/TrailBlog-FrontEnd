@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DestroyRef, Signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ApiError } from '@core/models/interface/api-error';
+import { CommentLoadingStrategy } from '@core/models/interface/comments';
 import { CommentAction, PostAction } from '@core/models/interface/menus';
 import { ExploreMetadata, MetaData } from '@core/models/interface/page-result';
 import { PostLoadingStrategy } from '@core/models/interface/posts';
@@ -67,8 +68,8 @@ export function handleHttpError(error: HttpErrorResponse, messageService: Messag
   }
 }
 
-export function getStrategyFromPath(path: string): PostLoadingStrategy {
-  const strategyMap: Record<string, PostLoadingStrategy> = {
+export function getStrategyFromPath(path: string): PostLoadingStrategy | CommentLoadingStrategy {
+  const strategyMap: Record<string, PostLoadingStrategy | CommentLoadingStrategy> = {
     '/': 'regular',
     '/popular': 'popular',
     '/explore': 'explore',
@@ -76,6 +77,7 @@ export function getStrategyFromPath(path: string): PostLoadingStrategy {
     '/archives': 'archives',
     '/profile#posts': 'profile-posts',
     '/profile#saved': 'profile-saved',
+    '/profile#comments': 'profile-comments',
     '/profile#history': 'profile-view-history',
   };
 

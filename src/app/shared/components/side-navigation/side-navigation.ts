@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, DestroyRef, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
+import { PostLoadingStrategy } from '@core/models/interface/posts';
 import { AuthService } from '@core/services/auth.service';
 import { CommunityService } from '@core/services/community.service';
 import { CurrentRouteService } from '@core/services/current-route.service';
@@ -99,7 +100,7 @@ export class SideNavigation {
       const strategy = getStrategyFromPath(targetPath);
 
       this.postService
-        .loadInitialPosts(strategy)
+        .loadInitialPosts(strategy as PostLoadingStrategy)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           error: (error) => {

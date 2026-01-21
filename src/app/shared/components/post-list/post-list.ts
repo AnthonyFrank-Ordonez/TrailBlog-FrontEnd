@@ -20,7 +20,12 @@ import {
 import { MessageService } from '@core/services/message.service';
 import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Post, PostActionPayload, PostDeleteType } from '@core/models/interface/posts';
+import {
+  Post,
+  PostActionPayload,
+  PostDeleteType,
+  PostLoadingStrategy,
+} from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
 import { MetaData } from '@core/models/interface/page-result';
@@ -316,7 +321,7 @@ export class PostList implements OnInit {
     const strategy = getStrategyFromPath(this.currentPath());
 
     this.postService
-      .loadInitialPosts(strategy)
+      .loadInitialPosts(strategy as PostLoadingStrategy)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {

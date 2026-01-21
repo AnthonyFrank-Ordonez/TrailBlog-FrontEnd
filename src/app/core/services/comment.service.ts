@@ -1,9 +1,9 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { CommentLoadingStrategy, CommentStrategyConfig } from '@core/models/interface/comments';
 import { PageResult, MetaData } from '@core/models/interface/page-result';
 import { environment } from '@env/environment';
-import { catchError, EMPTY, finalize, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, finalize, Observable, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +19,7 @@ export class CommentService {
   #pageSizeSignal = signal<number>(10);
   #totalCountSignal = signal<number>(0);
   #sessionIdSignal = signal<string>('');
-  #commentLoadingStrategySignal = signal<CommentLoadingStrategy>('profile');
+  #commentLoadingStrategySignal = signal<CommentLoadingStrategy>('profile-comments');
   #isCommentLoading = signal<boolean>(false);
   #totalPagesSignal = signal<number>(0);
   #errorMessageSignal = signal<string>('');
@@ -33,7 +33,7 @@ export class CommentService {
   });
 
   private readonly strategyConfig: Record<CommentLoadingStrategy, CommentStrategyConfig> = {
-    profile: {
+    'profile-comments': {
       endpoint: `${this.apiUrl}/user`,
       useSessionId: false,
     },
@@ -44,9 +44,11 @@ export class CommentService {
     this.#currentPageSignal.set(0);
     this.#sessionIdSignal.set('');
     this.#commentLoadingStrategySignal.set(strategy);
+
+    return this.loadComments();
   }
 
-  loadComments() {
+  loadComments(): Observable<HttpResponse<PageResult<Comment>>> {
     if (this.#isCommentLoading()) {
       console.info('Already loading, skipping...');
       return EMPTY;
