@@ -2,9 +2,9 @@ import { Component, DestroyRef, effect, inject, untracked } from '@angular/core'
 import { CommentCard } from './comment-card/comment-card';
 import { CommentService } from '@core/services/comment.service';
 import { getStrategyFromPath, handleHttpError } from '@shared/utils/utils';
+import { toCommentLoadingStrategy } from '@shared/utils/type-guards';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { MessageService } from '@core/services/message.service';
-import { CommentLoadingStrategy } from '@core/models/interface/comments';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '@core/services/auth.service';
@@ -36,11 +36,10 @@ export class CommentList {
   }
 
   loadComments() {
-    const strategy = getStrategyFromPath(this.currentPath());
-    console.log(strategy);
+    const strategy = toCommentLoadingStrategy(getStrategyFromPath(this.currentPath()));
 
     this.commentService
-      .loadInitialComments(strategy as CommentLoadingStrategy)
+      .loadInitialComments(strategy)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {

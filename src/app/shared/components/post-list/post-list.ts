@@ -33,7 +33,11 @@ import { NgOptimizedImage } from '@angular/common';
 import { MenuItems, PostMenuItems } from '@core/models/interface/menus';
 import { UserService } from '@core/services/user.service';
 import { ModalService } from '@core/services/modal.service';
-import { toMenuModalStrategy, toPostDeleteType } from '@shared/utils/type-guards';
+import {
+  toMenuModalStrategy,
+  toPostDeleteType,
+  toPostLoadingStrategy,
+} from '@shared/utils/type-guards';
 
 @Component({
   selector: 'app-post-list',
@@ -318,10 +322,10 @@ export class PostList implements OnInit {
   }
 
   private loadPosts() {
-    const strategy = getStrategyFromPath(this.currentPath());
+    const strategy = toPostLoadingStrategy(getStrategyFromPath(this.currentPath()));
 
     this.postService
-      .loadInitialPosts(strategy as PostLoadingStrategy)
+      .loadInitialPosts(strategy)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {
