@@ -14,7 +14,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   getStrategyFromPath,
   handleHttpError,
-  isExploreMetadata,
   setupReactionSubject,
   SUCCESS_MESSAGES,
 } from '@shared/utils/utils';
@@ -24,7 +23,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Post, PostActionPayload, PostDeleteType } from '@core/models/interface/posts';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
-import { PostMetadata } from '@core/models/interface/page-result';
+import { MetaData } from '@core/models/interface/page-result';
 import { NgOptimizedImage } from '@angular/common';
 import { MenuItems, PostMenuItems } from '@core/models/interface/menus';
 import { UserService } from '@core/services/user.service';
@@ -48,7 +47,7 @@ export class PostList implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   posts = input.required<Post[]>();
-  metadata = input<PostMetadata | undefined>();
+  metadata = input<MetaData | undefined>();
 
   currentPath = this.currentRouteService.currentPath;
   isAuthenticated = this.authService.isAuthenticated;
@@ -190,8 +189,8 @@ export class PostList implements OnInit {
     return this.postService.isDropDownOpen('share', postId);
   }
 
-  isExploreMetadata(metadata: PostMetadata | undefined): boolean {
-    return isExploreMetadata(metadata);
+  isExploreMetadata(metadata: MetaData | undefined): boolean {
+    return this.isExploreMetadata(metadata);
   }
 
   handlePostMenuAction(data: PostActionPayload) {

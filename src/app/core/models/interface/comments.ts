@@ -1,3 +1,5 @@
+export type CommentLoadingStrategy = 'profile';
+
 export interface Comment {
   id: string;
   content: string;
@@ -14,4 +16,8 @@ export interface Comment {
 export interface AddCommentRequest {
   postId: string;
   content: string;
+}
+export interface CommentStrategyConfig {
+  endpoint: string;
+  useSessionId: boolean;
 }

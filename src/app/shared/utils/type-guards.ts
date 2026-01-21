@@ -1,4 +1,5 @@
 import { MenuModalStrategy } from '@core/models/interface/modal';
+import { ExploreMetadata, MetaData } from '@core/models/interface/page-result';
 import { PostDeleteType } from '@core/models/interface/posts';
 
 const postDeleteTypeSet = new Set<string>(['home', 'saved', 'drafts', 'detail']);
@@ -10,6 +11,18 @@ export function isPostDeleteType(activeTab: string | undefined): activeTab is Po
 
 export function isMenuModalStrategy(action: string): action is MenuModalStrategy {
   return typeof action === 'string' && menuModalStrategySet.has(action);
+}
+
+export function isExploreMetadata(metadata: MetaData | undefined): metadata is ExploreMetadata {
+  return (
+    metadata !== undefined &&
+    'allCommunitiesJoined' in metadata &&
+    'code' in metadata &&
+    'message' in metadata &&
+    typeof metadata.allCommunitiesJoined === 'boolean' &&
+    typeof metadata.code === 'string' &&
+    typeof metadata.message === 'string'
+  );
 }
 
 export function toPostDeleteType(activeTab: string | undefined): PostDeleteType | undefined {

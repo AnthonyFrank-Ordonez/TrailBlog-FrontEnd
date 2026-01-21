@@ -4,8 +4,9 @@ export interface ExploreMetadata {
   message: string;
 }
 
-export type PostMetadata = ExploreMetadata | Record<string, unknown>;
-export interface PageResult<T, M = PostMetadata> {
+export type MetaData = ExploreMetadata | Record<string, unknown>;
+
+export interface PageResult<T, M = MetaData> {
   data: T[];
   page: number;
   pageSize: number;

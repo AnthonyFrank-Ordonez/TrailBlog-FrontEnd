@@ -20,7 +20,7 @@ import {
 import { catchError, EMPTY, finalize, Observable, of, Subject, tap, throwError } from 'rxjs';
 import { debounceSignal, POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
-import { PageResult, PostMetadata } from '@core/models/interface/page-result';
+import { PageResult, MetaData } from '@core/models/interface/page-result';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AddCommentRequest, Comment } from '@core/models/interface/comments';
 import { AuthService } from './auth.service';
@@ -61,7 +61,7 @@ export class PostService {
   #sessionIdSignal = signal<string>('');
   #postMenuModalIdSignal = signal<string | null>(null);
   #activeDropdown = signal<PostDropdown>({ type: null, id: null });
-  #metadataSignal = signal<PostMetadata | undefined>(undefined);
+  #metadataSignal = signal<MetaData | undefined>(undefined);
   #errorMessageSignal = signal<HttpErrorResponse | null>(null);
   #searchQuery = debounceSignal(this.enteredSearchQuery);
   reaction$ = new Subject<ReactionRequest>();
@@ -172,7 +172,6 @@ export class PostService {
   >([['initial-delete', (comment) => this.deleteCommentInitial(comment)]]);
 
   loadInitialPosts(strategy: PostLoadingStrategy = 'regular') {
-    console.log('strategy', strategy);
     this.#postSignal.set([]);
     this.#currentPageSignal.set(0);
     this.#sessionIdSignal.set('');
@@ -181,15 +180,15 @@ export class PostService {
     return this.loadMorePosts();
   }
 
-  loadMorePosts(): Observable<HttpResponse<PageResult<Post, PostMetadata>>> {
+  loadMorePosts(): Observable<HttpResponse<PageResult<Post, MetaData>>> {
     if (this.#isPostLoadingSignal()) {
-      console.log('Already loading, skipping...');
+      console.info('Already loading, skipping...');
       return EMPTY;
     }
 
     // Check if we have more pages
     if (this.#currentPageSignal() > 0 && !this.hasMore()) {
-      console.log('No more posts to load');
+      console.info('No more posts to load');
       return EMPTY;
     }
 
@@ -207,7 +206,7 @@ export class PostService {
     }
 
     return this.http
-      .get<PageResult<Post, PostMetadata>>(config.endpoint, { params, observe: 'response' })
+      .get<PageResult<Post, MetaData>>(config.endpoint, { params, observe: 'response' })
       .pipe(
         tap((result) => {
           const response = result.body!;

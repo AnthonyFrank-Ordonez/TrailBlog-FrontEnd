@@ -3,7 +3,7 @@ import { DestroyRef, Signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ApiError } from '@core/models/interface/api-error';
 import { CommentAction, PostAction } from '@core/models/interface/menus';
-import { ExploreMetadata, PostMetadata } from '@core/models/interface/page-result';
+import { ExploreMetadata, MetaData } from '@core/models/interface/page-result';
 import { PostLoadingStrategy } from '@core/models/interface/posts';
 import { ReactionRequest } from '@core/models/interface/reactions';
 import { MessageService } from '@core/services/message.service';
@@ -118,16 +118,4 @@ export function setupReactionSubject(
         handleHttpError(error, messageService);
       },
     });
-}
-
-export function isExploreMetadata(metadata: PostMetadata | undefined): metadata is ExploreMetadata {
-  return (
-    metadata !== undefined &&
-    'allCommunitiesJoined' in metadata &&
-    'code' in metadata &&
-    'message' in metadata &&
-    typeof metadata.allCommunitiesJoined === 'boolean' &&
-    typeof metadata.code === 'string' &&
-    typeof metadata.message === 'string'
-  );
 }
