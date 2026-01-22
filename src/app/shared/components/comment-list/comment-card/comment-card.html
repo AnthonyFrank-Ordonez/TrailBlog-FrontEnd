@@ -19,8 +19,11 @@
     </div>
 
     <!-- Three dots -->
-    <div class="relative" #menuContainer>
-      <button class="action-btn cursor-pointer rounded-full px-2 py-2 text-white hover:bg-gray-800">
+    <div class="comment-menu-container relative" #menuContainer>
+      <button
+        (click)="toggleCommentMenu($event, comment().id)"
+        class="action-btn cursor-pointer rounded-full px-2 py-2 text-white hover:bg-gray-800"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -34,6 +37,16 @@
           />
         </svg>
       </button>
+
+      @if (getActiveCommentMenuId() === comment().id) {
+        <app-dropdown-menu
+          animate.enter="dropdown-fade-in"
+          animate.leave="dropdown-fade-out"
+          styles="w-32 right-0"
+          [isOwner]="comment().isOwner"
+          [dropdownItems]="commentMenuItems"
+        />
+      }
     </div>
   </div>
 

@@ -221,6 +221,7 @@ export class PostDetail implements OnInit {
 
     this.dropdownService.updateActiveDropdown('menu', id);
   }
+
   showCommentSection(): void {
     this.isCommentSelected.set(true);
     this.dropdownService.closeDropdown();
