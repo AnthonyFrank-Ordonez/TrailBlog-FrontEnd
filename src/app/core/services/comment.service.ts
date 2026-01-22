@@ -34,7 +34,7 @@ export class CommentService {
   comments = this.#commentsSignal.asReadonly();
   isCommentLoading = this.#isCommentLoading.asReadonly();
 
-  private readonly hasMore = computed(() => {
+  readonly hasMore = computed(() => {
     return this.#currentPageSignal() < this.#totalPagesSignal();
   });
 

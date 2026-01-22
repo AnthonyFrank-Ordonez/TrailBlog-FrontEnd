@@ -29,6 +29,7 @@ export class CommentList {
   currentPath = this.currentRouteService.currentPath;
   token = this.authService.token;
   isCommentLoading = this.commentService.isCommentLoading;
+  hasMore = this.commentService.hasMore;
 
   // For testing comment skeleton loading
   // isCommentLoading = signal(true);
