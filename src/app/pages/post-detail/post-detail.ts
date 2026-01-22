@@ -32,6 +32,7 @@ import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 import { handleHttpError, setupReactionSubject, SUCCESS_MESSAGES } from '@shared/utils/utils';
 import { Button } from '@shared/components/button/button';
+import { DropdownService } from '@core/services/dropdown.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -57,6 +58,7 @@ export class PostDetail implements OnInit {
   private fb = inject(FormBuilder);
   private postService = inject(PostService);
   private messageService = inject(MessageService);
+  private dropdownService = inject(DropdownService);
   private authService = inject(AuthService);
   private userService = inject(UserService);
 
@@ -124,7 +126,7 @@ export class PostDetail implements OnInit {
   ];
 
   post = this.postService.postDetail;
-  activeDropdown = this.postService.activeDropdown;
+  activeDropdown = this.dropdownService.activeDropdown;
   isPostLoading = this.postService.isPostLoading;
   isAuthenticated = this.authService.isAuthenticated;
   errorMessage = this.postService.errorMessage;
@@ -181,31 +183,31 @@ export class PostDetail implements OnInit {
   }
 
   openPostMenu(): void {
-    this.postService.toggleDropdown('menu', this.post().id);
+    this.dropdownService.toggleDropdown('menu', this.post().id);
   }
 
   openReactModal(): void {
-    this.postService.toggleDropdown('reaction', this.post().id);
+    this.dropdownService.toggleDropdown('reaction', this.post().id);
   }
 
   openShareModal(): void {
-    this.postService.toggleDropdown('share', this.post().id);
+    this.dropdownService.toggleDropdown('share', this.post().id);
   }
 
   isPostMenuOpen(): boolean {
-    return this.postService.isDropDownOpen('menu', this.post().id);
+    return this.dropdownService.isDropDownOpen('menu', this.post().id);
   }
 
   isPostReactModalOpen(): boolean {
-    return this.postService.isDropDownOpen('reaction', this.post().id);
+    return this.dropdownService.isDropDownOpen('reaction', this.post().id);
   }
 
   isPostShareModalOpen(): boolean {
-    return this.postService.isDropDownOpen('share', this.post().id);
+    return this.dropdownService.isDropDownOpen('share', this.post().id);
   }
 
   toggleBack(): void {
-    this.postService.closeDropdown();
+    this.dropdownService.closeDropdown();
     this.router.navigate(['/']);
   }
 
@@ -213,15 +215,15 @@ export class PostDetail implements OnInit {
     event.stopPropagation();
 
     if (this.getActiveCommentMenuId() === id) {
-      this.postService.closeDropdown();
+      this.dropdownService.closeDropdown();
       return;
     }
 
-    this.postService.updateActiveDropdown('menu', id);
+    this.dropdownService.updateActiveDropdown('menu', id);
   }
   showCommentSection(): void {
     this.isCommentSelected.set(true);
-    this.postService.closeDropdown();
+    this.dropdownService.closeDropdown();
 
     setTimeout(() => {
       this.commentArea.nativeElement.focus();
@@ -310,12 +312,12 @@ export class PostDetail implements OnInit {
     }
 
     if (!insideModal && !isButton) {
-      this.postService.closeDropdown();
+      this.dropdownService.closeDropdown();
     }
 
     if (this.getActiveCommentMenuId()) {
       if (!clickedAnyCommentContainer) {
-        this.postService.closeDropdown();
+        this.dropdownService.closeDropdown();
       }
     }
   }

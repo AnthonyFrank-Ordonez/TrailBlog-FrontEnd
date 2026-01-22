@@ -4,6 +4,7 @@ import { MenuClickEvent, MenuItems } from '@core/models/interface/menus';
 import { Post, PostActionPayload } from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
+import { DropdownService } from '@core/services/dropdown.service';
 import { PostService } from '@core/services/post.service';
 import { Button } from '@shared/components/button/button';
 import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
@@ -23,6 +24,7 @@ export class PostCard {
 
   private postService = inject(PostService);
   private authService = inject(AuthService);
+  private dropdownService = inject(DropdownService);
 
   post = input.required<Post>();
   currentPath = input<string>();
@@ -44,7 +46,7 @@ export class PostCard {
   toggleJoinAction = output<string>();
 
   isAuthenticated = this.authService.isAuthenticated;
-  activeDropdown = this.postService.activeDropdown;
+  activeDropdown = this.dropdownService.activeDropdown;
 
   handleMenuItems(event: MouseEvent) {
     event?.stopPropagation();

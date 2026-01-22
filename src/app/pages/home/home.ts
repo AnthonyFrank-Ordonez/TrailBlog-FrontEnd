@@ -2,6 +2,7 @@ import { Component, HostListener, inject, signal } from '@angular/core';
 import { PostList } from '@shared/components/post-list/post-list';
 import { PostService } from '@core/services/post.service';
 import { Tooltip } from '@shared/components/tooltip/tooltip';
+import { DropdownService } from '@core/services/dropdown.service';
 
 @Component({
   selector: 'app-home',
@@ -11,28 +12,29 @@ import { Tooltip } from '@shared/components/tooltip/tooltip';
 })
 export class Home {
   private postService = inject(PostService);
+  private dropdownService = inject(DropdownService);
 
   activePostFilter = signal<string>('Best');
   postFilterType = signal<string[]>(['Best', 'New', 'Top']);
   regularPosts = this.postService.posts;
 
   togglePostMenuFilter() {
-    this.postService.toggleDropdown('filter', 'filter');
+    this.dropdownService.toggleDropdown('filter', 'filter');
   }
 
   togglePostFilter(filter: string) {
     // TODO: implement togglePostFilter
-    this.postService.closeDropdown();
+    this.dropdownService.closeDropdown();
     console.log('🚀 ~ Home ~ togglePostFilter ~ filter:', filter);
   }
 
   isPostMenuFilterOpen(): boolean {
-    return this.postService.isDropDownOpen('filter', 'filter');
+    return this.dropdownService.isDropDownOpen('filter', 'filter');
   }
 
   @HostListener('document:click', ['$event'])
   handleOutsideClick(event: MouseEvent) {
-    const modal = this.postService.activeDropdown();
+    const modal = this.dropdownService.activeDropdown();
 
     if (modal.type === null) return;
 
@@ -42,7 +44,7 @@ export class Home {
     const isButton = target.closest('.action-btn, button');
 
     if (!insideModal && !isButton) {
-      this.postService.closeDropdown();
+      this.dropdownService.closeDropdown();
     }
   }
 }

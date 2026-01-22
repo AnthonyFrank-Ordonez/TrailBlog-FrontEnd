@@ -38,6 +38,7 @@ import {
   toPostDeleteType,
   toPostLoadingStrategy,
 } from '@shared/utils/type-guards';
+import { DropdownService } from '@core/services/dropdown.service';
 
 @Component({
   selector: 'app-post-list',
@@ -53,6 +54,7 @@ export class PostList implements OnInit {
   private communityService = inject(CommunityService);
   private userService = inject(UserService);
   private modalService = inject(ModalService);
+  private dropdownService = inject(DropdownService);
   private destroyRef = inject(DestroyRef);
 
   posts = input.required<Post[]>();
@@ -63,7 +65,7 @@ export class PostList implements OnInit {
   token = this.authService.token;
   userCommunities = this.communityService.userCommunities;
   isPostLoading = this.postService.isPostLoading;
-  activeDropdown = this.postService.activeDropdown;
+  activeDropdown = this.dropdownService.activeDropdown;
   reactionList = this.postService.getReactionList();
   skeletonArray = Array(5).fill(0);
   hasMore = this.postService.hasMore;
@@ -171,15 +173,15 @@ export class PostList implements OnInit {
   }
 
   openPostMenu(postId: string) {
-    this.postService.toggleDropdown('menu', postId);
+    this.dropdownService.toggleDropdown('menu', postId);
   }
 
   openReactModal(postId: string) {
-    this.postService.toggleDropdown('reaction', postId);
+    this.dropdownService.toggleDropdown('reaction', postId);
   }
 
   openShareModal(postId: string) {
-    this.postService.toggleDropdown('share', postId);
+    this.dropdownService.toggleDropdown('share', postId);
   }
 
   isUserInCommunity(communityId: string): boolean {
@@ -187,15 +189,15 @@ export class PostList implements OnInit {
   }
 
   isPostMenuOpen(postId: string): boolean {
-    return this.postService.isDropDownOpen('menu', postId);
+    return this.dropdownService.isDropDownOpen('menu', postId);
   }
 
   isPostReactModalOpen(postId: string): boolean {
-    return this.postService.isDropDownOpen('reaction', postId);
+    return this.dropdownService.isDropDownOpen('reaction', postId);
   }
 
   isPostShareModalOpen(postId: string): boolean {
-    return this.postService.isDropDownOpen('share', postId);
+    return this.dropdownService.isDropDownOpen('share', postId);
   }
 
   isExploreMetadata(metadata: MetaData | undefined): boolean {
@@ -208,7 +210,7 @@ export class PostList implements OnInit {
     const handler = this.postService.postMenuActionHandlers.get(data.action);
 
     if (handler && (data.action === 'delete' || data.action === 'archive')) {
-      this.postService.closeDropdown();
+      this.dropdownService.closeDropdown();
 
       this.modalService.openModal({
         type: 'menu',
@@ -307,7 +309,7 @@ export class PostList implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent): void {
-    const modal = this.postService.activeDropdown();
+    const modal = this.dropdownService.activeDropdown();
 
     if (modal.type === null) return;
 
@@ -317,7 +319,7 @@ export class PostList implements OnInit {
     const isButton = target.closest('.action-btn, button');
 
     if (!insideModal && !isButton) {
-      this.postService.closeDropdown();
+      this.dropdownService.closeDropdown();
     }
   }
 

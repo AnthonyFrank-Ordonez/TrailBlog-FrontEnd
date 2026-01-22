@@ -22,6 +22,7 @@ import { Router } from '@angular/router';
 import { Communities } from '@core/models/interface/community';
 import { CreatePostRequest } from '@core/models/interface/posts';
 import { CommunityService } from '@core/services/community.service';
+import { DropdownService } from '@core/services/dropdown.service';
 import { MessageService } from '@core/services/message.service';
 import { PostService } from '@core/services/post.service';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
@@ -43,6 +44,7 @@ export class CreatePost implements OnInit {
 
   private router = inject(Router);
   private communityService = inject(CommunityService);
+  private dropdownService = inject(DropdownService);
   private postService = inject(PostService);
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
@@ -71,7 +73,7 @@ export class CreatePost implements OnInit {
     );
   });
 
-  isCreateDropdownOpen = computed(() => this.postService.isDropDownOpen('create', 'create'));
+  isCreateDropdownOpen = computed(() => this.dropdownService.isDropDownOpen('create', 'create'));
 
   ngOnInit(): void {
     this.searchControl.valueChanges.pipe(debounce(this.destroyRef, 400)).subscribe((searchTerm) => {
@@ -117,7 +119,7 @@ export class CreatePost implements OnInit {
   }
 
   toggleDropdown() {
-    this.postService.toggleDropdown('create', 'create');
+    this.dropdownService.toggleDropdown('create', 'create');
   }
 
   onPostSubmit() {

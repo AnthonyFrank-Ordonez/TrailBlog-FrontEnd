@@ -14,6 +14,7 @@ import { ModalService } from './modal.service';
 import { MessageService } from './message.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { handleHttpError } from '@shared/utils/utils';
+import { DropdownService } from './dropdown.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,7 @@ export class CommunityService {
   private postService = inject(PostService);
   private modalService = inject(ModalService);
   private messageService = inject(MessageService);
+  private dropdownService = inject(DropdownService);
   private destroyRef = inject(DestroyRef);
   private readonly apiUrl = `${this.env.apiRoot}/communitys`;
 
@@ -166,7 +168,7 @@ export class CommunityService {
   }
 
   toggleCommunityMembership(communityId: string, isAuthenticated: boolean): void {
-    this.postService.closeDropdown();
+    this.dropdownService.closeDropdown();
 
     if (this.isUserInCommunity(communityId)) {
       this.modalService.openModal({

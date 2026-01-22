@@ -30,6 +30,7 @@ import { CurrentRouteService } from './current-route.service';
 import { CommentAction, PostAction, PostMenuItems } from '@core/models/interface/menus';
 import { UserService } from './user.service';
 import { UnifiedSearchResults } from '@core/models/interface/search-results';
+import { DropdownService } from './dropdown.service';
 
 @Injectable({
   providedIn: 'root',
@@ -41,6 +42,7 @@ export class PostService {
   private userService = inject(UserService);
   private modalService = inject(ModalService);
   private currentRouteService = inject(CurrentRouteService);
+  private dropdownService = inject(DropdownService);
   private readonly apiUrl = `${this.env.apiRoot}/posts`;
 
   enteredSearchQuery = signal<string>('');
@@ -60,7 +62,6 @@ export class PostService {
   #totalCountSignal = signal<number>(0);
   #sessionIdSignal = signal<string>('');
   #postMenuModalIdSignal = signal<string | null>(null);
-  #activeDropdown = signal<PostDropdown>({ type: null, id: null });
   #metadataSignal = signal<MetaData | undefined>(undefined);
   #errorMessageSignal = signal<HttpErrorResponse | null>(null);
   #searchQuery = debounceSignal(this.enteredSearchQuery);
@@ -76,7 +77,6 @@ export class PostService {
   isRecentPostsLoading = this.#isRecentPostsLoadingSignal.asReadonly();
   isSubmitting = this.#isSubmittingSignal.asReadonly();
   postMenuModalId = this.#postMenuModalIdSignal.asReadonly();
-  activeDropdown = this.#activeDropdown.asReadonly();
   errorMessage = this.#errorMessageSignal.asReadonly();
   metadata = this.#metadataSignal.asReadonly();
   currentPath = this.currentRouteService.currentPath;
@@ -418,7 +418,7 @@ export class PostService {
   }
 
   createDraftPost(postData: CreatePostRequest): Observable<Post> {
-    this.closeDropdown();
+    this.dropdownService.closeDropdown();
     this.#isSubmittingSignal.set(true);
 
     return this.http.post<Post>(`${this.apiUrl}/drafts`, postData).pipe(
@@ -437,7 +437,7 @@ export class PostService {
   }
 
   savePost(post: Post, type?: string): Observable<Post> {
-    this.closeDropdown();
+    this.dropdownService.closeDropdown();
 
     const previousSavedState = post.isSaved;
     const optimisticPost = { ...post, isSaved: true };
@@ -519,7 +519,7 @@ export class PostService {
   }
 
   unsavePost(post: Post, type?: string): Observable<OperationResult> {
-    this.closeDropdown();
+    this.dropdownService.closeDropdown();
 
     const unsavePost = post;
     const oldIndex = this.#postSignal().findIndex((p) => p.id === post.id);
@@ -554,7 +554,7 @@ export class PostService {
   }
 
   archivePost(post: Post, type?: string): Observable<OperationResult> {
-    this.closeDropdown();
+    this.dropdownService.closeDropdown();
 
     const archivedPost = post;
     const oldIndex = this.#postSignal().findIndex((p) => p.id === post.id);
@@ -595,7 +595,7 @@ export class PostService {
   }
 
   deleteCommentInitial(comment: Comment): Observable<OperationResult> {
-    this.closeDropdown();
+    this.dropdownService.closeDropdown();
 
     const previousCommentState: Comment = comment;
     const optimisticComment: Comment = {
@@ -637,7 +637,7 @@ export class PostService {
   }
 
   selectReaction(data: ReactionRequest): void {
-    this.closeDropdown();
+    this.dropdownService.closeDropdown();
 
     if (!this.authService.isAuthenticated()) {
       this.modalService.showAuthRequiredModal();
@@ -645,10 +645,6 @@ export class PostService {
     }
 
     this.reaction$.next(data);
-  }
-
-  updateActiveDropdown(type: DropdownType, id: string) {
-    this.#activeDropdown.set({ type: type, id: id });
   }
 
   toggleReactions(reactionData: ReactionRequest): Observable<Post> {
@@ -677,30 +673,13 @@ export class PostService {
     );
   }
 
-  toggleDropdown(type: DropdownType, id: string): void {
-    if (this.isDropDownOpen(type, id)) {
-      this.closeDropdown();
-    } else {
-      this.updateActiveDropdown(type, id);
-    }
-  }
-
   togglePostDetail(slug: string): void {
-    this.closeDropdown();
+    this.dropdownService.closeDropdown();
     this.currentRouteService.handleRedirection(['/post', slug]);
-  }
-
-  isDropDownOpen(type: DropdownType, id: string): boolean {
-    const active = this.#activeDropdown();
-    return active.type === type && active.id === id;
   }
 
   hasReaction(userReactionsIds: number[], reactionId: number): boolean {
     return userReactionsIds.includes(reactionId);
-  }
-
-  closeDropdown(): void {
-    this.#activeDropdown.set({ type: null, id: null });
   }
 
   resetPostServiceData(): void {
@@ -713,7 +692,7 @@ export class PostService {
 
     if (handler) {
       await handler(post);
-      this.closeDropdown();
+      this.dropdownService.closeDropdown();
     } else {
       console.warn(`Unknown share action: ${action}`);
     }
