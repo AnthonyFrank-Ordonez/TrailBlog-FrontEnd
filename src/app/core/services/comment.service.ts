@@ -8,6 +8,7 @@ import {
 import { PageResult, MetaData } from '@core/models/interface/page-result';
 import { environment } from '@env/environment';
 import { catchError, EMPTY, finalize, Observable, tap, throwError } from 'rxjs';
+import { CurrentRouteService } from './current-route.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ import { catchError, EMPTY, finalize, Observable, tap, throwError } from 'rxjs';
 export class CommentService {
   private env = environment;
   private readonly apiUrl = `${this.env.apiRoot}/comments`;
+  private currentRouteService = inject(CurrentRouteService);
 
   private http = inject(HttpClient);
 
@@ -109,5 +111,13 @@ export class CommentService {
           this.#isCommentLoading.set(false);
         }),
       );
+  }
+
+  toggleCommentDetail(comment: Comment) {
+    if (comment && comment.postSlug) {
+      this.currentRouteService.handleRedirection(['/post', comment.postSlug], {
+        fragment: `comment-${comment.id}`,
+      });
+    }
   }
 }

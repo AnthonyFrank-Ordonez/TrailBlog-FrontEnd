@@ -7,14 +7,16 @@
 }
 
 .highlight {
-  animation: highlight-fade 2s ease-out;
+  animation: highlight-blink 0.5s ease-in-out 3;
 }
-@keyframes highlight-fade {
-  0% {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
+
+@keyframes highlight-blink {
+  0%,
   100% {
     background-color: transparent;
+  }
+  50% {
+    background-color: rgba(255, 255, 255, 0.2);
   }
 }
 

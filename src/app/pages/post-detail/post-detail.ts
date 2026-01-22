@@ -118,7 +118,7 @@ export class PostDetail implements OnInit {
       ownerOnly: true,
       forAuthenticated: true,
       hideForOwner: false,
-      action: 'initial-delete',
+      action: 'delete',
       fill: false,
     },
   ];
@@ -285,7 +285,7 @@ export class PostDetail implements OnInit {
           },
         });
     } else {
-      console.log('No handler found for action:', data.action);
+      console.error('No handler found for action:', data.action);
     }
   }
 

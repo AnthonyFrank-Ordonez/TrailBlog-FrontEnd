@@ -43,6 +43,10 @@ export class CommentList {
     });
   }
 
+  handleCommentDetailAction(comment: Comment) {
+    this.commentService.toggleCommentDetail(comment);
+  }
+
   loadComments() {
     const strategy = toCommentLoadingStrategy(getStrategyFromPath(this.currentPath()));
 

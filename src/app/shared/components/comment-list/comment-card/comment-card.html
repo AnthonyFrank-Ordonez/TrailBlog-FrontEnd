@@ -1,6 +1,7 @@
 <div
   class="cursor-pointer rounded-lg px-4 py-3 hover:bg-gray-800/30"
   [id]="'comment-' + comment().id"
+  (click)="handleCommentNavigate($event)"
 >
   <!-- Comment Header -->
   <div class="flex items-center justify-between">
@@ -37,7 +38,7 @@
   </div>
 
   <!-- Comment Content -->
-  <div class="text-white/70">
+  <div class="pl-7.5 text-white/70">
     <p class="text-sm font-light tracking-wide">{{ comment().content }}</p>
   </div>
 </div>
