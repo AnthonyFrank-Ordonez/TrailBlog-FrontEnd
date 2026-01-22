@@ -3,6 +3,7 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProfileTabConfig } from '@core/models/interface/pages';
 import { UserService } from '@core/services/user.service';
+import { ProfileComments } from '@shared/components/profile-comments/profile-comments';
 import { ProfileOverview } from '@shared/components/profile-overview/profile-overview';
 import { ProfilePosts } from '@shared/components/profile-posts/profile-posts';
 import { ProfileSaved } from '@shared/components/profile-saved/profile-saved';
@@ -11,7 +12,15 @@ import { InitialsPipe } from '@shared/pipes/initials-pipe';
 
 @Component({
   selector: 'app-profile',
-  imports: [InitialsPipe, NgClass, ProfileOverview, ProfilePosts, ProfileSaved, ProfileViewHistory],
+  imports: [
+    InitialsPipe,
+    NgClass,
+    ProfileOverview,
+    ProfilePosts,
+    ProfileSaved,
+    ProfileViewHistory,
+    ProfileComments,
+  ],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })

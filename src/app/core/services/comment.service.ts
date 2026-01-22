@@ -54,7 +54,7 @@ export class CommentService {
       return EMPTY;
     }
 
-    if (!this.hasMore()) {
+    if (this.#currentPageSignal() > 0 && !this.hasMore()) {
       console.info('No more comments to load');
       return EMPTY;
     }

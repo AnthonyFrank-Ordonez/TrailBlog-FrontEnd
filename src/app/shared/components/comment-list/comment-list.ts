@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, inject, untracked } from '@angular/core';
+import { Component, DestroyRef, effect, inject, input, signal, untracked } from '@angular/core';
 import { CommentCard } from './comment-card/comment-card';
 import { CommentService } from '@core/services/comment.service';
 import { getStrategyFromPath, handleHttpError } from '@shared/utils/utils';
@@ -8,6 +8,7 @@ import { MessageService } from '@core/services/message.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '@core/services/auth.service';
+import { Comment } from '@core/models/interface/comments';
 
 @Component({
   selector: 'app-comment-list',
@@ -22,8 +23,14 @@ export class CommentList {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
 
+  comments = input.required<Comment[]>();
+  skeletonArray = Array(5).fill(0);
+
   currentPath = this.currentRouteService.currentPath;
   token = this.authService.token;
+  // For testing comment skeleton loading
+  // isCommentLoading = signal(true);
+  isCommentLoading = this.commentService.isCommentLoading;
 
   constructor() {
     effect(() => {
