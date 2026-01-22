@@ -1,6 +1,10 @@
 import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { CommentLoadingStrategy, CommentStrategyConfig } from '@core/models/interface/comments';
+import {
+  Comment,
+  CommentLoadingStrategy,
+  CommentStrategyConfig,
+} from '@core/models/interface/comments';
 import { PageResult, MetaData } from '@core/models/interface/page-result';
 import { environment } from '@env/environment';
 import { catchError, EMPTY, finalize, Observable, tap, throwError } from 'rxjs';

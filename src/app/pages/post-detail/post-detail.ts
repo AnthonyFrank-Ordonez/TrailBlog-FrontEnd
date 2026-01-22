@@ -161,6 +161,12 @@ export class PostDetail implements OnInit {
     });
 
     setupReactionSubject(this.postService, this.messageService, this.destroyRef);
+
+    this.route.fragment.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((fragment) => {
+      if (fragment) {
+        this.scrollToComment(fragment);
+      }
+    });
   }
 
   fetchPost(slug: string) {
@@ -366,5 +372,22 @@ export class PostDetail implements OnInit {
     this.commentForm.reset();
 
     this.isCommentSelected.set(false);
+  }
+
+  private scrollToComment(commentId: string) {
+    setTimeout(() => {
+      const element = document.getElementById(commentId);
+
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Highlight the comment
+        element.classList.add('highlight');
+
+        setTimeout(() => {
+          element.classList.remove('highlight');
+        }, 2000);
+      }
+    }, 500);
   }
 }

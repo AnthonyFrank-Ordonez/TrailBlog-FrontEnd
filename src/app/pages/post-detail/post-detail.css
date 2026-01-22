@@ -6,6 +6,18 @@
   animation: fadeOut 0.2s ease-in-out;
 }
 
+.highlight {
+  animation: highlight-fade 2s ease-out;
+}
+@keyframes highlight-fade {
+  0% {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
