@@ -2,6 +2,7 @@ export interface PostSearchResult {
   id: string;
   title: string;
   author: string;
+  slug: string;
   type: string;
 }
 
