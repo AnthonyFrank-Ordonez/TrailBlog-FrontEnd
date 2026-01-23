@@ -335,81 +335,8 @@
             </div>
 
             <!-- Display Comments -->
-            <div class="flex flex-col">
-              @for (comment of post().comments; track comment.id) {
-                <div class="rounded-xl px-2 py-1.5" [id]="'comment-' + comment.id">
-                  <!-- User Comment Detail -->
-                  <div class="flex justify-between">
-                    <div class="flex items-center space-x-2">
-                      <div
-                        class="flex h-7 w-7 items-center justify-center rounded-full"
-                        [ngClass]="comment.isDeleted ? 'bg-gray-500/50' : 'bg-secondary'"
-                      >
-                        <span
-                          class="text-sm font-bold text-white"
-                          [class.hidden]="comment.isDeleted"
-                          >{{ comment.username | initials }}</span
-                        >
-                      </div>
-
-                      <p
-                        class="text-sm font-medium tracking-wider"
-                        [ngClass]="comment.isDeleted ? 'text-gray-500' : 'text-white'"
-                      >
-                        {{ comment.username }}
-                      </p>
-
-                      <p class="text-xs">{{ comment.commentedAt | timeago }}</p>
-                    </div>
-
-                    <!-- Three dots (comment) -->
-                    <div
-                      class="comment-menu-container relative"
-                      [class.hidden]="comment.isDeleted && !isAdmin()"
-                      #commentMenuContainers
-                    >
-                      <button
-                        (click)="toggleCommentMenu($event, comment.id)"
-                        class="cursor-pointer rounded-full px-2 py-2 text-white hover:bg-gray-800"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          class="bi bi-three-dots"
-                          viewBox="0 0 16 16"
-                        >
-                          <path
-                            d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"
-                          />
-                        </svg>
-                      </button>
-
-                      @if (getActiveCommentMenuId() === comment.id) {
-                        <app-dropdown-menu
-                          animate.enter="dropdown-fade-in"
-                          animate.leave="dropdown-fade-out"
-                          styles="w-32 right-0"
-                          [isOwner]="comment.isOwner"
-                          [dropdownItems]="commentMenuItems"
-                          (menuItemClicked)="handleCommentMenuActions($event, comment)"
-                        />
-                      }
-                    </div>
-                  </div>
-
-                  <!-- Content -->
-                  <div class="mb-5 pl-9">
-                    <div
-                      class="text-[15px]"
-                      [ngClass]="comment.isDeleted ? 'text-gray-500/50' : ''"
-                    >
-                      {{ comment.content }}
-                    </div>
-                  </div>
-                </div>
-              }
+            <div>
+              <app-comment-list [comments]="post().comments!" />
             </div>
           }
         </div>

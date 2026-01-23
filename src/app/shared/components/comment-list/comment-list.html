@@ -3,6 +3,8 @@
     [comment]="comment"
     (commentDetailAction)="handleCommentDetailAction($event)"
     [menuItems]="commentMenuItems"
+    [isHidden]="comment.isDeleted"
+    [isAdmin]="isAdmin()"
     (commentMenuAction)="handleCommentMenuAction($event)"
   />
   <div class="mt-3 mb-3 border-b border-b-white/10"></div>

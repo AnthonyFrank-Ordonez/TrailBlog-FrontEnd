@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 import { Component, HostListener, inject, input, output } from '@angular/core';
 import { Comment, CommentActionPayload } from '@core/models/interface/comments';
 import { CommentMenuItems, MenuClickEvent } from '@core/models/interface/menus';
@@ -8,7 +9,7 @@ import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 
 @Component({
   selector: 'app-comment-card',
-  imports: [TimeagoPipe, InitialsPipe, DropdownMenu],
+  imports: [TimeagoPipe, InitialsPipe, DropdownMenu, NgClass],
   templateUrl: './comment-card.html',
   styleUrl: './comment-card.css',
 })
@@ -16,6 +17,8 @@ export class CommentCard {
   private dropdownService = inject(DropdownService);
 
   comment = input.required<Comment>();
+  isHidden = input<boolean>(false);
+  isAdmin = input<boolean | undefined>(false);
   menuItems = input<CommentMenuItems[]>([]);
   commentDetailAction = output<Comment>();
   commentMenuAction = output<CommentActionPayload>();

@@ -10,6 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '@core/services/auth.service';
 import { Comment, CommentActionPayload } from '@core/models/interface/comments';
 import { CommentMenuItems } from '@core/models/interface/menus';
+import { UserService } from '@core/services/user.service';
 
 @Component({
   selector: 'app-comment-list',
@@ -22,6 +23,7 @@ export class CommentList {
   private currentRouteService = inject(CurrentRouteService);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
+  private userService = inject(UserService);
   private destroyRef = inject(DestroyRef);
 
   comments = input.required<Comment[]>();
@@ -30,6 +32,7 @@ export class CommentList {
   currentPath = this.currentRouteService.currentPath;
   token = this.authService.token;
   isCommentLoading = this.commentService.isCommentLoading;
+  isAdmin = this.userService.isAdmin;
   hasMore = this.commentService.hasMore;
 
   readonly commentMenuItems: CommentMenuItems[] = [
@@ -76,7 +79,12 @@ export class CommentList {
       const token = this.token();
 
       untracked(() => {
-        this.loadComments();
+        if (this.currentPath() === '/profile#comments') {
+          this.loadComments();
+          return;
+        } else {
+          return;
+        }
       });
     });
   }

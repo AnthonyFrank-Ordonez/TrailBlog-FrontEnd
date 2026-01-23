@@ -7,19 +7,29 @@
   <div class="flex items-center justify-between">
     <!-- user info -->
     <div class="flex items-center space-x-2 font-light">
-      <div class="bg-secondary flex h-5.5 w-5.5 items-center justify-center rounded-full">
-        <span class="text-xs font-bold text-white lg:text-[10px]">{{
+      <div
+        class="flex h-5.5 w-5.5 items-center justify-center rounded-full"
+        [ngClass]="comment().isDeleted ? 'bg-gray-500/50' : 'bg-secondary'"
+      >
+        <span class="text-xs font-bold text-white lg:text-[10px]" [class.hidden]="isHidden()">{{
           comment().username | initials
         }}</span>
       </div>
-      <p class="line-clamp-1 text-xs font-bold break-words text-gray-500 lg:text-sm">
+      <p
+        class="line-clamp-1 text-xs font-bold break-words lg:text-sm"
+        [ngClass]="comment().isDeleted ? 'text-gray-500' : 'text-white'"
+      >
         {{ comment().username }}
       </p>
       <p class="text-xs text-gray-500 lg:text-sm">{{ comment().commentedAt | timeago }}</p>
     </div>
 
     <!-- Three dots -->
-    <div class="comment-menu-container relative" #menuContainer>
+    <div
+      class="comment-menu-container relative"
+      [class.hidden]="isHidden() && !isAdmin()"
+      #menuContainer
+    >
       <button
         (click)="toggleCommentMenu($event, comment().id)"
         class="action-btn cursor-pointer rounded-full px-2 py-2 text-white hover:bg-gray-800"
@@ -52,7 +62,7 @@
   </div>
 
   <!-- Comment Content -->
-  <div class="pl-7.5 text-white/70">
+  <div class="pl-7.5" [ngClass]="comment().isDeleted ? 'text-gray-500/50' : 'text-gray-500'">
     <p class="text-sm font-light tracking-wide">{{ comment().content }}</p>
   </div>
 </div>

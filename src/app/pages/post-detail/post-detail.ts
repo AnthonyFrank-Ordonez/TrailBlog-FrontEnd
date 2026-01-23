@@ -34,6 +34,7 @@ import { handleHttpError, setupReactionSubject, SUCCESS_MESSAGES } from '@shared
 import { Button } from '@shared/components/button/button';
 import { DropdownService } from '@core/services/dropdown.service';
 import { CommentService } from '@core/services/comment.service';
+import { CommentList } from '@shared/components/comment-list/comment-list';
 
 @Component({
   selector: 'app-post-detail',
@@ -46,6 +47,7 @@ import { CommentService } from '@core/services/comment.service';
     ReactiveFormsModule,
     ZardDividerComponent,
     Button,
+    CommentList,
   ],
   templateUrl: './post-detail.html',
   styleUrl: './post-detail.css',
@@ -87,42 +89,6 @@ export class PostDetail implements OnInit {
       ownerOnly: false,
       forAuthenticated: false,
       action: 'embed',
-      fill: false,
-    },
-  ];
-
-  readonly commentMenuItems: CommentMenuItems[] = [
-    {
-      type: 'comment',
-      label: 'Report',
-      iconClass: 'icon-tabler-message-report',
-      svgPath: [
-        'M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z',
-        'M12 8v3',
-        'M12 14v.01',
-      ],
-      ownerOnly: false,
-      forAuthenticated: false,
-      hideForOwner: true,
-      action: 'report',
-      fill: false,
-    },
-    {
-      type: 'comment',
-
-      label: 'Delete',
-      iconClass: 'icon-tabler-trash',
-      svgPath: [
-        'M4 7l16 0',
-        'M10 11l0 6',
-        'M14 11l0 6',
-        'M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12',
-        'M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3',
-      ],
-      ownerOnly: true,
-      forAuthenticated: true,
-      hideForOwner: false,
-      action: 'initial-delete',
       fill: false,
     },
   ];
@@ -269,28 +235,6 @@ export class PostDetail implements OnInit {
             handleHttpError(error, this.messageService);
           },
         });
-    }
-  }
-
-  handleCommentMenuActions(data: MenuClickEvent, comment: Comment) {
-    if (data.type !== 'comment') return;
-
-    const handler = this.commentService.commentMenuActionHandlers.get(data.action);
-
-    if (handler) {
-      handler(comment)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            const message = SUCCESS_MESSAGES.get(data.action);
-            this.messageService.showMessage('success', message);
-          },
-          error: (error: HttpErrorResponse) => {
-            handleHttpError(error, this.messageService);
-          },
-        });
-    } else {
-      console.error('No handler found for action:', data.action);
     }
   }
 
