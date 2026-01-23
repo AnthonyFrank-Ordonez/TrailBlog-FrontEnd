@@ -92,7 +92,7 @@ export class AuthService {
       catchError((error) => {
         return throwError(() => error);
       }),
-      finalize(() => this.#isRegisteringSignal.set(true)),
+      finalize(() => this.#isRegisteringSignal.set(false)),
     );
   }
 
