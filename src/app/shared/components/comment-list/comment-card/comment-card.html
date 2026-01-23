@@ -44,7 +44,8 @@
           animate.leave="dropdown-fade-out"
           styles="w-32 right-0"
           [isOwner]="comment().isOwner"
-          [dropdownItems]="commentMenuItems"
+          [dropdownItems]="menuItems()"
+          (menuItemClicked)="handleCommentAction($event)"
         />
       }
     </div>

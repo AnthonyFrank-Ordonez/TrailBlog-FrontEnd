@@ -1,3 +1,5 @@
+import { MenuClickEvent } from './menus';
+
 export type CommentLoadingStrategy = 'profile-comments';
 
 export interface Comment {
@@ -20,4 +22,9 @@ export interface AddCommentRequest {
 export interface CommentStrategyConfig {
   endpoint: string;
   useSessionId: boolean;
+}
+
+export interface CommentActionPayload {
+  clickEvent: MenuClickEvent;
+  comment: Comment;
 }

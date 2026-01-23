@@ -1,6 +1,6 @@
 import { Component, HostListener, inject, input, output } from '@angular/core';
-import { Comment } from '@core/models/interface/comments';
-import { CommentMenuItems } from '@core/models/interface/menus';
+import { Comment, CommentActionPayload } from '@core/models/interface/comments';
+import { CommentMenuItems, MenuClickEvent } from '@core/models/interface/menus';
 import { DropdownService } from '@core/services/dropdown.service';
 import { DropdownMenu } from '@shared/components/dropdown-menu/dropdown-menu';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
@@ -16,49 +16,22 @@ export class CommentCard {
   private dropdownService = inject(DropdownService);
 
   comment = input.required<Comment>();
+  menuItems = input<CommentMenuItems[]>([]);
   commentDetailAction = output<Comment>();
+  commentMenuAction = output<CommentActionPayload>();
 
   activeDropdown = this.dropdownService.activeDropdown;
-
-  readonly commentMenuItems: CommentMenuItems[] = [
-    {
-      type: 'comment',
-      label: 'Report',
-      iconClass: 'icon-tabler-message-report',
-      svgPath: [
-        'M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z',
-        'M12 8v3',
-        'M12 14v.01',
-      ],
-      ownerOnly: false,
-      forAuthenticated: false,
-      hideForOwner: true,
-      action: 'report',
-      fill: false,
-    },
-    {
-      type: 'comment',
-
-      label: 'Delete',
-      iconClass: 'icon-tabler-trash',
-      svgPath: [
-        'M4 7l16 0',
-        'M10 11l0 6',
-        'M14 11l0 6',
-        'M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12',
-        'M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3',
-      ],
-      ownerOnly: true,
-      forAuthenticated: true,
-      hideForOwner: false,
-      action: 'delete',
-      fill: false,
-    },
-  ];
 
   handleCommentNavigate(event: MouseEvent) {
     event.stopPropagation();
     this.commentDetailAction.emit(this.comment());
+  }
+
+  handleCommentAction(data: MenuClickEvent) {
+    this.commentMenuAction.emit({
+      clickEvent: data,
+      comment: this.comment(),
+    });
   }
 
   toggleCommentMenu(event: MouseEvent, id: string) {

@@ -1,5 +1,10 @@
 @for (comment of comments(); track $index) {
-  <app-comment-card [comment]="comment" (commentDetailAction)="handleCommentDetailAction($event)" />
+  <app-comment-card
+    [comment]="comment"
+    (commentDetailAction)="handleCommentDetailAction($event)"
+    [menuItems]="commentMenuItems"
+    (commentMenuAction)="handleCommentMenuAction($event)"
+  />
   <div class="mt-3 mb-3 border-b border-b-white/10"></div>
 }
 

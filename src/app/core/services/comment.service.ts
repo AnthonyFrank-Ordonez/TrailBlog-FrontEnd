@@ -39,6 +39,7 @@ export class CommentService {
 
   comments = this.#commentsSignal.asReadonly();
   isCommentLoading = this.#isCommentLoading.asReadonly();
+  currentPath = this.currentRouteService.currentPath;
 
   readonly hasMore = computed(() => {
     return this.#currentPageSignal() < this.#totalPagesSignal();
@@ -136,6 +137,7 @@ export class CommentService {
     this.dropdownService.closeDropdown();
 
     const previousCommentState: Comment = comment;
+    const oldIndex = this.#commentsSignal().findIndex((c) => c.id === comment.id);
     const optimisticComment: Comment = {
       ...comment,
       content: '[This comment has been deleted]',
@@ -143,7 +145,11 @@ export class CommentService {
       isDeleted: true,
     };
 
-    this.updatePostCommentOptimisticData(comment.id, optimisticComment);
+    if (this.currentPath() === '/profile#comments') {
+      this.updateCommentOptimisticData(comment);
+    } else {
+      this.updatePostCommentOptimisticData(comment.id, optimisticComment);
+    }
 
     return this.http
       .patch<OperationResult>(`${this.env.apiRoot}/comments/${comment.id}`, null)
@@ -153,7 +159,13 @@ export class CommentService {
         }),
         catchError((error) => {
           console.error('Delete comment failed, rolling back', error);
-          this.updatePostCommentOptimisticData(comment.id, previousCommentState);
+
+          if (this.currentPath() === '/profile#comments') {
+            this.rollbackCommentOptimisticData(oldIndex, previousCommentState);
+          } else {
+            this.updatePostCommentOptimisticData(comment.id, previousCommentState);
+          }
+
           return throwError(() => error);
         }),
       );
@@ -161,5 +173,19 @@ export class CommentService {
 
   private updatePostCommentOptimisticData(commentId: string, updatedComment: Comment) {
     this.postService.updatePostDetailComment(commentId, updatedComment);
+  }
+
+  private updateCommentOptimisticData(comment: Comment) {
+    this.#commentsSignal.update((currentComments) =>
+      currentComments.filter((c) => c.id !== comment.id),
+    );
+  }
+
+  private rollbackCommentOptimisticData(index: number, comment: Comment) {
+    this.#commentsSignal.update((currentComments) => [
+      ...currentComments.slice(0, index),
+      comment,
+      ...currentComments.slice(index + 1),
+    ]);
   }
 }
