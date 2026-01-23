@@ -33,6 +33,7 @@ import { TimeagoPipe } from '@shared/pipes/timeago-pipe';
 import { handleHttpError, setupReactionSubject, SUCCESS_MESSAGES } from '@shared/utils/utils';
 import { Button } from '@shared/components/button/button';
 import { DropdownService } from '@core/services/dropdown.service';
+import { CommentService } from '@core/services/comment.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -61,6 +62,7 @@ export class PostDetail implements OnInit {
   private dropdownService = inject(DropdownService);
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private commentService = inject(CommentService);
 
   readonly shareItems: PostMenuItems[] = [
     {
@@ -120,7 +122,7 @@ export class PostDetail implements OnInit {
       ownerOnly: true,
       forAuthenticated: true,
       hideForOwner: false,
-      action: 'delete',
+      action: 'initial-delete',
       fill: false,
     },
   ];
@@ -273,7 +275,7 @@ export class PostDetail implements OnInit {
   handleCommentMenuActions(data: MenuClickEvent, comment: Comment) {
     if (data.type !== 'comment') return;
 
-    const handler = this.postService.commentMenuActionHandlers.get(data.action);
+    const handler = this.commentService.commentMenuActionHandlers.get(data.action);
 
     if (handler) {
       handler(comment)

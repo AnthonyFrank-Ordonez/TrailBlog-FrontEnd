@@ -166,11 +166,6 @@ export class PostService {
     ['archive', (post, type) => this.archivePost(post, type)],
   ]);
 
-  readonly commentMenuActionHandlers = new Map<
-    CommentAction,
-    (comment: Comment) => Observable<OperationResult>
-  >([['initial-delete', (comment) => this.deleteCommentInitial(comment)]]);
-
   loadInitialPosts(strategy: PostLoadingStrategy = 'regular') {
     this.#postSignal.set([]);
     this.#currentPageSignal.set(0);
@@ -594,33 +589,6 @@ export class PostService {
     );
   }
 
-  deleteCommentInitial(comment: Comment): Observable<OperationResult> {
-    this.dropdownService.closeDropdown();
-
-    const previousCommentState: Comment = comment;
-    const optimisticComment: Comment = {
-      ...comment,
-      content: '[This comment has been deleted]',
-      username: 'Unknown',
-      isDeleted: true,
-    };
-
-    this.updatePostCommentOptimisticData(comment.id, optimisticComment);
-
-    return this.http
-      .patch<OperationResult>(`${this.env.apiRoot}/comments/${comment.id}`, null)
-      .pipe(
-        tap(() => {
-          console.log('Comment deleted successfully');
-        }),
-        catchError((error) => {
-          console.error('Delete comment failed, rolling back', error);
-          this.updatePostCommentOptimisticData(comment.id, previousCommentState);
-          return throwError(() => error);
-        }),
-      );
-  }
-
   clearRecentViewedPosts(): Observable<OperationResult> {
     const previousPosts = this.#recentViewedPostsSignal();
     this.#recentViewedPostsSignal.set([]);
@@ -680,6 +648,33 @@ export class PostService {
 
   hasReaction(userReactionsIds: number[], reactionId: number): boolean {
     return userReactionsIds.includes(reactionId);
+  }
+
+  updatePostDetailComment(commentId: string, updatedComment: Comment) {
+    this.#postDetailSignal.update((post) => {
+      if (!post.comments) return post;
+
+      let oldComment: Comment | undefined;
+      const updatedComments = post.comments.map((c) => {
+        if (c.id === commentId) {
+          oldComment = c;
+          return updatedComment;
+        }
+        return c;
+      });
+
+      if (!oldComment) {
+        return post;
+      }
+
+      const isDeleteOperation = updatedComment.isDeleted && !oldComment.isDeleted;
+
+      return {
+        ...post,
+        comments: updatedComments,
+        totalComment: isDeleteOperation ? post.totalComment - 1 : post.totalComment,
+      };
+    });
   }
 
   resetPostServiceData(): void {
@@ -788,32 +783,5 @@ export class PostService {
         ...rp.slice(index),
       ]);
     }
-  }
-
-  private updatePostCommentOptimisticData(commentId: string, updatedComment: Comment) {
-    this.#postDetailSignal.update((post) => {
-      if (!post.comments) return post;
-
-      let oldComment: Comment | undefined;
-      const updatedComments = post.comments.map((c) => {
-        if (c.id === commentId) {
-          oldComment = c;
-          return updatedComment;
-        }
-        return c;
-      });
-
-      if (!oldComment) {
-        return post;
-      }
-
-      const isDeleteOperation = updatedComment.isDeleted && !oldComment.isDeleted;
-
-      return {
-        ...post,
-        comments: updatedComments,
-        totalComment: isDeleteOperation ? post.totalComment - 1 : post.totalComment,
-      };
-    });
   }
 }

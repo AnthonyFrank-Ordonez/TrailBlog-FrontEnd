@@ -9,6 +9,10 @@ import { PageResult, MetaData } from '@core/models/interface/page-result';
 import { environment } from '@env/environment';
 import { catchError, EMPTY, finalize, Observable, tap, throwError } from 'rxjs';
 import { CurrentRouteService } from './current-route.service';
+import { CommentAction } from '@core/models/interface/menus';
+import { OperationResult } from '@core/models/interface/operations';
+import { DropdownService } from './dropdown.service';
+import { PostService } from './post.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +21,8 @@ export class CommentService {
   private env = environment;
   private readonly apiUrl = `${this.env.apiRoot}/comments`;
   private currentRouteService = inject(CurrentRouteService);
+  private dropdownService = inject(DropdownService);
+  private postService = inject(PostService);
 
   private http = inject(HttpClient);
 
@@ -44,6 +50,11 @@ export class CommentService {
       useSessionId: false,
     },
   };
+
+  readonly commentMenuActionHandlers = new Map<
+    CommentAction,
+    (comment: Comment) => Observable<OperationResult>
+  >([['initial-delete', (comment) => this.deleteCommentInitial(comment)]]);
 
   loadInitialComments(strategy: CommentLoadingStrategy) {
     this.#commentsSignal.set([]);
@@ -119,5 +130,36 @@ export class CommentService {
         fragment: `comment-${comment.id}`,
       });
     }
+  }
+
+  deleteCommentInitial(comment: Comment): Observable<OperationResult> {
+    this.dropdownService.closeDropdown();
+
+    const previousCommentState: Comment = comment;
+    const optimisticComment: Comment = {
+      ...comment,
+      content: '[This comment has been deleted]',
+      username: 'Unknown',
+      isDeleted: true,
+    };
+
+    this.updatePostCommentOptimisticData(comment.id, optimisticComment);
+
+    return this.http
+      .patch<OperationResult>(`${this.env.apiRoot}/comments/${comment.id}`, null)
+      .pipe(
+        tap(() => {
+          console.log('Comment deleted successfully');
+        }),
+        catchError((error) => {
+          console.error('Delete comment failed, rolling back', error);
+          this.updatePostCommentOptimisticData(comment.id, previousCommentState);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  private updatePostCommentOptimisticData(commentId: string, updatedComment: Comment) {
+    this.postService.updatePostDetailComment(commentId, updatedComment);
   }
 }
