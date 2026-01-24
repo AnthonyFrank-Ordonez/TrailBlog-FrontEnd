@@ -8,11 +8,9 @@ import {
 import { computed, inject, Injectable, signal } from '@angular/core';
 import {
   CreatePostRequest,
-  DropdownType,
   Post,
   PostDeleteConfig,
   PostDeleteType,
-  PostDropdown,
   PostLoadingStrategy,
   PostStrategyConfig,
   RecentViewedPost,
@@ -27,7 +25,7 @@ import { AuthService } from './auth.service';
 import { ModalService } from './modal.service';
 import { OperationResult } from '@core/models/interface/operations';
 import { CurrentRouteService } from './current-route.service';
-import { CommentAction, PostAction, PostMenuItems } from '@core/models/interface/menus';
+import { PostAction, PostMenuItems } from '@core/models/interface/menus';
 import { UserService } from './user.service';
 import { UnifiedSearchResults } from '@core/models/interface/search-results';
 import { DropdownService } from './dropdown.service';

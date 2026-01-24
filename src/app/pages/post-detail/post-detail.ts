@@ -14,13 +14,8 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AddCommentRequest, Comment } from '@core/models/interface/comments';
-import {
-  CommentMenuItems,
-  MenuClickEvent,
-  MenuItems,
-  PostMenuItems,
-} from '@core/models/interface/menus';
+import { AddCommentRequest } from '@core/models/interface/comments';
+import { MenuClickEvent, MenuItems, PostMenuItems } from '@core/models/interface/menus';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
 import { AuthService } from '@core/services/auth.service';
 import { MessageService } from '@core/services/message.service';
