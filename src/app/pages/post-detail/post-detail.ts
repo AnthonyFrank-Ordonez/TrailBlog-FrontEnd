@@ -100,13 +100,7 @@ export class PostDetail implements OnInit {
 
   commentForm: FormGroup = this.createForm();
 
-  reactionList: ReactionList[] = [
-    { id: 1, type: '😂', value: 'laughReact' },
-    { id: 2, type: '🥲', value: 'sadReact' },
-    { id: 3, type: '😡', value: 'angryReact' },
-    { id: 4, type: '😍', value: 'loveReact' },
-    { id: 5, type: '🚀', value: 'rocketReact' },
-  ];
+  reactionList = this.postService.getReactionList();
 
   constructor() {
     effect(() => {
