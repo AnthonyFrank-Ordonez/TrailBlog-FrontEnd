@@ -77,15 +77,11 @@ export class CommentList {
   constructor() {
     effect(() => {
       const token = this.token();
+      const path = this.currentPath();
 
-      untracked(() => {
-        if (this.currentPath() === '/profile#comments') {
-          this.loadComments();
-          return;
-        } else {
-          return;
-        }
-      });
+      if (path === '/profile#comments') {
+        untracked(() => this.loadComments());
+      }
     });
   }
 

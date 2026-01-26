@@ -65,7 +65,9 @@ export class SideNavigation {
 
   constructor() {
     effect(() => {
-      if (this.isAuthenticated()) {
+      const isAuth = this.isAuthenticated();
+
+      if (isAuth) {
         this.loadCommunities();
       }
     });
