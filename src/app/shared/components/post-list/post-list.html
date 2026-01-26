@@ -8,7 +8,7 @@
     [isPostShareModalOpen]="isPostShareModalOpen(post.id)"
     [reactionList]="reactionList"
     [menuItems]="handleGetPostMenuItems(post)"
-    [shareItems]="shareItems"
+    [shareItems]="handleGetShareMenuItems()"
     (postMenu)="openPostMenu($event)"
     (reactModal)="openReactModal($event)"
     (shareModal)="openShareModal($event)"

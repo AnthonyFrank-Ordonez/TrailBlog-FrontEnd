@@ -65,94 +65,6 @@ export class PostList implements OnInit {
   reactionList = this.postService.getReactionList();
   skeletonArray = Array(5).fill(0);
 
-  readonly menuItems: PostMenuItems[] = [
-    {
-      type: 'post',
-      label: 'Save',
-      iconClass: 'icon-tabler-bookmark',
-      svgPath: ['M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z'],
-      ownerOnly: false,
-      forAuthenticated: true,
-      hideForOwner: false,
-      action: 'save',
-      fill: false,
-    },
-    {
-      type: 'post',
-      label: 'Hide',
-      iconClass: 'icon-tabler-eye-off',
-      svgPath: [
-        'M10.585 10.587a2 2 0 0 0 2.829 2.828',
-        'M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87',
-        'M3 3l18 18',
-      ],
-      ownerOnly: false,
-      forAuthenticated: true,
-      hideForOwner: false,
-      action: 'hide',
-      fill: false,
-    },
-    {
-      type: 'post',
-      label: 'Report',
-      iconClass: 'icon-tabler-message-report',
-      svgPath: [
-        'M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z',
-        'M12 8v3',
-        'M12 14v.01',
-      ],
-      ownerOnly: false,
-      forAuthenticated: false,
-      hideForOwner: true,
-      action: 'report',
-      fill: false,
-    },
-    {
-      type: 'post',
-      label: 'Delete',
-      iconClass: 'icon-tabler-trash',
-      svgPath: [
-        'M4 7l16 0',
-        'M10 11l0 6',
-        'M14 11l0 6',
-        'M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12',
-        'M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3',
-      ],
-      ownerOnly: true,
-      forAuthenticated: true,
-      hideForOwner: false,
-      action: 'delete',
-      fill: false,
-    },
-  ];
-
-  readonly shareItems: PostMenuItems[] = [
-    {
-      type: 'post',
-      label: 'Copy',
-      iconClass: 'icon-tabler-clipboard',
-      svgPath: [
-        'M17.997 4.17a3 3 0 0 1 2.003 2.83v12a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 2.003 -2.83a4 4 0 0 0 3.997 3.83h4a4 4 0 0 0 3.98 -3.597zm-3.997 -2.17a2 2 0 1 1 0 4h-4a2 2 0 1 1 0 -4z',
-      ],
-      ownerOnly: false,
-      forAuthenticated: false,
-      action: 'copy',
-      fill: false,
-    },
-    {
-      type: 'post',
-      label: 'Embed',
-      iconClass: 'icon-tabler-file-code-2',
-      svgPath: [
-        'M12 2l.117 .007a1 1 0 0 1 .876 .876l.007 .117v4l.005 .15a2 2 0 0 0 1.838 1.844l.157 .006h4l.117 .007a1 1 0 0 1 .876 .876l.007 .117v9a3 3 0 0 1 -2.824 2.995l-.176 .005h-10a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-14a3 3 0 0 1 2.824 -2.995l.176 -.005zm-2 9h-1a1 1 0 0 0 -1 1v5a1 1 0 0 0 1 1h1a1 1 0 0 0 1 -1l-.007 -.117a1 1 0 0 0 -.876 -.876l-.117 -.007v-3a1 1 0 0 0 0 -2m5 0h-1a1 1 0 0 0 0 2v3a1 1 0 0 0 0 2h1a1 1 0 0 0 1 -1v-5a1 1 0 0 0 -1 -1m-.001 -8.001l4.001 4.001h-4z',
-      ],
-      ownerOnly: false,
-      forAuthenticated: false,
-      action: 'embed',
-      fill: false,
-    },
-  ];
-
   constructor() {
     effect(() => {
       const token = this.token();
@@ -248,6 +160,10 @@ export class PostList implements OnInit {
 
   handleGetPostMenuItems(post: Post): MenuItems[] {
     return this.postService.getMenuItems(post);
+  }
+
+  handleGetShareMenuItems(): MenuItems[] {
+    return this.postService.getShareMenuItems();
   }
 
   async handleShareAction(data: PostActionPayload) {

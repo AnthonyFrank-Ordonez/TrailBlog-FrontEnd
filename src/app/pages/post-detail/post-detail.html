@@ -244,7 +244,7 @@
                   animate.enter="dropdown-fade-in"
                   animate.leave="dropdown-fade-out"
                   styles="w-32 mt-1 left-0"
-                  [dropdownItems]="shareItems"
+                  [dropdownItems]="handleGetShareMenuItems()"
                   modalType="share"
                   (menuItemClicked)="handleShareActions($event)"
                 />
