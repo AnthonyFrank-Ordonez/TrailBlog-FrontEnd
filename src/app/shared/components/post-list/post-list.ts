@@ -61,9 +61,9 @@ export class PostList implements OnInit {
   userCommunities = this.communityService.userCommunities;
   isPostLoading = this.postService.isPostLoading;
   activeDropdown = this.dropdownService.activeDropdown;
+  hasMore = this.postService.hasMore;
   reactionList = this.postService.getReactionList();
   skeletonArray = Array(5).fill(0);
-  hasMore = this.postService.hasMore;
 
   readonly menuItems: PostMenuItems[] = [
     {
