@@ -25,7 +25,6 @@ export class CurrentRouteService {
 
     // Close any active dropdowns before navigating
     if (this.dropdownService.hasActiveDropdown()) {
-      debugger;
       this.dropdownService.closeDropdown();
     }
 

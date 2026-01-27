@@ -24,7 +24,7 @@ import { Post, PostActionPayload, PostDeleteType } from '@core/models/interface/
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { CommunityService } from '@core/services/community.service';
 import { MetaData } from '@core/models/interface/page-result';
-import { NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage, ViewportScroller } from '@angular/common';
 import { MenuItems, PostMenuItems } from '@core/models/interface/menus';
 import { UserService } from '@core/services/user.service';
 import { ModalService } from '@core/services/modal.service';
@@ -51,6 +51,7 @@ export class PostList implements OnInit {
   private modalService = inject(ModalService);
   private dropdownService = inject(DropdownService);
   private destroyRef = inject(DestroyRef);
+  private viewportScroller = inject(ViewportScroller);
 
   posts = input.required<Post[]>();
   metadata = input<MetaData | undefined>();
@@ -76,6 +77,11 @@ export class PostList implements OnInit {
   }
 
   ngOnInit(): void {
+    // Disable browser's automatic scroll restoration on reload
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    this.viewportScroller.scrollToPosition([0, 0]);
     setupReactionSubject(this.postService, this.messageService, this.destroyRef);
   }
 
@@ -203,7 +209,6 @@ export class PostList implements OnInit {
     const scrollPosition = window.pageYOffset + window.innerHeight;
     const pageHeight = document.documentElement.scrollHeight;
 
-    // Trigger at 80%
     const threshold = pageHeight * 1;
 
     if (scrollPosition >= threshold && this.hasMore()) {
