@@ -304,12 +304,12 @@
           <app-button
             btnType="button"
             btnText="Create"
-            routeLocation="/create"
             variant="transparent"
             roundSize="full"
             fontSize="sm"
             size="base"
             btnCustomClass="flex items-center space-x-1.5"
+            (btnClick)="onCreate()"
           >
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

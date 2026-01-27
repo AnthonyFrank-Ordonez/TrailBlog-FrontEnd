@@ -143,6 +143,10 @@ export class Header implements OnDestroy {
     this.currentRouteService.handleRedirection(['archives']);
   }
 
+  onCreate() {
+    this.currentRouteService.handleRedirection(['create']);
+  }
+
   onSignOut() {
     this.authService
       .logout()

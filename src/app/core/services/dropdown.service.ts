@@ -9,6 +9,11 @@ export class DropdownService {
 
   activeDropdown = this.#activeDropdownSignal.asReadonly();
 
+  // Checks if there is an active dropdown
+  hasActiveDropdown(): boolean {
+    return this.#activeDropdownSignal().type !== null && this.#activeDropdownSignal().id !== null;
+  }
+
   isDropDownOpen(type: DropdownType, id: string): boolean {
     const active = this.#activeDropdownSignal();
     return active.type === type && active.id === id;

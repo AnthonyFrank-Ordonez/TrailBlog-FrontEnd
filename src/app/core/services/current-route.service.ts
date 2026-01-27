@@ -2,12 +2,14 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
+import { DropdownService } from './dropdown.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CurrentRouteService {
   private router = inject(Router);
+  private dropdownService = inject(DropdownService);
 
   currentPath: Signal<string> = toSignal(
     this.router.events.pipe(
@@ -20,6 +22,13 @@ export class CurrentRouteService {
 
   handleRedirection(path: string | string[], extras?: NavigationExtras) {
     const command = Array.isArray(path) ? path : [path];
+
+    // Close any active dropdowns before navigating
+    if (this.dropdownService.hasActiveDropdown()) {
+      debugger;
+      this.dropdownService.closeDropdown();
+    }
+
     this.router.navigate(command, extras);
   }
 }
