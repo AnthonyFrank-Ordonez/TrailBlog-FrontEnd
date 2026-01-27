@@ -282,6 +282,7 @@
                 </div>
                 @for (post of unifiedSearchResults()?.posts; track post.id) {
                   <button
+                    (click)="onPostClick(post.slug)"
                     class="w-full cursor-pointer border-b border-white/10 px-4 py-3 text-left transition-colors hover:bg-gray-800/40"
                   >
                     <p class="text-sm font-medium text-white">{{ post.title }}</p>

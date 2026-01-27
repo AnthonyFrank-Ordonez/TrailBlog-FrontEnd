@@ -170,6 +170,11 @@ export class Header implements OnDestroy {
     this.postService.enteredSearchQuery.set('');
   }
 
+  onPostClick(slug: string) {
+    this.currentRouteService.handleRedirection(['post', slug]);
+    this.onClearSearch();
+  }
+
   @HostListener('document:click', ['$event'])
   onClickOutsideSearch(event: MouseEvent): void {
     if (!this.searchQuery()) return;
