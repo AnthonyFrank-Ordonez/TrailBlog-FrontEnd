@@ -258,8 +258,7 @@ export class PostService {
     this.#isPostLoadingSignal.set(true);
     this.#errorMessageSignal.set(null);
 
-    const decodedSlug = decodeURIComponent(slug);
-    const encodedSlug = encodeURIComponent(decodedSlug);
+    const encodedSlug = encodeURIComponent(decodeURIComponent(slug));
 
     return this.http.get<Post>(`${this.apiUrl}/slug/${encodedSlug}`).pipe(
       tap((response) => {
