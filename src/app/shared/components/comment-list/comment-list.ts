@@ -86,7 +86,11 @@ export class CommentList {
   }
 
   handleCommentDetailAction(comment: Comment) {
-    this.commentService.toggleCommentDetail(comment);
+    const path = this.currentPath();
+
+    if (path === '/profile#comments') {
+      this.commentService.toggleCommentDetail(comment);
+    }
   }
 
   handleCommentMenuAction(data: CommentActionPayload) {
