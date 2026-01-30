@@ -4,6 +4,7 @@ export interface Communities {
   id: string;
   communityName: string;
   description?: string;
+  communitySlug: string;
   owner: string;
   isFavorite: boolean;
 }
