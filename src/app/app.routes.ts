@@ -15,6 +15,7 @@ import { About } from '@pages/about/about';
 import { Drafts } from '@pages/drafts/drafts';
 import { Archives } from '@pages/archives/archives';
 import { Profile } from '@pages/profile/profile';
+import { CommunityDetail } from '@pages/community-detail/community-detail';
 
 export const routes: Routes = [
   {
@@ -66,6 +67,10 @@ export const routes: Routes = [
       {
         path: 'post/:slug',
         component: PostDetail,
+      },
+      {
+        path: 'community/:slug',
+        component: CommunityDetail,
       },
     ],
   },

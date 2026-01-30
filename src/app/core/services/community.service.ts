@@ -15,6 +15,8 @@ import { MessageService } from './message.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { handleHttpError } from '@shared/utils/utils';
 import { DropdownService } from './dropdown.service';
+import { MetaData, PageResult } from '@core/models/interface/page-result';
+import { Post } from '@core/models/interface/posts';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +38,7 @@ export class CommunityService {
   #isLeavingSignal = signal<boolean>(false);
   #communityFilter = signal<CommunityFilterType>('All');
   #activeCommunityFilterBtn = signal<CommunityFilterType>('All');
+  #isLoadingSignal = signal<boolean>(false);
 
   user = this.userService.user;
   userCommunities = this.#userCommunities.asReadonly();
@@ -43,6 +46,7 @@ export class CommunityService {
   communityFilter = this.#communityFilter.asReadonly();
   activeCommunityFilterBtn = this.#activeCommunityFilterBtn.asReadonly();
   isSubmitting = this.#isSubmitting.asReadonly();
+  isLoading = this.#isLoadingSignal.asReadonly();
 
   userCommunitiesIds = linkedSignal(
     () => new Set<string>(this.#userCommunities().map((uc) => uc.id)),
@@ -61,6 +65,20 @@ export class CommunityService {
         return throwError(() => error);
       }),
       finalize(() => this.#userCommunitiesLoading.set(false)),
+    );
+  }
+
+  getCommunityPosts(communitySlug: string): Observable<PageResult<Post, MetaData>> {
+    this.#isLoadingSignal.set(true);
+
+    return this.http.get<PageResult<Post, MetaData>>(`${this.apiUrl}/${communitySlug}`).pipe(
+      tap((response) => {
+        console.log('fetching community posts...');
+      }),
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error);
+      }),
+      finalize(() => this.#isLoadingSignal.set(false)),
     );
   }
 
