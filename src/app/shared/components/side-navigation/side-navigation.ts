@@ -73,6 +73,10 @@ export class SideNavigation {
     });
   }
 
+  handleCommunityNavigate(slug: string) {
+    this.currentRouteService.handleRedirection(['community', slug]);
+  }
+
   toggleCommunities(): void {
     this.userSettingsService.updateUserSettings({
       communityExpanded: !this.currentSettings()?.communityExpanded,
