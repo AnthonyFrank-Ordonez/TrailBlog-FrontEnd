@@ -210,16 +210,35 @@ export class PostList implements OnInit {
     const pageHeight = document.documentElement.scrollHeight;
 
     const threshold = pageHeight * 1;
+    const currentPath = this.currentPath();
 
-    if (scrollPosition >= threshold && this.hasMore()) {
-      this.postService
-        .loadMorePosts()
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          error: (error: HttpErrorResponse) => {
-            handleHttpError(error, this.messageService);
-          },
-        });
+    // Check if we're on a community-detail page
+    const communityMatch = currentPath.match(/^\/community\/([^\/]+)/);
+
+    // Use the appropriate hasMore signal based on the route
+    const hasMoreToLoad = communityMatch ? this.communityService.hasMore() : this.hasMore();
+
+    if (scrollPosition >= threshold && hasMoreToLoad) {
+      if (communityMatch) {
+        const slug = communityMatch[1];
+        this.communityService
+          .loadMoreCommunityPosts(slug)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            error: (error: HttpErrorResponse) => {
+              handleHttpError(error, this.messageService);
+            },
+          });
+      } else {
+        this.postService
+          .loadMorePosts()
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            error: (error: HttpErrorResponse) => {
+              handleHttpError(error, this.messageService);
+            },
+          });
+      }
     }
   }
 

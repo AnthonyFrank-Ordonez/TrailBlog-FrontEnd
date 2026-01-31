@@ -1,13 +1,13 @@
-import { DestroyRef, inject, Injectable, linkedSignal, signal } from '@angular/core';
+import { computed, DestroyRef, inject, Injectable, linkedSignal, signal } from '@angular/core';
 import { UserService } from './user.service';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { environment } from '@env/environment';
 import {
   CreateCommunityRequest,
   Communities,
   CommunityFilterType,
 } from '@core/models/interface/community';
-import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, finalize, Observable, tap, throwError } from 'rxjs';
 import { OperationResult } from '@core/models/interface/operations';
 import { PostService } from './post.service';
 import { ModalService } from './modal.service';
@@ -33,6 +33,12 @@ export class CommunityService {
   private readonly apiUrl = `${this.env.apiRoot}/communitys`;
 
   #userCommunities = signal<Communities[]>([]);
+  #communityPostsSignal = signal<Post[]>([]);
+  #communityDetailsSignal = signal<Communities | null>(null);
+  #currentPageSignal = signal<number>(0);
+  #pageSizeSignal = signal<number>(10);
+  #totalPagesSignal = signal<number>(0);
+  #totalCountSignal = signal<number>(0);
   #userCommunitiesLoading = signal<boolean>(false);
   #isSubmitting = signal<boolean>(false);
   #isLeavingSignal = signal<boolean>(false);
@@ -43,6 +49,12 @@ export class CommunityService {
   user = this.userService.user;
   userCommunities = this.#userCommunities.asReadonly();
   userCommunitiesLoading = this.#userCommunitiesLoading.asReadonly();
+  communityPosts = this.#communityPostsSignal.asReadonly();
+  communityDetails = this.#communityDetailsSignal.asReadonly();
+  currentPage = this.#currentPageSignal.asReadonly();
+  pageSize = this.#pageSizeSignal.asReadonly();
+  totalPages = this.#totalPagesSignal.asReadonly();
+  totalCount = this.#totalCountSignal.asReadonly();
   communityFilter = this.#communityFilter.asReadonly();
   activeCommunityFilterBtn = this.#activeCommunityFilterBtn.asReadonly();
   isSubmitting = this.#isSubmitting.asReadonly();
@@ -51,6 +63,8 @@ export class CommunityService {
   userCommunitiesIds = linkedSignal(
     () => new Set<string>(this.#userCommunities().map((uc) => uc.id)),
   );
+
+  readonly hasMore = computed(() => this.#currentPageSignal() < this.#totalPagesSignal());
 
   loadUserCommunities(): Observable<Communities[]> {
     this.#userCommunitiesLoading.set(true);
@@ -68,12 +82,59 @@ export class CommunityService {
     );
   }
 
-  getCommunityPosts(communitySlug: string): Observable<PageResult<Post, MetaData>> {
+  loadInitialCommunityPosts(slug: string): Observable<PageResult<Post, MetaData>> {
+    this.#communityPostsSignal.set([]);
+    this.#currentPageSignal.set(0);
+    return this.loadMoreCommunityPosts(slug);
+  }
+
+  loadMoreCommunityPosts(communitySlug: string): Observable<PageResult<Post, MetaData>> {
+    if (this.#isLoadingSignal()) {
+      console.info('Already loading, skipping...');
+      return EMPTY;
+    }
+
+    // Check if we have more pages
+    if (this.#currentPageSignal() > 0 && !this.hasMore()) {
+      console.info('No more posts to load');
+      return EMPTY;
+    }
+
     this.#isLoadingSignal.set(true);
 
-    return this.http.get<PageResult<Post, MetaData>>(`${this.apiUrl}/${communitySlug}`).pipe(
+    const nextPage = this.#currentPageSignal() + 1;
+    const pageSize = this.#pageSizeSignal();
+
+    let params = new HttpParams().set('page', nextPage).set('pageSize', pageSize);
+
+    return this.http
+      .get<PageResult<Post, MetaData>>(`${this.apiUrl}/${communitySlug}/posts`, { params })
+      .pipe(
+        tap((response) => {
+          console.log('fetching community posts...');
+          const data = response;
+
+          this.#communityPostsSignal.update((value) => [...value, ...data.data]);
+
+          this.#totalCountSignal.set(data.totalCount);
+          this.#totalPagesSignal.set(data.totalPages);
+          this.#currentPageSignal.set(nextPage);
+        }),
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        }),
+        finalize(() => this.#isLoadingSignal.set(false)),
+      );
+  }
+
+  getCommunityDetails(slug: string): Observable<Communities> {
+    this.#isLoadingSignal.set(true);
+
+    return this.http.get<Communities>(`${this.apiUrl}/${slug}/details`).pipe(
       tap((response) => {
-        console.log('fetching community posts...');
+        console.log('fetching community details...');
+
+        this.#communityDetailsSignal.set(response);
       }),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => error);

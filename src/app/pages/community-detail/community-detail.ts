@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, effect, inject, OnInit, signal, untracked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { CurrentRouteService } from '@core/services/current-route.service';
@@ -7,6 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { handleHttpError } from '@shared/utils/utils';
 import { MessageService } from '@core/services/message.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-community-detail',
@@ -23,6 +24,8 @@ export class CommunityDetail implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   token = this.authService.token;
+  communityPosts = this.communityService.communityPosts;
+  communityDetails = this.communityService.communityDetails;
   private slug = signal<string | null>(null);
 
   constructor() {
@@ -31,7 +34,9 @@ export class CommunityDetail implements OnInit {
       const communitySlug = this.slug();
 
       if (communitySlug) {
-        this.loadCommunityDetail(communitySlug);
+        untracked(() => {
+          this.loadCommunityDetail(communitySlug);
+        });
       }
     });
   }
@@ -44,8 +49,11 @@ export class CommunityDetail implements OnInit {
   }
 
   loadCommunityDetail(slug: string) {
-    this.communityService
-      .getCommunityPosts(slug)
+    // Fetch both community details and posts in parallel
+    forkJoin({
+      posts: this.communityService.loadInitialCommunityPosts(slug),
+      details: this.communityService.getCommunityDetails(slug),
+    })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {

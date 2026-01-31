@@ -7,6 +7,7 @@ export interface Communities {
   communitySlug: string;
   owner: string;
   isFavorite: boolean;
+  isUserJoined?: boolean;
 }
 
 export interface CreateCommunityRequest {
