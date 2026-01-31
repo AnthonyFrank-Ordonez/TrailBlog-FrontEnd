@@ -305,4 +305,12 @@ export class CommunityService {
     this.#communityFilter.set('All');
     this.#activeCommunityFilterBtn.set('All');
   }
+
+  resetCommunityDetails(): void {
+    this.#communityPostsSignal.set([]);
+    this.#communityDetailsSignal.set(null);
+    this.#currentPageSignal.set(0);
+    this.#totalPagesSignal.set(0);
+    this.#totalCountSignal.set(0);
+  }
 }

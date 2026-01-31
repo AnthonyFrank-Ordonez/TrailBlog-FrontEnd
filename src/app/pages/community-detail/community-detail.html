@@ -1,1 +1,85 @@
-<p>community-detail works!</p>
+<div class="px-3 py-10 lg:px-5 2xl:px-23">
+  <div class="mb-7 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div
+        class="bg-secondary flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold text-white lg:h-11 lg:w-11 lg:text-lg"
+      >
+        <span>{{ community()?.communityName | initials }}</span>
+      </div>
+
+      <div class="flex flex-col items-start">
+        <p class="font-medium tracking-wider text-gray-500">{{ community()?.communityName }}</p>
+
+        <span class="text-sm font-light text-gray-500"
+          >{{ community()?.totalMembers }} members</span
+        >
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <app-button
+        [btnText]="community()?.isUserJoined ? 'Joined' : 'Join'"
+        [variant]="community()?.isUserJoined ? 'outline' : 'primary'"
+        roundSize="full"
+        size="md"
+        fontSize="xs"
+        btnType="button"
+      />
+    </div>
+  </div>
+
+  <div>
+    <app-tooltip toolTipText="Filter Post">
+      <div class="relative">
+        <button
+          (click)="togglePostMenuFilter()"
+          class="action-btn mb-2 flex cursor-pointer items-center space-x-1 rounded-full px-3 py-1.5 text-sm font-light text-white hover:bg-gray-800/50"
+        >
+          <span>{{ activePostFilter() }}</span>
+          <svg
+            class="h-5 w-5 transition-transform duration-300"
+            [class.rotate-180]="isPostMenuFilterOpen()"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+          >
+            <path
+              d="M19.5 8.25L12 15.75L4.5 8.25"
+              stroke="#0F172A"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+
+        @if (isPostMenuFilterOpen()) {
+          <div
+            class="absolute top-9 z-50 flex w-24 flex-col rounded-md border border-white/30 bg-black p-0.5"
+            animate.enter="dropdown-fade-in"
+            animate.leave="dropdown-fade-out"
+            data-modal-type="post-filter"
+          >
+            <span class="flex w-full gap-1 px-2 py-1.5 text-left text-sm font-medium text-gray-500"
+              >Filter by</span
+            >
+            @for (item of postFilterType(); track $index) {
+              <button
+                (click)="togglePostFilter(item)"
+                class="flex w-full cursor-pointer gap-1 px-2 py-1.5 text-left text-sm text-white transition-colors duration-300 hover:bg-white/20"
+              >
+                <span>{{ item }}</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </app-tooltip>
+
+    <div class="mb-3 border-b-2 border-gray-500/30"></div>
+
+    <app-post-list [posts]="communityPosts()" />
+  </div>
+</div>

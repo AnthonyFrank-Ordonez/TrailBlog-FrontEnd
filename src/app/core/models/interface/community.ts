@@ -8,6 +8,8 @@ export interface Communities {
   owner: string;
   isFavorite: boolean;
   isUserJoined: boolean;
+  totalMembers: number;
+  totalPosts: number;
 }
 
 export interface CreateCommunityRequest {

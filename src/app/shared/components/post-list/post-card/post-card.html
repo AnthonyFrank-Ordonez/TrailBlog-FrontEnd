@@ -8,12 +8,12 @@
       [class.opacity-50]="currentPath() === '/archives'"
     >
       <div class="bg-secondary flex h-5.5 w-5.5 items-center justify-center rounded-full">
-        <span class="text-xs font-bold text-white lg:text-[10px]">{{
-          post().communityName | initials
-        }}</span>
+        <span class="text-xs font-bold text-white lg:text-[10px]">
+          {{ isOnCommunityPage() ? (post().author | initials) : (post().communityName | initials) }}
+        </span>
       </div>
       <p class="line-clamp-1 text-xs font-bold break-words text-gray-500 lg:text-sm">
-        {{ post().communityName }}
+        {{ isOnCommunityPage() ? post().author : post().communityName }}
       </p>
       <p class="text-xs text-gray-500 lg:text-sm">{{ post().createdAt | timeago }}</p>
     </div>
@@ -30,11 +30,11 @@
           (btnClick)="handlePublishPost($event)"
         />
       } @else {
-        <!-- Join btn -->
+        <!-- Join btn - Hidden on community detail pages -->
         <app-button
           [btnText]="isUserJoined() ? 'Joined' : 'Join'"
           [variant]="isUserJoined() ? 'outline' : 'primary'"
-          [isHidden]="currentPath() === '/archives'"
+          [isHidden]="currentPath() === '/archives' || isOnCommunityPage()"
           (btnClick)="toggleJoin($event)"
           roundSize="full"
           size="sm"

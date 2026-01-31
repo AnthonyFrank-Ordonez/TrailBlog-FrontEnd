@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, ElementRef, inject, input, output, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, input, output, ViewChild } from '@angular/core';
 import { MenuClickEvent, MenuItems } from '@core/models/interface/menus';
 import { Post, PostActionPayload } from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
@@ -47,6 +47,11 @@ export class PostCard {
 
   isAuthenticated = this.authService.isAuthenticated;
   activeDropdown = this.dropdownService.activeDropdown;
+
+  isOnCommunityPage = computed(() => {
+    const path = this.currentPath();
+    return path ? /^\/community\/[^\/]+/.test(path) : false;
+  });
 
   handleMenuItems(event: MouseEvent) {
     event?.stopPropagation();

@@ -212,10 +212,8 @@ export class PostList implements OnInit {
     const threshold = pageHeight * 1;
     const currentPath = this.currentPath();
 
-    // Check if we're on a community-detail page
     const communityMatch = currentPath.match(/^\/community\/([^\/]+)/);
 
-    // Use the appropriate hasMore signal based on the route
     const hasMoreToLoad = communityMatch ? this.communityService.hasMore() : this.hasMore();
 
     if (scrollPosition >= threshold && hasMoreToLoad) {
