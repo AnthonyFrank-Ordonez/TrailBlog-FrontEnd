@@ -1,14 +1,14 @@
 <!-- Mobile Header -->
 <!-- Top Header -->
 <header
-  class="text-secondary fixed top-0 right-0 left-0 z-999 border-b border-white/30 bg-black transition-transform duration-300 ease-in-out lg:hidden"
+  class="text-secondary fixed top-0 right-0 left-0 z-998 border-b border-white/30 bg-black transition-transform duration-300 ease-in-out lg:hidden"
   [class.transform]="true"
   [class.-translate-y-full]="hideHeader"
 >
   <div class="flex items-center justify-between px-4 py-3">
     <div class="flex items-center space-x-2">
       <!-- Hamburger Menu -->
-      <button class="p-1">
+      <button class="p-1" (click)="toggleSideNav()">
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
@@ -49,132 +49,393 @@
   </div>
 </header>
 
-<!-- Bottom Nav -->
-<nav
-  class="fixed right-0 bottom-0 left-0 z-50 border-t border-t-white/30 bg-black transition-transform duration-300 ease-in-out lg:hidden"
-  [class.transform]="true"
-  [class.translate-y-full]="hideBottomNav"
+<!-- Side Nav -->
+<div
+  class="fixed inset-0 z-999 bg-black/50 backdrop-blur-sm transition-opacity duration-500 ease-in-out lg:hidden"
+  [class.opacity-0]="!isSideNavOpen()"
+  [class.pointer-events-none]="!isSideNavOpen()"
+  (click)="toggleSideNav()"
 >
-  <div class="flex items-center justify-around py-1">
-    <button
-      class="flex flex-col items-center justify-center space-y-1 p-2"
-      [class.text-secondary]="activeTab() === 'home'"
-      [class.text-gray-500]="activeTab() !== 'home'"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        class="icon icon-tabler icons-tabler-filled icon-tabler-home"
-      >
-        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-        <path
-          d="M12.707 2.293l9 9c.63 .63 .184 1.707 -.707 1.707h-1v6a3 3 0 0 1 -3 3h-1v-7a3 3 0 0 0 -2.824 -2.995l-.176 -.005h-2a3 3 0 0 0 -3 3v7h-1a3 3 0 0 1 -3 -3v-6h-1c-.89 0 -1.337 -1.077 -.707 -1.707l9 -9a1 1 0 0 1 1.414 0m.293 11.707a1 1 0 0 1 1 1v7h-4v-7a1 1 0 0 1 .883 -.993l.117 -.007z"
-        />
-      </svg>
+  <!-- Sidebar Content -->
+  <aside
+    class="fixed top-0 left-0 h-full w-68 border-t border-r border-t-white/30 border-r-white/30 bg-black transition-transform duration-500 ease-in-out"
+    [class.-translate-x-full]="!isSideNavOpen()"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Side navigation such as home etc. -->
+    <div class="flex h-full flex-col justify-between p-5">
+      <!-- Top Navigation (Scrollable) -->
+      <div class="scrollbar-container flex min-h-0 flex-1 flex-col">
+        <div class="hide-scrollbar flex flex-col space-y-5 overflow-y-auto">
+          <!-- Title + Logo -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-1">
+              <img
+                ngSrc="assets/logo.png"
+                alt="trail-logo"
+                width="28"
+                height="28"
+                priority="high"
+              />
+              <span class="text-secondary text-xl font-bold">Trail</span>
+            </div>
 
-      <span class="text-xs">Home</span>
-    </button>
+            <!-- Close Button -->
+            <button
+              class="text-secondary rounded-full bg-transparent p-1 transition-transform duration-300 hover:rotate-90"
+              (click)="toggleSideNav()"
+            >
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          </div>
 
-    <button
-      class="flex flex-col items-center justify-center space-y-1 p-2 text-gray-500"
-      [class.text-secondary]="activeTab() === 'explore'"
-      [class.text-gray-500]="activeTab() !== 'explore'"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-        id="Explore-Fill--Streamline-Sharp-Fill-Material"
-        height="24"
-        width="24"
-      >
-        <path
-          d="m6.575 17.425 7.25 -3.575 3.575 -7.25 -7.25 3.575 -3.575 7.25ZM12 13c-0.28335 0 -0.52085 -0.09585 -0.7125 -0.2875S11 12.28335 11 12c0 -0.28335 0.09585 -0.52085 0.2875 -0.7125S11.71665 11 12 11c0.28335 0 0.52085 0.09585 0.7125 0.2875S13 11.71665 13 12c0 0.28335 -0.09585 0.52085 -0.2875 0.7125S12.28335 13 12 13Zm0 9c-1.36665 0 -2.65835 -0.2625 -3.875 -0.7875 -1.21665 -0.525 -2.27915 -1.24165 -3.1875 -2.15 -0.908335 -0.90835 -1.625 -1.97085 -2.15 -3.1875C2.2625 14.65835 2 13.36665 2 12c0 -1.38335 0.2625 -2.68335 0.7875 -3.9 0.525 -1.21665 1.241665 -2.275 2.15 -3.175 0.90835 -0.9 1.97085 -1.6125 3.1875 -2.1375C9.34165 2.2625 10.63335 2 12 2c1.38335 0 2.68335 0.2625 3.9 0.7875 1.21665 0.525 2.275 1.2375 3.175 2.1375 0.9 0.9 1.6125 1.95835 2.1375 3.175C21.7375 9.31665 22 10.61665 22 12c0 1.36665 -0.2625 2.65835 -0.7875 3.875 -0.525 1.21665 -1.2375 2.27915 -2.1375 3.1875 -0.9 0.90835 -1.95835 1.625 -3.175 2.15C14.68335 21.7375 13.38335 22 12 22Z"
-          stroke-width="0.5"
-        ></path>
-      </svg>
-      <span class="text-xs">Explore</span>
-    </button>
+          <!-- Navigation Links -->
+          <div>
+            <div class="mb-1 border-b border-white/30"></div>
 
-    <button
-      class="flex flex-col items-center justify-center space-y-1 p-2 text-gray-500"
-      [class.text-secondary]="activeTab() === 'create'"
-      [class.text-gray-500]="activeTab() !== 'create'"
-    >
-      <svg
-        class="h-6 w-6"
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        fill="currentColor"
-        viewBox="0 0 16 16"
-      >
-        <path
-          stroke="currentColor"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
-        />
-      </svg>
-      <span class="text-xs">Create</span>
-    </button>
+            <span class="text-sm font-light tracking-widest text-white/30 uppercase"
+              >Navigation</span
+            >
 
-    <button
-      class="flex flex-col items-center justify-center space-y-1 p-2 text-gray-500"
-      [class.text-secondary]="activeTab() === 'inbox'"
-      [class.text-gray-500]="activeTab() !== 'inbox'"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        class="icon icon-tabler icons-tabler-filled icon-tabler-bell"
-      >
-        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-        <path
-          d="M14.235 19c.865 0 1.322 1.024 .745 1.668a3.992 3.992 0 0 1 -2.98 1.332a3.992 3.992 0 0 1 -2.98 -1.332c-.552 -.616 -.158 -1.579 .634 -1.661l.11 -.006h4.471z"
-        />
-        <path
-          d="M12 2c1.358 0 2.506 .903 2.875 2.141l.046 .171l.008 .043a8.013 8.013 0 0 1 4.024 6.069l.028 .287l.019 .289v2.931l.021 .136a3 3 0 0 0 1.143 1.847l.167 .117l.162 .099c.86 .487 .56 1.766 -.377 1.864l-.116 .006h-16c-1.028 0 -1.387 -1.364 -.493 -1.87a3 3 0 0 0 1.472 -2.063l.021 -.143l.001 -2.97a8 8 0 0 1 3.821 -6.454l.248 -.146l.01 -.043a3.003 3.003 0 0 1 2.562 -2.29l.182 -.017l.176 -.004z"
-        />
-      </svg>
+            <div class="flex flex-col space-y-1">
+              <button
+                class="mt-1 flex w-full cursor-pointer items-center space-x-2 rounded-lg px-2 py-2 transition-colors hover:bg-gray-800/40"
+                [class.text-secondary]="activeTab() === 'home'"
+                [class.text-white]="activeTab() !== 'home'"
+                (click)="toggleNavigation('/')"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-home -mt-1"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path
+                    d="M12.707 2.293l9 9c.63 .63 .184 1.707 -.707 1.707h-1v6a3 3 0 0 1 -3 3h-1v-7a3 3 0 0 0 -2.824 -2.995l-.176 -.005h-2a3 3 0 0 0 -3 3v7h-1a3 3 0 0 1 -3 -3v-6h-1c-.89 0 -1.337 -1.077 -.707 -1.707l9 -9a1 1 0 0 1 1.414 0m.293 11.707a1 1 0 0 1 1 1v7h-4v-7a1 1 0 0 1 .883 -.993l.117 -.007z"
+                  />
+                </svg>
+                <span class="font-light">Home</span>
+              </button>
 
-      <span class="text-xs">Notification</span>
-    </button>
+              <button
+                class="flex w-full cursor-pointer items-center space-x-2 rounded-lg px-2 py-2 transition-colors hover:bg-gray-800/40"
+                [class.text-secondary]="activeTab() === 'popular'"
+                [class.text-white]="activeTab() !== 'popular'"
+                (click)="toggleNavigation('/popular')"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  class="bi bi-fire"
+                  viewBox="0 0 22 22"
+                  id="Fire--Streamline-Bootstrap"
+                  height="22"
+                  width="22"
+                >
+                  <path
+                    d="M11 22c4.55675 0 8.25 -2.75 8.25 -7.5625 0 -2.0625 -0.6875 -5.5 -3.4375 -8.25 0.34375 2.0625 -1.71875 2.75 -1.71875 2.75C15.125 5.5 12.375 0.6875 8.25 0c0.49087499999999995 2.75 0.6875 5.5 -2.75 8.25 -1.71875 1.375 -2.75 3.7523750000000002 -2.75 6.1875C2.75 19.25 6.44325 22 11 22m0 -1.375c-2.278375 0 -4.125 -1.375 -4.125 -3.78125 0 -1.03125 0.34375 -2.75 1.71875 -4.125C8.421875 13.75 9.625 14.4375 9.625 14.4375c-0.515625 -1.71875 0.6875 -4.46875 2.75 -4.8125 -0.24612499999999998 1.375 -0.34375 2.75 1.375 4.125 0.859375 0.6875 1.375 1.8755000000000002 1.375 3.09375C15.125 19.25 13.278375 20.625 11 20.625"
+                    stroke-width="1.375"
+                  ></path>
+                </svg>
+                <span class="font-light">Popular</span>
+              </button>
 
-    <button
-      class="flex flex-col items-center justify-center space-y-1 p-2 text-gray-500"
-      [class.text-secondary]="activeTab() === 'account'"
-      [class.text-gray-500]="activeTab() !== 'account'"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-        id="User-Circle-Single--Streamline-Core"
-        height="24"
-        width="24"
-      >
-        <g id="user-circle-single--circle-geometric-human-person-single-user">
-          <path
-            id="Union"
-            fill-rule="evenodd"
-            d="M24 12c0 3.2174914285714284 -1.2663428571428572 6.1392 -3.3276 8.294057142857142 -2.177142857142857 2.2757142857142854 -5.240914285714285 3.696 -8.63658857142857 3.705942857142857L12 24l-0.03581142857142857 0c-3.3956742857142856 -0.009942857142857142 -6.4595142857142855 -1.4302285714285714 -8.636537142857142 -3.705942857142857C1.2662725714285712 18.1392 0 15.217491428571428 0 12c0 -6.6274114285714285 5.3725885714285715 -12 12 -12 6.627428571428571 0 12 5.3725885714285715 12 12Zm-4.726628571428571 6C17.544171428571428 15.90594857142857 14.927897142857143 14.571377142857141 12 14.571377142857141c-2.9278971428571428 0 -5.544102857142857 1.3345714285714285 -7.273457142857142 3.4286228571428574 1.7293542857142858 2.094 4.34556 3.4285714285714284 7.273457142857142 3.4285714285714284 2.9278971428571428 0 5.5441714285714285 -1.3345714285714285 7.273371428571428 -3.4285714285714284ZM12.000205714285713 12.857091428571428c2.3669314285714287 0 4.285714285714286 -1.918782857142857 4.285714285714286 -4.285714285714286s-1.918782857142857 -4.285714285714286 -4.285714285714286 -4.285714285714286 -4.285714285714286 1.918782857142857 -4.285714285714286 4.285714285714286 1.918782857142857 4.285714285714286 4.285714285714286 4.285714285714286Z"
-            clip-rule="evenodd"
-            stroke-width="1.7143"
-          ></path>
-        </g>
-      </svg>
-      <span class="text-xs">Profile</span>
-    </button>
-  </div>
-</nav>
+              <button
+                class="flex w-full cursor-pointer items-center space-x-2 rounded-lg px-2 py-2 transition-colors hover:bg-gray-800/40"
+                [class.text-secondary]="activeTab() === 'explore'"
+                [class.text-white]="activeTab() !== 'explore'"
+                (click)="toggleNavigation('/explore')"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  id="Explore-Fill--Streamline-Sharp-Fill-Material"
+                  height="24"
+                  width="24"
+                >
+                  <path
+                    d="m6.575 17.425 7.25 -3.575 3.575 -7.25 -7.25 3.575 -3.575 7.25ZM12 13c-0.28335 0 -0.52085 -0.09585 -0.7125 -0.2875S11 12.28335 11 12c0 -0.28335 0.09585 -0.52085 0.2875 -0.7125S11.71665 11 12 11c0.28335 0 0.52085 0.09585 0.7125 0.2875S13 11.71665 13 12c0 0.28335 -0.09585 0.52085 -0.2875 0.7125S12.28335 13 12 13Zm0 9c-1.36665 0 -2.65835 -0.2625 -3.875 -0.7875 -1.21665 -0.525 -2.27915 -1.24165 -3.1875 -2.15 -0.908335 -0.90835 -1.625 -1.97085 -2.15 -3.1875C2.2625 14.65835 2 13.36665 2 12c0 -1.38335 0.2625 -2.68335 0.7875 -3.9 0.525 -1.21665 1.241665 -2.275 2.15 -3.175 0.90835 -0.9 1.97085 -1.6125 3.1875 -2.1375C9.34165 2.2625 10.63335 2 12 2c1.38335 0 2.68335 0.2625 3.9 0.7875 1.21665 0.525 2.275 1.2375 3.175 2.1375 0.9 0.9 1.6125 1.95835 2.1375 3.175C21.7375 9.31665 22 10.61665 22 12c0 1.36665 -0.2625 2.65835 -0.7875 3.875 -0.525 1.21665 -1.2375 2.27915 -2.1375 3.1875 -0.9 0.90835 -1.95835 1.625 -3.175 2.15C14.68335 21.7375 13.38335 22 12 22Z"
+                    stroke-width="0.5"
+                  ></path>
+                </svg>
+                <span class="font-light">Explore</span>
+              </button>
+
+              <!-- About -->
+              <button
+                class="flex w-full cursor-pointer items-center space-x-2 rounded-lg px-2 py-2 transition-colors hover:bg-gray-800/40"
+                [class.text-secondary]="activeTab() === 'about'"
+                [class.text-white]="activeTab() !== 'about'"
+                routerLink="/about"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-info-circle -mt-1"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path
+                    d="M12 2c5.523 0 10 4.477 10 10a10 10 0 0 1 -19.995 .324l-.005 -.324l.004 -.28c.148 -5.393 4.566 -9.72 9.996 -9.72zm0 9h-1l-.117 .007a1 1 0 0 0 0 1.986l.117 .007v3l.007 .117a1 1 0 0 0 .876 .876l.117 .007h1l.117 -.007a1 1 0 0 0 .876 -.876l.007 -.117l-.007 -.117a1 1 0 0 0 -.764 -.857l-.112 -.02l-.117 -.006v-3l-.007 -.117a1 1 0 0 0 -.876 -.876l-.117 -.007zm.01 -3l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007z"
+                  />
+                </svg>
+                <span class="font-light">About</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Communities Section -->
+          <div>
+            <div class="mb-1 border-b border-white/30"></div>
+
+            <span class="text-sm font-light tracking-widest text-white/30 uppercase"
+              >Communities</span
+            >
+
+            @if (isAuthenticated()) {
+              <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
+                <!-- Create -->
+                <button
+                  class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-2 py-2.5 text-white transition-colors hover:bg-gray-800/40"
+                  (click)="showCommunityForm()"
+                >
+                  <svg
+                    class="h-5 w-5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
+                    />
+                  </svg>
+                  <span class="text-sm font-light tracking-wide">Create Community</span>
+                </button>
+
+                <!-- Manage -->
+                <button
+                  routerLink="/communities"
+                  class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-2 py-2.5 text-white transition-colors hover:bg-gray-800/40"
+                >
+                  <svg
+                    class="h-5 w-5"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M19.85 8.75l4.15.83v4.84l-4.15.83 2.35 3.52-3.43 3.43-3.52-2.35-.83 4.15H9.58l-.83-4.15-3.52 2.35-3.43-3.43 2.35-3.52L0 14.42V9.58l4.15-.83L1.8 5.23 5.23 1.8l3.52 2.35L9.58 0h4.84l.83 4.15 3.52-2.35 3.43 3.43-2.35 3.52zm-1.57 5.07l4-.81v-2l-4-.81-.54-1.3 2.29-3.43-1.43-1.43-3.43 2.29-1.3-.54-.81-4h-2l-.81 4-1.3.54-3.43-2.29-1.43 1.43L6.38 8.9l-.54 1.3-4 .81v2l4 .81.54 1.3-2.29 3.43 1.43 1.43 3.43-2.29 1.3.54.81 4h2l.81-4 1.3-.54 3.43 2.29 1.43-1.43-2.29-3.43.54-1.3zm-8.186-4.672A3.43 3.43 0 0 1 12 8.57 3.44 3.44 0 0 1 15.43 12a3.43 3.43 0 1 1-5.336-2.852zm.956 4.274c.281.188.612.288.95.288A1.7 1.7 0 0 0 13.71 12a1.71 1.71 0 1 0-2.66 1.422z"
+                    />
+                  </svg>
+                  <span class="text-sm font-light tracking-wide">Manage Community</span>
+                </button>
+
+                @if (userCommunitiesLoading()) {
+                  @for (skeleton of skeletonArray; track $index) {
+                    <div class="flex flex-col gap-1 px-5 py-1">
+                      <div class="flex animate-pulse items-center space-x-3">
+                        <div class="h-7 w-7 rounded-full bg-gray-700"></div>
+                        <div class="h-5 w-40 rounded bg-gray-700"></div>
+                      </div>
+                    </div>
+                  }
+                } @else {
+                  @for (community of displayedCommunities(); track community.id) {
+                    <button
+                      (click)="handleCommunityNavigate(community.communitySlug)"
+                      class="group flex w-full cursor-pointer items-center space-x-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-gray-800/40"
+                    >
+                      <div
+                        class="bg-secondary flex h-6 w-6 items-center justify-center rounded-full"
+                      >
+                        <span class="text-xs font-bold text-white">{{
+                          community.communityName | initials
+                        }}</span>
+                      </div>
+                      <span class="text-gray-300 group-hover:text-white 2xl:text-[15.5px]">{{
+                        community.communityName
+                      }}</span>
+                    </button>
+                  }
+                }
+              </div>
+            } @else {
+              <div
+                class="space-y-1 px-2 py-2.5"
+                animate.enter="slide-enter"
+                animate.leave="slide-leave"
+              >
+                <p class="text-sm text-gray-500">
+                  Please
+                  <button
+                    routerLink="/login"
+                    class="text-secondary inline cursor-pointer border-none bg-transparent px-0 py-0 font-medium hover:underline"
+                  >
+                    log in
+                  </button>
+                  first to create, view, and manage communities.
+                </p>
+              </div>
+            }
+          </div>
+
+          <!-- Resources Section -->
+          <div class="text-white">
+            <div class="mb-1 border-b border-white/30"></div>
+
+            <span class="text-sm font-light tracking-widest text-white/30 uppercase"
+              >Resources</span
+            >
+
+            <div class="mt-2">
+              <!-- News and Updates -->
+              <button
+                href="#"
+                class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-gray-800/40"
+              >
+                <svg
+                  class="h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 -960 960 960"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120zm0-80h640v-560H160zm80-80h480v-80H240zm0-160h160v-240H240zm240 0h240v-80H480zm0-160h240v-80H480zM160-200v-560z"
+                  />
+                </svg>
+                <span class="text-sm font-light tracking-wide">News and Updates</span>
+              </button>
+
+              <!-- Rules -->
+              <a
+                href="#"
+                class="group flex items-center space-x-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-gray-800/40"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 -960 960 960"
+                  class="h-5 w-5"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640q0 33-23.5 56.5T720-80zm0-80h480v-640h-80v280l-100-60-100 60v-280H240zm0 0v-640zm200-360 100-60 100 60-100-60z"
+                  />
+                </svg>
+                <span class="text-gray-300 group-hover:text-white">Trail Rules</span>
+              </a>
+
+              <!-- Help -->
+              <button
+                href="#"
+                class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-gray-800/40"
+              >
+                <svg
+                  class="h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 -960 960 960"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M440-280h80v-240h-80zm40-320q17 0 28.5-11.5T520-640t-11.5-28.5T480-680t-28.5 11.5T440-640t11.5 28.5T480-600m0 520q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320"
+                  />
+                </svg>
+                <span class="font-light">Help</span>
+              </button>
+
+              <!-- Faqs -->
+              <a
+                href="#"
+                class="group flex items-center space-x-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-gray-800/40"
+              >
+                <svg
+                  class="h-5 w-5"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M7.5 1a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zm0 12a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm1.55-8.42a1.84 1.84 0 0 0-.61-.42A2.25 2.25 0 0 0 7.53 4a2.16 2.16 0 0 0-.88.17c-.239.1-.45.254-.62.45a1.89 1.89 0 0 0-.38.62 3 3 0 0 0-.15.72h1.23a.84.84 0 0 1 .506-.741.72.72 0 0 1 .304-.049.86.86 0 0 1 .27 0 .64.64 0 0 1 .22.14.6.6 0 0 1 .16.22.73.73 0 0 1 .06.3c0 .173-.037.343-.11.5a2.4 2.4 0 0 1-.27.46l-.35.42c-.12.13-.24.27-.35.41a2.33 2.33 0 0 0-.27.45 1.18 1.18 0 0 0-.1.5v.66H8v-.49a.94.94 0 0 1 .11-.42 3.09 3.09 0 0 1 .28-.41l.36-.44a4.29 4.29 0 0 0 .36-.48 2.59 2.59 0 0 0 .28-.55 1.91 1.91 0 0 0 .11-.64 2.18 2.18 0 0 0-.1-.67 1.52 1.52 0 0 0-.35-.55zM6.8 9.83h1.17V11H6.8V9.83z"
+                  />
+                </svg>
+                <span class="text-gray-300 group-hover:text-white">FAQS</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Account Section (Fixed) -->
+      <div class="flex flex-shrink-0 flex-col space-y-4 border-t border-white/30 pt-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <div class="bg-secondary flex h-6 w-6 items-center justify-center rounded-full">
+              <span class="text-xs font-bold text-white">{{ user()?.username | initials }}</span>
+            </div>
+            <span class="text-gray-300 capitalize group-hover:text-white 2xl:text-[15.5px]">{{
+              user()?.username
+            }}</span>
+          </div>
+
+          <!-- Chevron -->
+          <button
+            class="rounded-full p-1 text-white hover:bg-white/20"
+            (click)="toggleAccountMenu()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              [class.rotate-180]="isAccountMenuOpen()"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down h-5 w-5 transition-transform duration-300"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M6 9l6 6l6 -6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
 
 <!-- Dektop Header -->
 <header

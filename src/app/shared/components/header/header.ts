@@ -1,7 +1,15 @@
-import { Component, DestroyRef, HostListener, inject, OnDestroy } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  HostListener,
+  inject,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { handleHttpError } from '@shared/utils/utils';
+import { getStrategyFromPath, handleHttpError } from '@shared/utils/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InitialsPipe } from '@shared/pipes/initials-pipe';
 import { AuthService } from '@core/services/auth.service';
@@ -11,10 +19,12 @@ import { tap } from 'rxjs';
 import { PostService } from '@core/services/post.service';
 import { CommunityService } from '@core/services/community.service';
 import { Tooltip } from '../tooltip/tooltip';
-import { NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage, ViewportScroller } from '@angular/common';
 import { CurrentRouteService } from '@core/services/current-route.service';
 import { ModalService } from '@core/services/modal.service';
 import { Button } from '../button/button';
+import { PostLoadingStrategy } from '@core/models/interface/posts';
+import { DropdownService } from '@core/services/dropdown.service';
 
 @Component({
   selector: 'app-header',
@@ -29,16 +39,23 @@ export class Header implements OnDestroy {
   private postService = inject(PostService);
   private communityService = inject(CommunityService);
   private currentRouteService = inject(CurrentRouteService);
+  private dropdownService = inject(DropdownService);
   private modalService = inject(ModalService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private viewPortScroller = inject(ViewportScroller);
+  private readonly MAX_COMMUNITIES_DISPLAY = 5;
 
   isAuthenticated = this.authService.isAuthenticated;
   user = this.userService.user;
   activeTab = this.userService.activeUserTab;
   unifiedSearchResults = this.postService.unifiedSearchResults;
+  userCommunities = this.communityService.userCommunities;
   searchQuery = this.postService.enteredSearchQuery;
+  currentPath = this.currentRouteService.currentPath;
+  userCommunitiesLoading = this.communityService.userCommunitiesLoading;
 
+  isSideNavOpen = signal<boolean>(false);
   hideHeader = false;
   hideBottomNav = false;
   scrollTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -50,6 +67,18 @@ export class Header implements OnDestroy {
     ['archives', () => this.onArchives()],
     ['signout', () => this.onSignOut()],
   ]);
+
+  skeletonArray = Array(3).fill(0);
+
+  displayedCommunities = computed(() => {
+    const communities = this.userCommunities();
+
+    if (communities.length <= this.MAX_COMMUNITIES_DISPLAY) {
+      return communities;
+    }
+
+    return communities.slice(0, this.MAX_COMMUNITIES_DISPLAY);
+  });
 
   readonly profileMenuItems = [
     {
@@ -109,6 +138,11 @@ export class Header implements OnDestroy {
     }
   }
 
+  handleCommunityNavigate(slug: string) {
+    this.isSideNavOpen.set(false);
+    this.currentRouteService.handleRedirection(['community', slug]);
+  }
+
   toggleProfileMenu(action: string) {
     const handler = this.profileMenuMap.get(action);
 
@@ -129,6 +163,35 @@ export class Header implements OnDestroy {
     if (handler) {
       handler();
     }
+  }
+
+  toggleSideNav() {
+    this.isSideNavOpen.set(!this.isSideNavOpen());
+  }
+
+  toggleNavigation(targetPath: string) {
+    this.isSideNavOpen.set(false);
+
+    if (this.currentPath() === targetPath) {
+      this.viewPortScroller.scrollToPosition([0, 0]);
+
+      const strategy = getStrategyFromPath(targetPath);
+
+      this.postService
+        .loadInitialPosts(strategy as PostLoadingStrategy)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          error: (error) => {
+            handleHttpError(error, this.messageService);
+          },
+        });
+    } else {
+      this.router.navigate([targetPath]);
+    }
+  }
+
+  toggleAccountMenu() {
+    this.dropdownService.toggleDropdown('account', 'account');
   }
 
   onProfile() {
@@ -177,6 +240,22 @@ export class Header implements OnDestroy {
   onPostClick(slug: string) {
     this.currentRouteService.handleRedirection(['post', slug]);
     this.onClearSearch();
+  }
+
+  isAccountMenuOpen() {
+    return this.dropdownService.isDropDownOpen('account', 'account');
+  }
+
+  showCommunityForm() {
+    this.isSideNavOpen.set(false);
+
+    this.modalService.openModal({
+      title: 'Tell us about your community',
+      description:
+        'A name and description help people understand what your community is all about.',
+      content: 'community-form',
+      type: 'form',
+    });
   }
 
   @HostListener('document:click', ['$event'])
