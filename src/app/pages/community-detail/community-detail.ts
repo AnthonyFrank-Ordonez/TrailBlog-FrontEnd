@@ -30,6 +30,9 @@ export class CommunityDetail implements OnInit {
   token = this.authService.token;
   communityPosts = this.communityService.communityPosts;
   community = this.communityService.communityDetails;
+  // Dummy signal for loading state
+  // isCommunityDetailLoading = signal<boolean>(true);
+  isCommunityDetailLoading = this.communityService.isLoading;
 
   activePostFilter = signal<string>('Best');
   postFilterType = signal<string[]>(['Best', 'New', 'Top']);
