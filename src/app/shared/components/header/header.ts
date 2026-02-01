@@ -147,6 +147,11 @@ export class Header implements OnDestroy {
     this.currentRouteService.handleRedirection(['login']);
   }
 
+  handleNavigate(targetPath: string) {
+    this.isSideNavOpen.set(false);
+    this.currentRouteService.handleRedirection([targetPath]);
+  }
+
   toggleProfileMenu(action: string) {
     const handler = this.profileMenuMap.get(action);
 
