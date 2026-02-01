@@ -56,10 +56,9 @@ export class Header implements OnDestroy {
   userCommunitiesLoading = this.communityService.userCommunitiesLoading;
 
   isSideNavOpen = signal<boolean>(false);
-  hideHeader = false;
-  hideBottomNav = false;
+  hideHeader = signal<boolean>(false);
   scrollTimeout: ReturnType<typeof setTimeout> | null = null;
-  lastScrollTop = 0;
+  lastScrollTop = signal<number>(0);
 
   profileMenuMap = new Map<string, () => void>([
     ['profile', () => this.onProfile()],
@@ -283,23 +282,18 @@ export class Header implements OnDestroy {
     }
 
     // Hide headers when scrolling down, show when scrolling up
-    if (scrollTop > this.lastScrollTop && scrollTop > 100) {
-      // Scrolling down
-      this.hideHeader = true;
-      this.hideBottomNav = true;
-    } else if (scrollTop < this.lastScrollTop) {
-      // Scrolling up
-      this.hideHeader = false;
-      this.hideBottomNav = false;
+    if (scrollTop > this.lastScrollTop() && scrollTop > 100) {
+      this.hideHeader.set(true);
+    } else if (scrollTop < this.lastScrollTop()) {
+      this.hideHeader.set(false);
     }
 
-    this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+    this.lastScrollTop.set(scrollTop <= 0 ? 0 : scrollTop); // For Mobile or negative scrolling
 
     // Show headers again after user stops scrolling
     this.scrollTimeout = setTimeout(() => {
-      this.hideHeader = false;
-      this.hideBottomNav = false;
-    }, 1000); // Show after 1 second of no scrolling
+      this.hideHeader.set(false);
+    }, 1000);
   }
 
   private clearServiceData() {
