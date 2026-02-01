@@ -64,7 +64,7 @@
   >
     <!-- Side navigation such as home etc. -->
     <div class="flex h-full flex-col justify-between p-5">
-      <!-- Top Navigation (Scrollable) -->
+      <!-- Top Navigation -->
       <div class="scrollbar-container flex min-h-0 flex-1 flex-col">
         <div class="hide-scrollbar flex flex-col space-y-5 overflow-y-auto">
           <!-- Title + Logo -->
@@ -397,41 +397,52 @@
         </div>
       </div>
 
-      <!-- Bottom Account Section (Fixed) -->
+      <!-- Bottom Account Section -->
       <div class="flex flex-shrink-0 flex-col space-y-4 border-t border-white/30 pt-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-2">
-            <div class="bg-secondary flex h-6 w-6 items-center justify-center rounded-full">
-              <span class="text-xs font-bold text-white">{{ user()?.username | initials }}</span>
+        @if (this.isAuthenticated()) {
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <div class="bg-secondary flex h-6 w-6 items-center justify-center rounded-full">
+                <span class="text-xs font-bold text-white">{{ user()?.username | initials }}</span>
+              </div>
+              <span class="text-gray-300 capitalize group-hover:text-white 2xl:text-[15.5px]">{{
+                user()?.username
+              }}</span>
             </div>
-            <span class="text-gray-300 capitalize group-hover:text-white 2xl:text-[15.5px]">{{
-              user()?.username
-            }}</span>
-          </div>
 
-          <!-- Chevron -->
-          <button
-            class="rounded-full p-1 text-white hover:bg-white/20"
-            (click)="toggleAccountMenu()"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              [class.rotate-180]="isAccountMenuOpen()"
-              class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down h-5 w-5 transition-transform duration-300"
+            <!-- Chevron -->
+            <button
+              class="rounded-full p-1 text-white hover:bg-white/20"
+              (click)="toggleAccountMenu()"
             >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M6 9l6 6l6 -6" />
-            </svg>
-          </button>
-        </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                [class.rotate-180]="isAccountMenuOpen()"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down h-5 w-5 transition-transform duration-300"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M6 9l6 6l6 -6" />
+              </svg>
+            </button>
+          </div>
+        } @else {
+          <app-button
+            btnText="Login"
+            size="full"
+            fontSize="sm"
+            roundSize="full"
+            btnCustomClass="h-9 items-center flex justify-center"
+            (btnClick)="handleLoginNavigate()"
+          />
+        }
       </div>
     </div>
   </aside>
