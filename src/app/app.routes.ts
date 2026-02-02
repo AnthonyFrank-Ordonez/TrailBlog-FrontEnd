@@ -16,6 +16,10 @@ import { Drafts } from '@pages/drafts/drafts';
 import { Archives } from '@pages/archives/archives';
 import { Profile } from '@pages/profile/profile';
 import { CommunityDetail } from '@pages/community-detail/community-detail';
+import { NewsAndUpdates } from '@pages/news-and-updates/news-and-updates';
+import { Faqs } from '@pages/faqs/faqs';
+import { RulesPage } from '@pages/rules-page/rules-page';
+import { HelpPage } from '@pages/help-page/help-page';
 
 export const routes: Routes = [
   {
@@ -71,6 +75,22 @@ export const routes: Routes = [
       {
         path: 'community/:slug',
         component: CommunityDetail,
+      },
+      {
+        path: 'news-and-updates',
+        component: NewsAndUpdates,
+      },
+      {
+        path: 'rules',
+        component: RulesPage,
+      },
+      {
+        path: 'faqs',
+        component: Faqs,
+      },
+      {
+        path: 'help',
+        component: HelpPage,
       },
     ],
   },

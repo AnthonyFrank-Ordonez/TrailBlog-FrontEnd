@@ -177,7 +177,7 @@
               } @else {
                 @for (community of displayedCommunities(); track community.id) {
                   <button
-                    (click)="handleCommunityNavigate(community.communitySlug)"
+                    (click)="handleNavigation('community', community.communitySlug)"
                     class="group flex w-full cursor-pointer items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
                   >
                     <div class="bg-secondary flex h-6 w-6 items-center justify-center rounded-full">
@@ -236,7 +236,7 @@
           <div class="mt-2 space-y-1" animate.enter="slide-enter" animate.leave="slide-leave">
             <!-- News and Updates -->
             <button
-              href="#"
+              (click)="handleNavigation('news-and-updates')"
               class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
             >
               <svg
@@ -255,9 +255,9 @@
             </button>
 
             <!-- Rules -->
-            <a
-              href="#"
-              class="group flex items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
+            <button
+              (click)="handleNavigation('rules')"
+              class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -271,12 +271,12 @@
                   d="M240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640q0 33-23.5 56.5T720-80zm0-80h480v-640h-80v280l-100-60-100 60v-280H240zm0 0v-640zm200-360 100-60 100 60-100-60z"
                 />
               </svg>
-              <span class="text-gray-300 group-hover:text-white">Trail Rules</span>
-            </a>
+              <span class="text-gray-300">Trail Rules</span>
+            </button>
 
             <!-- Help -->
             <button
-              href="#"
+              (click)="handleNavigation('help')"
               class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
             >
               <svg
@@ -295,9 +295,9 @@
             </button>
 
             <!-- Faqs -->
-            <a
-              href="#"
-              class="group flex items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
+            <button
+              (click)="handleNavigation('faqs')"
+              class="flex w-full cursor-pointer items-center space-x-3 rounded-lg px-5 py-2.5 transition-colors hover:bg-gray-800/40"
             >
               <svg
                 class="h-5 w-5"
@@ -313,8 +313,8 @@
                   d="M7.5 1a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zm0 12a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm1.55-8.42a1.84 1.84 0 0 0-.61-.42A2.25 2.25 0 0 0 7.53 4a2.16 2.16 0 0 0-.88.17c-.239.1-.45.254-.62.45a1.89 1.89 0 0 0-.38.62 3 3 0 0 0-.15.72h1.23a.84.84 0 0 1 .506-.741.72.72 0 0 1 .304-.049.86.86 0 0 1 .27 0 .64.64 0 0 1 .22.14.6.6 0 0 1 .16.22.73.73 0 0 1 .06.3c0 .173-.037.343-.11.5a2.4 2.4 0 0 1-.27.46l-.35.42c-.12.13-.24.27-.35.41a2.33 2.33 0 0 0-.27.45 1.18 1.18 0 0 0-.1.5v.66H8v-.49a.94.94 0 0 1 .11-.42 3.09 3.09 0 0 1 .28-.41l.36-.44a4.29 4.29 0 0 0 .36-.48 2.59 2.59 0 0 0 .28-.55 1.91 1.91 0 0 0 .11-.64 2.18 2.18 0 0 0-.1-.67 1.52 1.52 0 0 0-.35-.55zM6.8 9.83h1.17V11H6.8V9.83z"
                 />
               </svg>
-              <span class="text-gray-300 group-hover:text-white">FAQS</span>
-            </a>
+              <span class="text-gray-300">FAQS</span>
+            </button>
           </div>
         }
       </div>

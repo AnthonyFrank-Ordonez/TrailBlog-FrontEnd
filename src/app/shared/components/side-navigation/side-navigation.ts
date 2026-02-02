@@ -73,8 +73,12 @@ export class SideNavigation {
     });
   }
 
-  handleCommunityNavigate(slug: string) {
-    this.currentRouteService.handleRedirection(['community', slug]);
+  handleNavigation(path: string, slug?: string) {
+    if (slug) {
+      this.currentRouteService.handleRedirection([path, slug]);
+    } else {
+      this.currentRouteService.handleRedirection([path]);
+    }
   }
 
   toggleCommunities(): void {
