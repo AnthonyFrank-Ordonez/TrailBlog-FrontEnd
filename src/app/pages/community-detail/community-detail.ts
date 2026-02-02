@@ -28,6 +28,7 @@ export class CommunityDetail implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   token = this.authService.token;
+  isAuthenticated = this.authService.isAuthenticated;
   communityPosts = this.communityService.communityPosts;
   community = this.communityService.communityDetails;
   // Dummy signal for loading state
@@ -70,6 +71,15 @@ export class CommunityDetail implements OnInit {
 
   isPostMenuFilterOpen(): boolean {
     return this.dropdownService.isDropDownOpen('filter', 'filter');
+  }
+
+  handleToggleJoin() {
+    const community = this.community();
+    const isAuth = this.isAuthenticated();
+
+    if (community) {
+      this.communityService.toggleCommunityMembership(community, isAuth);
+    }
   }
 
   loadCommunityDetail(slug: string) {

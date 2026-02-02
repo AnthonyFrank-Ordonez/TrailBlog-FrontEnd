@@ -11,6 +11,18 @@ import { MessageService } from '@core/services/message.service';
 import { PostService } from '@core/services/post.service';
 import { debounceTime, distinctUntilChanged, OperatorFunction, pipe, switchMap } from 'rxjs';
 
+export const COMMUNITY_PLACEHOLDER = {
+  id: '',
+  communityName: '',
+  description: '',
+  communitySlug: '',
+  owner: '',
+  isFavorite: false,
+  isUserJoined: false,
+  totalMembers: 0,
+  totalPosts: 0,
+};
+
 export const POST_PLACEHOLDER = {
   id: '',
   title: '',
@@ -19,6 +31,7 @@ export const POST_PLACEHOLDER = {
   slug: '',
   createdAt: new Date(),
   username: '',
+  community: COMMUNITY_PLACEHOLDER,
   communityName: '',
   communityId: '',
   isOwner: false,

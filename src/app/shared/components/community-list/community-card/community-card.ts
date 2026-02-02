@@ -12,10 +12,10 @@ export class CommunityCard {
   community = input.required<Communities>();
   isFavorite = input<boolean>(false);
   toggleFavoriteAction = output<Communities>();
-  leaveCommunityAction = output<string>();
+  leaveCommunityAction = output<Communities>();
 
   onLeaveCommunity(): void {
-    this.leaveCommunityAction.emit(this.community().id);
+    this.leaveCommunityAction.emit(this.community());
   }
 
   toggleFavorite() {

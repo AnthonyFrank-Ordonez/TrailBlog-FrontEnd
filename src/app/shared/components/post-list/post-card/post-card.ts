@@ -1,5 +1,6 @@
 import { NgClass } from '@angular/common';
 import { Component, computed, ElementRef, inject, input, output, ViewChild } from '@angular/core';
+import { Communities } from '@core/models/interface/community';
 import { MenuClickEvent, MenuItems } from '@core/models/interface/menus';
 import { Post, PostActionPayload } from '@core/models/interface/posts';
 import { ReactionList, ReactionRequest } from '@core/models/interface/reactions';
@@ -43,7 +44,7 @@ export class PostCard {
   menuAction = output<PostActionPayload>();
   publishAction = output<Post>();
   postDetailAction = output<string>();
-  toggleJoinAction = output<string>();
+  toggleJoinAction = output<Communities>();
 
   isAuthenticated = this.authService.isAuthenticated;
   activeDropdown = this.dropdownService.activeDropdown;
@@ -119,7 +120,7 @@ export class PostCard {
 
   toggleJoin(event?: MouseEvent): void {
     event?.stopPropagation();
-    this.toggleJoinAction.emit(this.post().communityId);
+    this.toggleJoinAction.emit(this.post().community);
   }
 
   hasReaction(reactionId: number): boolean {

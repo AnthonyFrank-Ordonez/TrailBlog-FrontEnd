@@ -1,4 +1,5 @@
 import { Comment } from './comments';
+import { Communities } from './community';
 import { PostAction } from './menus';
 import { ReactionSummary } from './reactions';
 
@@ -25,6 +26,7 @@ export interface Post {
   slug: string;
   createdAt: Date;
   username: string;
+  community: Communities;
   communityName: string;
   communityId: string;
   isOwner: boolean;

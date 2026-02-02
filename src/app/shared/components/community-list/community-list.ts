@@ -46,8 +46,8 @@ export class CommunityList {
     return [...this.userCommunitiesFavorite().values()];
   });
 
-  handleLeaveCommunity(communityId: string) {
-    this.communityService.toggleCommunityMembership(communityId, this.isAuthenticated());
+  handleLeaveCommunity(community: Communities) {
+    this.communityService.toggleCommunityMembership(community, this.isAuthenticated());
   }
 
   handleCommunityFavorite(community: Communities) {

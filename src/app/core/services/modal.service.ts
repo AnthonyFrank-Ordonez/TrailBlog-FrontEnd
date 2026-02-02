@@ -17,7 +17,7 @@ export class ModalService {
       'community',
       (config) => {
         if (config.type === 'community') {
-          config.onConfirm?.(config.data.communityId);
+          config.onConfirm?.(config.data.community);
         }
       },
     ],

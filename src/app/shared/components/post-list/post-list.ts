@@ -34,6 +34,7 @@ import {
   toPostLoadingStrategy,
 } from '@shared/utils/type-guards';
 import { DropdownService } from '@core/services/dropdown.service';
+import { Communities } from '@core/models/interface/community';
 
 @Component({
   selector: 'app-post-list',
@@ -187,8 +188,8 @@ export class PostList implements OnInit {
     this.postService.togglePostDetail(slug);
   }
 
-  handleToggleJoin(communityId: string) {
-    this.communityService.toggleCommunityMembership(communityId, this.isAuthenticated());
+  handleToggleJoin(community: Communities) {
+    this.communityService.toggleCommunityMembership(community, this.isAuthenticated());
   }
 
   handlePublishDraftPost(post: Post) {

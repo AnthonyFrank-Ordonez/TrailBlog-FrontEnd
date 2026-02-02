@@ -161,34 +161,45 @@ export class CommunityService {
     );
   }
 
-  leaveCommunity(communityId: string | undefined): Observable<OperationResult> {
+  leaveCommunity(community: Communities): Observable<OperationResult> {
     this.#isLeavingSignal.set(true);
 
-    return this.http.post<OperationResult>(`${this.apiUrl}/${communityId}/leave`, null).pipe(
+    const updatedCommunity = { ...community, isUserJoined: false };
+    this.updateCommunityWithOptimisticData(community.id, updatedCommunity);
+
+    return this.http.post<OperationResult>(`${this.apiUrl}/${community.id}/leave`, null).pipe(
       tap(() => {
         console.log('Leaving community...');
 
         this.#userCommunities.update((communities) => {
-          return communities.filter((community) => community.id !== communityId);
+          return communities.filter((c) => c.id !== community.id);
         });
       }),
       catchError((error) => {
+        const rollbackCommunity = { ...community, isUserJoined: true };
+        this.updateCommunityWithOptimisticData(community.id, rollbackCommunity);
         return throwError(() => error);
       }),
-
       finalize(() => {
         this.#isLeavingSignal.set(false);
       }),
     );
   }
 
-  joinCommunity(communityId: string): Observable<Communities> {
-    return this.http.post<Communities>(`${this.apiUrl}/${communityId}/join`, null).pipe(
+  joinCommunity(community: Communities): Observable<Communities> {
+    const previousState = community.isUserJoined;
+    const optimisticCommunity = { ...community, isUserJoined: true };
+
+    this.updateCommunityWithOptimisticData(community.id, optimisticCommunity);
+
+    return this.http.post<Communities>(`${this.apiUrl}/${community.id}/join`, null).pipe(
       tap((community) => {
         console.log('Joining community...');
         this.#userCommunities.update((communities) => [...communities, community]);
       }),
       catchError((error) => {
+        const rollbackCommunity = { ...community, isUserJoined: previousState };
+        this.updateCommunityWithOptimisticData(community.id, rollbackCommunity);
         return throwError(() => error);
       }),
     );
@@ -198,17 +209,17 @@ export class CommunityService {
     const previousState = community.isFavorite;
     const optimisticCommunity = { ...community, isFavorite: true };
 
-    this.updateUserCommunitiesWithOptimisticData(community.id, optimisticCommunity);
+    this.updateCommunityWithOptimisticData(community.id, optimisticCommunity);
 
     return this.http.post<Communities>(`${this.apiUrl}/${community.id}/favorite`, null).pipe(
       tap((updatedCommunity) => {
         console.log('Favorite Community');
 
-        this.updateUserCommunitiesWithOptimisticData(community.id, updatedCommunity);
+        this.updateCommunityWithOptimisticData(community.id, updatedCommunity);
       }),
       catchError((error) => {
         const rollbackCommunity = { ...community, isFavorite: previousState };
-        this.updateUserCommunitiesWithOptimisticData(community.id, rollbackCommunity);
+        this.updateCommunityWithOptimisticData(community.id, rollbackCommunity);
         return throwError(() => error);
       }),
     );
@@ -218,17 +229,17 @@ export class CommunityService {
     const previousState = community.isFavorite;
     const optimisticCommunity = { ...community, isFavorite: false };
 
-    this.updateUserCommunitiesWithOptimisticData(community.id, optimisticCommunity);
+    this.updateCommunityWithOptimisticData(community.id, optimisticCommunity);
 
     return this.http.post<Communities>(`${this.apiUrl}/${community.id}/unfavorite`, null).pipe(
       tap((updatedCommunity) => {
         console.log('Unfavorite Community');
 
-        this.updateUserCommunitiesWithOptimisticData(community.id, updatedCommunity);
+        this.updateCommunityWithOptimisticData(community.id, updatedCommunity);
       }),
       catchError((error) => {
         const rollbackCommunity = { ...community, isFavorite: previousState };
-        this.updateUserCommunitiesWithOptimisticData(community.id, rollbackCommunity);
+        this.updateCommunityWithOptimisticData(community.id, rollbackCommunity);
         return throwError(() => error);
       }),
     );
@@ -246,10 +257,11 @@ export class CommunityService {
     return this.userCommunitiesIds().has(communityId);
   }
 
-  toggleCommunityMembership(communityId: string, isAuthenticated: boolean): void {
+  toggleCommunityMembership(community: Communities, isAuthenticated: boolean): void {
     this.dropdownService.closeDropdown();
+    const id = community.id;
 
-    if (this.isUserInCommunity(communityId)) {
+    if (this.isUserInCommunity(id)) {
       this.modalService.openModal({
         type: 'community',
         title: 'Leave Community',
@@ -259,20 +271,20 @@ export class CommunityService {
           " Once you leave, you'll no longer be a member or receive updates from this community. You can rejoin anytime.",
         confirmBtnText: 'Leave Community',
         cancelBtnText: 'Cancel',
-        data: { communityId },
-        onConfirm: (id) => this.handleLeaveCommunity(id),
+        data: { community },
+        onConfirm: () => this.handleLeaveCommunity(community),
       });
     } else {
       if (!isAuthenticated) {
         this.modalService.showAuthRequiredModal();
       } else {
-        this.handleJoinCommunity(communityId);
+        this.handleJoinCommunity(community);
       }
     }
   }
 
-  private handleJoinCommunity(communityId: string): void {
-    this.joinCommunity(communityId)
+  private handleJoinCommunity(community: Communities): void {
+    this.joinCommunity(community)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {
@@ -281,8 +293,8 @@ export class CommunityService {
       });
   }
 
-  private handleLeaveCommunity(communityId: string): void {
-    this.leaveCommunity(communityId)
+  private handleLeaveCommunity(community: Communities): void {
+    this.leaveCommunity(community)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {
@@ -295,6 +307,21 @@ export class CommunityService {
     communityId: string,
     updatedCommunity: Communities,
   ): void {
+    this.#userCommunities.update((communities) =>
+      communities.map((c) => (c.id === communityId ? updatedCommunity : c)),
+    );
+  }
+
+  private updateCommunityWithOptimisticData(
+    communityId: string,
+    updatedCommunity: Communities,
+  ): void {
+    // Community Details
+    this.#communityDetailsSignal.update((community) =>
+      community?.id === communityId ? updatedCommunity : community,
+    );
+
+    // UserCommunities
     this.#userCommunities.update((communities) =>
       communities.map((c) => (c.id === communityId ? updatedCommunity : c)),
     );

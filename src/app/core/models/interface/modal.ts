@@ -1,5 +1,6 @@
 import { Post, PostDeleteType } from './posts';
 import { CommentAction, PostAction } from './menus';
+import { Communities } from './community';
 
 export type MenuModalStrategy = 'delete' | 'archive';
 
@@ -14,8 +15,8 @@ interface BaseModalConfig {
 
 export interface CommunityModalConfig extends BaseModalConfig {
   type: 'community';
-  data: { communityId: string };
-  onConfirm?: (communityId: string) => void;
+  data: { community: Communities };
+  onConfirm?: (community: Communities) => void;
 }
 
 export interface PostMenuModalConfig extends BaseModalConfig {
@@ -27,7 +28,7 @@ export interface PostMenuModalConfig extends BaseModalConfig {
 export interface CommunityFormModalConfig extends BaseModalConfig {
   type: 'form';
   content: 'community-form';
-  data?: { communityId?: string };
+  data?: { community?: Communities };
   onConfirm?: () => void;
 }
 
