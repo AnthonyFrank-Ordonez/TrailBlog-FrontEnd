@@ -137,19 +137,14 @@ export class Header implements OnDestroy {
     }
   }
 
-  handleCommunityNavigate(slug: string) {
+  handleNavigation(path: string, slug?: string) {
     this.isSideNavOpen.set(false);
-    this.currentRouteService.handleRedirection(['community', slug]);
-  }
 
-  handleLoginNavigate() {
-    this.isSideNavOpen.set(false);
-    this.currentRouteService.handleRedirection(['login']);
-  }
-
-  handleNavigate(path: string) {
-    this.isSideNavOpen.set(false);
-    this.currentRouteService.handleRedirection([path]);
+    if (slug) {
+      this.currentRouteService.handleRedirection([path, slug]);
+    } else {
+      this.currentRouteService.handleRedirection([path]);
+    }
   }
 
   toggleProfileMenu(action: string) {
