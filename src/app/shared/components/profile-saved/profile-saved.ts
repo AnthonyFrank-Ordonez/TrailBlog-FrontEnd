@@ -12,4 +12,5 @@ export class ProfileSaved {
   private postService = inject(PostService);
 
   savedPosts = this.postService.posts;
+  isSavedPostsLoading = this.postService.isPostLoading;
 }

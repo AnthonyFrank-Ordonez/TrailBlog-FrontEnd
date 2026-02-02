@@ -17,6 +17,7 @@ export class Home {
   activePostFilter = signal<string>('Best');
   postFilterType = signal<string[]>(['Best', 'New', 'Top']);
   regularPosts = this.postService.posts;
+  isPostLoading = this.postService.isPostLoading;
 
   togglePostMenuFilter() {
     this.dropdownService.toggleDropdown('filter', 'filter');

@@ -12,4 +12,5 @@ export class Archives {
   private postService = inject(PostService);
 
   archivedPosts = this.postService.posts;
+  isArchivedPostsLoading = this.postService.isPostLoading;
 }

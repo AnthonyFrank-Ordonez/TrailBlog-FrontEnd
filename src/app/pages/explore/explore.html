@@ -52,6 +52,10 @@
   </div>
 
   <div class="">
-    <app-post-list [posts]="explorePosts()" [metadata]="exploreMetaData()" />
+    <app-post-list
+      [posts]="explorePosts()"
+      [metadata]="exploreMetaData()"
+      [isLoading]="isExplorePostLoading()"
+    />
   </div>
 </div>

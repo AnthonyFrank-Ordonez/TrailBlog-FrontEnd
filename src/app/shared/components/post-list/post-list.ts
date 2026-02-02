@@ -55,6 +55,7 @@ export class PostList implements OnInit {
 
   posts = input.required<Post[]>();
   metadata = input<MetaData | undefined>();
+  isLoading = input<boolean>();
 
   currentPath = this.currentRouteService.currentPath;
   isAuthenticated = this.authService.isAuthenticated;

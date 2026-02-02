@@ -12,4 +12,5 @@ export class ProfilePosts {
   private postService = inject(PostService);
 
   profilePosts = this.postService.posts;
+  isProfilePostsLoading = this.postService.isPostLoading;
 }

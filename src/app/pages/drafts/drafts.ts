@@ -12,4 +12,5 @@ export class Drafts {
   private postService = inject(PostService);
 
   draftPosts = this.postService.posts;
+  isDraftPostsLoading = this.postService.isPostLoading;
 }

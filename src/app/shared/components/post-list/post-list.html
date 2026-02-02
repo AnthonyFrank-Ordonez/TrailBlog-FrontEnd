@@ -22,7 +22,7 @@
 }
 
 <!-- Skeleton Loading -->
-@if (isPostLoading()) {
+@if (isLoading()) {
   @for (skeleton of skeletonArray; track $index) {
     <div class="cursor-pointer rounded-lg px-4 py-3 hover:bg-gray-800/30">
       <div class="animate-pulse">

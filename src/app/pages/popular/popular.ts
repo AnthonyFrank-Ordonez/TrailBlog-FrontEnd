@@ -17,6 +17,7 @@ export class Popular {
   activePostFilter = signal<string>('Best');
   postFilterType = signal<string[]>(['Best', 'New', 'Top']);
   popularPosts = this.postService.posts;
+  isPopularPostsLoading = this.postService.isPostLoading;
 
   togglePostMenuFilter() {
     this.dropdownService.toggleDropdown('filter', 'filter');

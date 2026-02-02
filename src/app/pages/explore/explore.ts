@@ -19,6 +19,7 @@ export class Explore {
 
   explorePosts = this.postService.posts;
   exploreMetaData = this.postService.metadata;
+  isExplorePostLoading = this.postService.isPostLoading;
 
   togglePostMenuFilter() {
     this.dropdownService.toggleDropdown('filter', 'filter');

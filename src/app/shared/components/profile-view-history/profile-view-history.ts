@@ -12,4 +12,5 @@ export class ProfileViewHistory {
   private postService = inject(PostService);
 
   viewHistory = this.postService.posts;
+  isViewHistoryLoading = this.postService.isPostLoading;
 }
