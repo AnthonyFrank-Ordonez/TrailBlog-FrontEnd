@@ -92,6 +92,8 @@ export function getStrategyFromPath(path: string): PostLoadingStrategy | Comment
 }
 
 export function getActiveTabFromPath(path: string): string {
+  const onCommunityPage = /\/community\/[^\/]+/.test(path);
+
   if (path.startsWith('/popular')) return 'popular';
   if (path.startsWith('/create')) return 'create';
   if (path.startsWith('/communities')) return 'community';
@@ -101,6 +103,9 @@ export function getActiveTabFromPath(path: string): string {
   if (path.startsWith('/drafts')) return 'drafts';
   if (path.startsWith('/archives')) return 'archives';
   if (path.startsWith('/profile')) return 'profile';
+  if (path.startsWith('/login')) return 'login';
+  if (path.startsWith('/register')) return 'register';
+  if (onCommunityPage) return 'community-detail';
 
   return 'home';
 }
