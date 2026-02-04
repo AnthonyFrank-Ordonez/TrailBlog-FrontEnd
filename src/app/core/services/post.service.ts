@@ -15,7 +15,7 @@ import {
   PostStrategyConfig,
   RecentViewedPost,
 } from '@core/models/interface/posts';
-import { catchError, EMPTY, finalize, Observable, of, Subject, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, finalize, Observable, Subject, tap, throwError } from 'rxjs';
 import { debounceSignal, POST_PLACEHOLDER } from '@shared/utils/utils';
 import { environment } from '@env/environment';
 import { PageResult, MetaData } from '@core/models/interface/page-result';
